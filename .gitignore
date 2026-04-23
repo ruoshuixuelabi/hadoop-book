@@ -13,3 +13,4 @@ target
 .pydevproject
 .settings
 metastore_db
+.idea
