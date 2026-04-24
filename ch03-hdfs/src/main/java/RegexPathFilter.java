@@ -17,11 +17,6 @@ import org.apache.hadoop.fs.PathFilter;
  * <p>使用示例：</p>
  * <pre>
  *   // 包含所有2007开头的路径
- *   PathFilter includeFilter = new RegexPathFilter("^.*/2007.*$");
- *
- *   // 排除所有2007开头的路径
- *   PathFilter excludeFilter = new RegexPathFilter("^.*/2007.*$", false);
- * </pre>
  *
  * @see PathFilter Hadoop路径过滤器接口
  * @see RegexExcludePathFilter 仅用于排除的正则过滤器

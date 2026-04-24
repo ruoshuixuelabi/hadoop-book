@@ -32,7 +32,7 @@ import org.apache.hadoop.util.ToolRunner;
  * 2. HFileOutputFormat2 将 mapper 输出组织成 HBase 的存储格式 (HFile)
  * 3. LoadIncrementalHFiles 将生成的 HFile 文件加载到 HBase 表中
  *
- * /*[* Bulk load 方式避免了直接写入 WAL,适合离线大批量数据导入 *]*/
+ * Bulk load 方式避免了直接写入 WAL,适合离线大批量数据导入
  */
 public class HBaseTemperatureBulkImporter extends Configured implements Tool {
 

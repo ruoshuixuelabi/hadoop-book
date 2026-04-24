@@ -18,8 +18,7 @@ import org.apache.hadoop.util.ToolRunner;
  * 展示 MapReduce 作业所有默认配置的示例。
  *
  * <p>与 {@link MinimalMapReduce} 不同，本示例明确设置了所有配置项，
- * 以展示 Hadoop 的默认行为。代码中以 /*[*/ /*]*/ 包裹的部分
- * 展示了这些默认配置。
+ * 以展示 Hadoop 的默认行为。
  *
  * <p>默认配置说明：
  * <ul>
