@@ -1,9 +1,9 @@
 {
   "type": "record",
   "name": "StringPair",
-  "doc": "A pair of strings with aliased field names.",
+  "doc": "一对字符串，使用别名支持字段名称变更。left->first, right->second。",
   "fields": [
-    {"name": "first", "type": "string", "aliases": ["left"]},
-    {"name": "second", "type": "string", "aliases": ["right"]}
+    {"name": "first", "type": "string", "aliases": ["left"], "doc": "第一个字符串（原 left 字段）"},
+    {"name": "second", "type": "string", "aliases": ["right"], "doc": "第二个字符串（原 right 字段）"}
   ]
 }

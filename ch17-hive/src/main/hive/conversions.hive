@@ -1,32 +1,49 @@
+-- conversions.hive: 演示Hive的类型转换和运算符
+-- 步骤1: 创建临时表dummy用于类型转换测试
 DROP TABLE IF EXISTS dummy;
 CREATE TABLE dummy (value STRING);
 LOAD DATA LOCAL INPATH 'input/hive/dummy.txt'
 OVERWRITE INTO TABLE dummy;
 
+-- 步骤2: 显式类型转换示例
+-- 将字符串'X'转换为整数(结果为0,转换失败返回默认值)
 SELECT CAST('X' AS INT) from dummy;
- 
+
+-- 步骤3: 布尔值与整数的运算
+-- TRUE转换为1,所以 2+TRUE = 3
 SELECT 2 + TRUE FROM dummy;
 
+-- 步骤4: 将布尔值显式转换为整数
 SELECT 2 + CAST(TRUE AS INT) FROM dummy;
 
+-- 步骤5: 字符串到数字的隐式转换
+-- '2'隐式转换为整数 2, 所以 2+'2' = 4
 SELECT 2 + '2' FROM dummy;
 
+-- 步骤6: 字符串拼接
 SELECT concat('Truth: ', TRUE) FROM simple;
 
+-- 步骤7: 创建测试表simple,包含时间戳字段
 DROP TABLE IF EXISTS simple;
 CREATE TABLE simple (
   col1 TIMESTAMP
 );
 
+-- 步骤8: 插入时间戳字符串数据
 INSERT OVERWRITE TABLE simple
   SELECT '2012-01-02 03:04:05.123456789' FROM dummy;
 
+-- 步骤9: 时间戳与整数的运算(转换为unix时间戳进行计算)
 SELECT 2 + col1 FROM simple;
 
+-- 步骤10: 长整型与时间戳的运算
 SELECT 2L + col1 FROM simple;
 
+-- 步骤11: 双精度浮点数与时间戳的运算
 SELECT 2.0 + col1 FROM simple;
 
+-- 步骤12: 将时间戳显式转换为长整型后运算
 SELECT 2 + CAST(col1 AS BIGINT) FROM simple;
 
+-- 步骤13: 时间戳转换为字符串
 SELECT concat('Date: ', col1) FROM simple;

@@ -1,37 +1,132 @@
+<!--
+  Maven POM - 第18章：Crunch库
+
+  本模块是《Hadoop权威指南》第18章的示例代码，
+  演示Apache Crunch库的使用，Crunch是一个用于创建
+  和执行MapReduce管道的Java库，类似于Apache Pig但使用Java API。
+
+  主要功能:
+  - PCollection和PTable的创建和转换
+  - DoFn和MapFn的编写
+  - 聚合操作(Aggregators)
+  - 连接操作(Join)
+  - 排序操作(Sort)
+  - 管道执行和调试
+
+  Crunch核心概念:
+  - PCollection: 不可变的分布式集合
+  - PTable<K,V>: 键值对集合,类似于PCollection<Pair<K,V>>
+  - DoFn: 数据转换函数,类似于Hadoop的Mapper/Reducer
+  - Pipeline: 表示一个执行计划
+  - PipelineResult: 执行结果
+
+  与原生MapReduce相比的优势:
+  - 更简洁的API
+  - 自动优化管道(融合、优化器)
+  - 更好的测试支持(内存管道)
+  - 支持迭代算法(PageRank等)
+
+  本模块特点:
+  - 继承hadoop-meta父POM，使用统一的依赖版本管理
+  - 包含Crunch核心库和测试工具
+  - 使用hadoop-job.xml描述符打包成可执行JAR
+
+  构建命令:
+  mvn package -DskipTests
+
+  运行示例:
+  # 运行最大气温计算
+  hadoop jar target/ch18-crunch.jar crunch.MaxTemperatureCrunch /input/ncdc/all output
+
+  # 运行连接示例(需要气象站数据)
+  hadoop jar target/ch18-crunch.jar crunch.JoinRecordWithStationNameCrunch /input/ncdc/all /input/stations output
+
+  目录结构:
+  - src/main/java/crunch/: 主程序目录
+    - MaxTemperatureCrunch.java: 基础最大气温计算
+    - MaxTemperatureCrunchWithShutdownHook.java: 带关闭钩子的版本
+    - MaxTemperatureWithCountersCrunch.java: 使用计数器
+    - MaxTemperatureWithCompressionCrunch.java: 支持压缩
+    - MaxTemperatureWithMultipleInputsCrunch.java: 多输入源
+    - AvroGenericMaxTemperatureCrunch.java: Avro通用类型
+    - JoinRecordWithStationNameCrunch.java: 连接操作
+    - MaxTemperatureByStationNameCrunch.java: Map端连接
+    - MaxTemperatureUsingSecondarySortCrunch.java: 二次排序
+    - SortByTemperatureCrunch.java: 排序
+    - SplitCrunch.java: 数据分割
+    - NcdcRecordParser.java: NCDC数据解析器
+    - MetOfficeRecordParser.java: 英国气象局数据解析器
+    - NcdcStationMetadataParser.java: 气象站元数据解析器
+  - src/test/java/crunch/: 测试目录
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
+  <!-- 继承hadoop-meta父POM，获取统一的依赖版本管理 -->
   <parent>
     <groupId>com.hadoopbook</groupId>
     <artifactId>hadoop-meta</artifactId>
     <version>4.0</version>
     <relativePath>../hadoop-meta/pom.xml</relativePath>
   </parent>
+
   <groupId>com.hadoopbook</groupId>
   <artifactId>ch18-crunch</artifactId>
   <packaging>jar</packaging>
   <version>4.0</version>
+
+  <!-- 章节名称：Crunch -->
   <name>Chapter 18: Crunch</name>
+
+  <!-- ==================== 依赖项配置 ==================== -->
   <dependencies>
+    <!--
+      Crunch Core：Crunch库的核心组件
+      提供了PCollection、PTable、Pipeline等核心抽象
+      以及MapFn、DoFn等函数类型和转换操作
+    -->
     <dependency>
       <groupId>org.apache.crunch</groupId>
       <artifactId>crunch-core</artifactId>
       <version>${crunch.version}</version>
     </dependency>
+
+    <!--
+      Crunch Test：Crunch测试工具库
+      提供了内存Pipeline等测试辅助工具
+      用于编写单元测试和集成测试
+    -->
     <dependency>
       <groupId>org.apache.crunch</groupId>
       <artifactId>crunch-test</artifactId>
       <version>${crunch.version}</version>
       <scope>test</scope>
     </dependency>
+
+    <!--
+      JUnit测试框架：用于编写和运行单元测试
+      Crunch提供了与JUnit集成的测试辅助类
+    -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <!-- ==================== 构建插件配置 ==================== -->
   <build>
     <plugins>
+      <!--
+        Maven Assembly Plugin：用于打包Crunch示例为可执行JAR
+        使用src/main/assembly/hadoop-job.xml描述符进行打包
+
+        打包策略：
+        - 依赖项输出到lib目录
+        - 项目artifact解压后打包
+        - 排除Hadoop自身依赖（Hadoop集群环境已提供）
+      -->
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>

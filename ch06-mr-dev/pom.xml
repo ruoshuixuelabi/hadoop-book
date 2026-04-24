@@ -1,18 +1,42 @@
+<!--
+  Maven POM - 第6章：开发MapReduce应用程序
+
+  本模块是《Hadoop权威指南》第6章的示例代码，
+  演示MapReduce应用程序的开发流程，包括：
+  - 应用程序配置
+  - 驱动类编写
+  - 作业提交和监控
+  - 多个版本的API对比（v1/v2/v3/v4）
+  - 本地运行和集群运行模式
+
+  本模块特点：
+  - 最基础的模块，仅包含JUnit测试依赖
+  - 作为其他高级模块的基础依赖
+  - 提供了Max Temperature工作流示例用于Oozie调度
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
+    <!-- 继承hadoop-meta父POM，获取统一的依赖版本管理 -->
     <parent>
         <groupId>com.hadoopbook</groupId>
         <artifactId>hadoop-meta</artifactId>
         <version>4.0</version>
         <relativePath>../hadoop-meta/pom.xml</relativePath>
     </parent>
+
     <groupId>com.hadoopbook</groupId>
     <artifactId>ch06-mr-dev</artifactId>
     <packaging>jar</packaging>
     <version>4.0</version>
+
+    <!-- 章节名称：开发MapReduce应用程序 -->
     <name>Chapter 6: Developing a MapReduce Application</name>
+
+    <!-- ==================== 依赖项配置 ==================== -->
     <dependencies>
+        <!-- JUnit测试框架：用于编写和运行单元测试 -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

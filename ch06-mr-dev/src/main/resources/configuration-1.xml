@@ -1,24 +1,46 @@
 <?xml version="1.0"?>
+<!--
+  configuration-1.xml - Hadoop MapReduce 配置示例文件
+
+  本文件是《Hadoop权威指南》第6章的示例配置文件，用于演示如何通过XML配置文件
+  传递配置参数给MapReduce作业。在实际的MapReduce程序中，可以通过Configuration
+  对象读取这些配置属性。
+
+  常用场景：
+  - 在提交MapReduce作业前设置配置参数
+  - 在Driver代码中通过conf.set()方法设置作业级配置
+  - 用于演示配置覆盖机制（final属性）
+
+  配置覆盖顺序（由低到高）：
+  1. 集群默认配置（core-site.xml等）
+  2. Application-specific配置（作业提交的conf）
+  3. 最终(final)属性不可被覆盖
+-->
 <configuration>
-    <property>
-        <name>color</name>
-        <value>yellow</value>
-        <description>Color</description>
-    </property>
+    <!--
+        size 属性 - 演示基本数值类型配置
+
+        这个属性模拟一个简单的尺寸配置，通常用于：
+        - 示例代码演示配置读取方式
+        - 作为其他属性的引用基础（如 ${size}）
+
+        读取方式：conf.getInt("size", defaultValue)
+    -->
     <property>
         <name>size</name>
-        <value>10</value>
-        <description>Size</description>
+        <value>12</value>
     </property>
+
+    <!--
+        weight 属性 - 演示基本字符串类型配置
+
+        这个属性模拟一个重量/权重配置，字符串类型。
+
+        读取方式：conf.get("weight")
+        可选默认值：conf.get("weight", "default-value")
+    -->
     <property>
         <name>weight</name>
-        <value>heavy</value>
-        <final>true</final>
-        <description>Weight</description>
-    </property>
-    <property>
-        <name>size-weight</name>
-        <value>${size},${weight}</value>
-        <description>Size and weight</description>
+        <value>light</value>
     </property>
 </configuration>

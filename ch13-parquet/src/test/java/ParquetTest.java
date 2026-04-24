@@ -25,140 +25,177 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
+/**
+ * Parquet 文件读写测试类。
+ *
+ * <p>本测试类演示了 Parquet 的核心功能：
+ * <ul>
+ *   <li>使用 Parquet 原生 API 读写 Parquet 文件</li>
+ *   <li>使用 Avro API 读写 Parquet 文件</li>
+ *   <li>Schema 投影 (Projection) 功能</li>
+ *   <li>读取 Schema 的动态设置</li>
+ * </ul>
+ *
+ * <p>Parquet 是列式存储格式，优势包括：
+ * <ul>
+ *   <li>高效的列裁剪：只读取需要的列</li>
+ *   <li>良好的压缩性能：同类型数据连续存放</li>
+ *   <li>支持嵌套结构的列式表示</li>
+ * </ul>
+ */
 public class ParquetTest {
 
-  @Test
-  public void testParquetFile() throws IOException {
-    MessageType schema = MessageTypeParser.parseMessageType(
-        "message Pair {\n" +
-        "  required binary left (UTF8);\n" +
-        "  required binary right (UTF8);\n" +
-        "}");
+    /**
+     * 测试使用 Parquet 原生 API 读写 Parquet 文件。
+     *
+     * <p>使用 Parquet 的 Group/GroupFactory API：
+     * <ul>
+     *   <li>使用 MessageType 定义 schema</li>
+     *   <li>使用 GroupWriteSupport 写入</li>
+     *   <li>使用 GroupReadSupport 读取</li>
+     * </ul>
+     */
+    @Test
+    public void testParquetFile() throws IOException {
+        MessageType schema = MessageTypeParser.parseMessageType(
+            "message Pair {\n" +
+            "  required binary left (UTF8);\n" +
+            "  required binary right (UTF8);\n" +
+            "}");
 
-    GroupFactory groupFactory = new SimpleGroupFactory(schema);
-    Group group = groupFactory.newGroup()
-        .append("left", "L")
-        .append("right", "R");
+        GroupFactory groupFactory = new SimpleGroupFactory(schema);
+        Group group = groupFactory.newGroup()
+            .append("left", "L")
+            .append("right", "R");
 
-    Configuration conf = new Configuration();
-    Path path = new Path("data.parquet");
-    GroupWriteSupport writeSupport = new GroupWriteSupport();
-    GroupWriteSupport.setSchema(schema, conf);
-    ParquetWriter<Group> writer = new ParquetWriter<Group>(path, writeSupport,
-        ParquetWriter.DEFAULT_COMPRESSION_CODEC_NAME,
-        ParquetWriter.DEFAULT_BLOCK_SIZE,
-        ParquetWriter.DEFAULT_PAGE_SIZE,
-        ParquetWriter.DEFAULT_PAGE_SIZE, /* dictionary page size */
-        ParquetWriter.DEFAULT_IS_DICTIONARY_ENABLED,
-        ParquetWriter.DEFAULT_IS_VALIDATING_ENABLED,
-        ParquetProperties.WriterVersion.PARQUET_1_0, conf);
-    writer.write(group);
-    writer.close();
+        Configuration conf = new Configuration();
+        Path path = new Path("data.parquet");
+        GroupWriteSupport writeSupport = new GroupWriteSupport();
+        GroupWriteSupport.setSchema(schema, conf);
+        ParquetWriter<Group> writer = new ParquetWriter<Group>(path, writeSupport,
+            ParquetWriter.DEFAULT_COMPRESSION_CODEC_NAME,
+            ParquetWriter.DEFAULT_BLOCK_SIZE,
+            ParquetWriter.DEFAULT_PAGE_SIZE,
+            ParquetWriter.DEFAULT_PAGE_SIZE,
+            ParquetWriter.DEFAULT_IS_DICTIONARY_ENABLED,
+            ParquetWriter.DEFAULT_IS_VALIDATING_ENABLED,
+            ParquetProperties.WriterVersion.PARQUET_1_0, conf);
+        writer.write(group);
+        writer.close();
 
-    GroupReadSupport readSupport = new GroupReadSupport();
-    ParquetReader<Group> reader = new ParquetReader<Group>(path, readSupport);
-    Group result = reader.read();
-    assertNotNull(result);
-    assertThat(result.getString("left", 0), is("L"));
-    assertThat(result.getString("right", 0), is("R"));
-    assertNull(reader.read());
+        GroupReadSupport readSupport = new GroupReadSupport();
+        ParquetReader<Group> reader = new ParquetReader<Group>(path, readSupport);
+        Group result = reader.read();
+        assertNotNull(result);
+        assertThat(result.getString("left", 0), is("L"));
+        assertThat(result.getString("right", 0), is("R"));
+        assertNull(reader.read());
 
-    FileSystem fs = FileSystem.get(new Configuration());
-    fs.delete(path, true);
-  }
+        FileSystem fs = FileSystem.get(new Configuration());
+        fs.delete(path, true);
+    }
 
-  @Test
-  public void testParquetFileUsingAvro() throws IOException {
-    Schema.Parser parser = new Schema.Parser();
-    Schema schema = parser.parse(getClass().getResourceAsStream("StringPair.avsc"));
+    /**
+     * 测试使用 Avro API 读写 Parquet 文件。
+     */
+    @Test
+    public void testParquetFileUsingAvro() throws IOException {
+        Schema.Parser parser = new Schema.Parser();
+        Schema schema = parser.parse(getClass().getResourceAsStream("StringPair.avsc"));
 
-    GenericRecord datum = new GenericData.Record(schema);
-    datum.put("left", "L");
-    datum.put("right", "R");
+        GenericRecord datum = new GenericData.Record(schema);
+        datum.put("left", "L");
+        datum.put("right", "R");
 
-    Path path = new Path("data.parquet");
-    AvroParquetWriter<GenericRecord> writer =
-        new AvroParquetWriter<GenericRecord>(path, schema);
-    writer.write(datum);
-    writer.close();
+        Path path = new Path("data.parquet");
+        AvroParquetWriter<GenericRecord> writer =
+            new AvroParquetWriter<GenericRecord>(path, schema);
+        writer.write(datum);
+        writer.close();
 
-    AvroParquetReader<GenericRecord> reader =
-        new AvroParquetReader<GenericRecord>(path);
-    GenericRecord result = reader.read();
-    assertNotNull(result);
-    assertThat(result.get("left").toString(), is("L"));
-    assertThat(result.get("right").toString(), is("R"));
-    assertNull(reader.read());
+        AvroParquetReader<GenericRecord> reader =
+            new AvroParquetReader<GenericRecord>(path);
+        GenericRecord result = reader.read();
+        assertNotNull(result);
+        assertThat(result.get("left").toString(), is("L"));
+        assertThat(result.get("right").toString(), is("R"));
+        assertNull(reader.read());
 
-    FileSystem fs = FileSystem.get(new Configuration());
-    fs.delete(path, true);
-  }
+        FileSystem fs = FileSystem.get(new Configuration());
+        fs.delete(path, true);
+    }
 
-  @Test
-  public void testParquetFileUsingAvroProjection() throws IOException {
-    Schema.Parser parser = new Schema.Parser();
-    Schema schema = parser.parse(getClass().getResourceAsStream("StringPair.avsc"));
+    /**
+     * 测试 Parquet 的 Schema 投影功能。
+     */
+    @Test
+    public void testParquetFileUsingAvroProjection() throws IOException {
+        Schema.Parser parser = new Schema.Parser();
+        Schema schema = parser.parse(getClass().getResourceAsStream("StringPair.avsc"));
 
-    GenericRecord datum = new GenericData.Record(schema);
-    datum.put("left", "L");
-    datum.put("right", "R");
+        GenericRecord datum = new GenericData.Record(schema);
+        datum.put("left", "L");
+        datum.put("right", "R");
 
-    Path path = new Path("data.parquet");
-    AvroParquetWriter<GenericRecord> writer =
-        new AvroParquetWriter<GenericRecord>(path, schema);
-    writer.write(datum);
-    writer.close();
+        Path path = new Path("data.parquet");
+        AvroParquetWriter<GenericRecord> writer =
+            new AvroParquetWriter<GenericRecord>(path, schema);
+        writer.write(datum);
+        writer.close();
 
-    parser = new Schema.Parser();
-    Schema projectionSchema = parser.parse(
-        getClass().getResourceAsStream("ProjectedStringPair.avsc"));
-    Configuration conf = new Configuration();
-    AvroReadSupport.setRequestedProjection(conf, projectionSchema);
-    AvroParquetReader<GenericRecord> reader =
-        new AvroParquetReader<GenericRecord>(conf, path);
-    GenericRecord result = reader.read();
-    assertNull(result.get("left"));
-    assertThat(result.get("right").toString(), is("R"));
-    assertNull(reader.read());
+        parser = new Schema.Parser();
+        Schema projectionSchema = parser.parse(
+            getClass().getResourceAsStream("ProjectedStringPair.avsc"));
+        Configuration conf = new Configuration();
+        AvroReadSupport.setRequestedProjection(conf, projectionSchema);
+        AvroParquetReader<GenericRecord> reader =
+            new AvroParquetReader<GenericRecord>(conf, path);
+        GenericRecord result = reader.read();
+        assertNull(result.get("left"));
+        assertThat(result.get("right").toString(), is("R"));
+        assertNull(reader.read());
 
-    FileSystem fs = FileSystem.get(new Configuration());
-    fs.delete(path, true);
-  }
+        FileSystem fs = FileSystem.get(new Configuration());
+        fs.delete(path, true);
+    }
 
-  @Test
-  public void testParquetFileUsingAvroProjectionAndReadSchema() throws IOException {
-    Schema.Parser parser = new Schema.Parser();
-    Schema schema = parser.parse(getClass().getResourceAsStream("StringPair.avsc"));
+    /**
+     * 测试同时设置投影 schema 和读取 schema。
+     */
+    @Test
+    public void testParquetFileUsingAvroProjectionAndReadSchema() throws IOException {
+        Schema.Parser parser = new Schema.Parser();
+        Schema schema = parser.parse(getClass().getResourceAsStream("StringPair.avsc"));
 
-    GenericRecord datum = new GenericData.Record(schema);
-    datum.put("left", "L");
-    datum.put("right", "R");
+        GenericRecord datum = new GenericData.Record(schema);
+        datum.put("left", "L");
+        datum.put("right", "R");
 
-    Path path = new Path("data.parquet");
-    AvroParquetWriter<GenericRecord> writer =
-        new AvroParquetWriter<GenericRecord>(path, schema);
-    writer.write(datum);
-    writer.close();
+        Path path = new Path("data.parquet");
+        AvroParquetWriter<GenericRecord> writer =
+            new AvroParquetWriter<GenericRecord>(path, schema);
+        writer.write(datum);
+        writer.close();
 
-    parser = new Schema.Parser();
-    Schema projectionSchema = parser.parse(
-        getClass().getResourceAsStream("ProjectedStringPair.avsc"));
-    parser = new Schema.Parser();
-    Schema readSchema = parser.parse(
-        getClass().getResourceAsStream("NewStringPair.avsc"));
-    Configuration conf = new Configuration();
-    AvroReadSupport.setRequestedProjection(conf, projectionSchema);
-    AvroReadSupport.setAvroReadSchema(conf, readSchema);
-    AvroParquetReader<GenericRecord> reader =
-        new AvroParquetReader<GenericRecord>(conf, path);
-    GenericRecord result = reader.read();
-    assertNull(result.get("left"));
-    assertThat(result.get("right").toString(), is("R"));
-    assertThat(result.get("description").toString(), is(""));
-    assertNull(reader.read());
+        parser = new Schema.Parser();
+        Schema projectionSchema = parser.parse(
+            getClass().getResourceAsStream("ProjectedStringPair.avsc"));
+        parser = new Schema.Parser();
+        Schema readSchema = parser.parse(
+            getClass().getResourceAsStream("NewStringPair.avsc"));
+        Configuration conf = new Configuration();
+        AvroReadSupport.setRequestedProjection(conf, projectionSchema);
+        AvroReadSupport.setAvroReadSchema(conf, readSchema);
+        AvroParquetReader<GenericRecord> reader =
+            new AvroParquetReader<GenericRecord>(conf, path);
+        GenericRecord result = reader.read();
+        assertNull(result.get("left"));
+        assertThat(result.get("right").toString(), is("R"));
+        assertThat(result.get("description").toString(), is(""));
+        assertNull(reader.read());
 
-    FileSystem fs = FileSystem.get(new Configuration());
-    fs.delete(path, true);
-  }
+        FileSystem fs = FileSystem.get(new Configuration());
+        fs.delete(path, true);
+    }
 
 }

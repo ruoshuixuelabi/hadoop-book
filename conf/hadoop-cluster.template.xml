@@ -1,16 +1,41 @@
 <?xml version="1.0"?>
+<!--
+  Hadoop集群配置文件模板
+
+  此配置模板用于多节点Hadoop集群部署。
+  配置项使用占位符（如namenode、resourcemanager），需要在实际部署时替换为真实主机名。
+
+  使用前请将以下占位符替换为实际值：
+  - namenode: HDFS NameNode主机名
+  - resourcemanager: YARN ResourceManager主机名
+-->
 <configuration>
 
+  <!--
+    HDFS默认文件系统配置
+    fs.defaultFS: 指定HDFS NameNode的地址
+    namenode需要在/etc/hosts或DNS中解析到对应IP地址
+  -->
   <property>
     <name>fs.defaultFS</name>
     <value>hdfs://namenode/</value>
   </property>
 
+  <!--
+    MapReduce框架配置
+    mapreduce.framework.name: 指定使用YARN作为MapReduce执行框架
+    YARN实现资源统一管理，支持多种计算框架
+  -->
   <property>
     <name>mapreduce.framework.name</name>
     <value>yarn</value>
   </property>
 
+  <!--
+    YARN ResourceManager地址配置
+    yarn.resourcemanager.address: ResourceManager的主机名和端口
+    ApplicationMaster和客户端通过此地址与ResourceManager通信
+  -->
   <property>
     <name>yarn.resourcemanager.address</name>
     <value>resourcemanager:8032</value>

@@ -1,11 +1,78 @@
 <?xml version="1.0"?>
+<!--
+  hdfs-site.xml - HDFS（Hadoop Distributed File System）配置文件
+
+  本文件用于配置HDFS（Hadoop分布式文件系统）的各种运行时参数。
+  HDFS是 Hadoop 的核心存储层，负责数据的分布式存储和副本管理。
+
+  主要配置内容：
+  - NameNode 元数据存储路径配置
+  - DataNode 数据块存储路径配置
+  - Secondary NameNode 检查点存储路径配置
+
+  重要提示：
+  - 生产环境中建议配置多个存储路径以实现冗余
+  - 路径最好位于不同的磁盘上以提高IO性能
+  - 此文件通常配合 core-site.xml 中的 fs.defaultFS 使用
+-->
 <configuration>
+    <!--
+        dfs.namenode.name.dir - NameNode 元数据存储路径
+
+        配置说明：
+        - 指定 NameNode 在本地文件系统上存储元数据的目录路径
+        - 元数据包括：命名空间镜像文件（fsimage）、编辑日志（edits）等
+        - 建议配置多个路径以实现元数据冗余备份
+
+        推荐实践：
+        - 使用 RAID 技术保护这些目录所在的磁盘
+        - 生产环境建议至少配置2个路径
+        - 可以使用逗号分隔指定多个路径
+
+        默认值：如果不配置，Hadoop会使用 ${hadoop.tmp.dir}/dfs/name
+    -->
     <property>
-        <name>size</name>
-        <value>12</value>
+        <name>dfs.namenode.name.dir</name>
+        <value>/disk1/hdfs/name,/remote/hdfs/name</value>
     </property>
+
+    <!--
+        dfs.datanode.data.dir - DataNode 数据块存储路径
+
+        配置说明：
+        - 指定 DataNode 在本地文件系统上存储 HDFS 数据块的目录
+        - 每个数据块默认会有多个副本（默认3个），分布在不同节点
+        - 路径配置应该指向具有足够空间的磁盘
+
+        推荐实践：
+        - 生产环境建议每个磁盘配置一个独立的目录
+        - 监控磁盘空间，避免存储不足
+        - 可以使用逗号分隔指定多个路径
+
+        默认值：如果不配置，Hadoop会使用 ${hadoop.tmp.dir}/dfs/data
+    -->
     <property>
-        <name>weight</name>
-        <value>light</value>
+        <name>dfs.datanode.data.dir</name>
+        <value>/disk1/hdfs/data,/disk2/hdfs/data</value>
+    </property>
+
+    <!--
+        dfs.namenode.checkpoint.dir - Secondary NameNode 检查点目录
+
+        配置说明：
+        - 指定 Secondary NameNode（或 Checkpoint Node）存储检查点数据的目录
+        - Secondary NameNode 定期合并 fsimage 和 edits 生成新的检查点
+        - 这有助于减轻 NameNode 的启动负担
+
+        推荐实践：
+        - 与 namenode.name.dir 一样，建议配置多个路径
+        - 路径最好与 NameNode 数据目录在不同物理磁盘上
+        - 可用于灾难恢复时的元数据重建
+
+        备注：此节点并非 HDFS 的"备用 NameNode"，真正的 HA 需要配置 Backup Node或JournalNode
+    -->
+    <property>
+        <name>dfs.namenode.checkpoint.dir</name>
+        <value>/disk1/hdfs/namesecondary,/disk2/hdfs/namesecondary</value>
     </property>
 </configuration>

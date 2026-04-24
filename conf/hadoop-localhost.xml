@@ -1,19 +1,43 @@
 <?xml version="1.0"?>
+<!--
+  Hadoop单节点本地主机配置文件
+
+  此配置文件用于在单台机器上以伪分布式模式运行Hadoop。
+  HDFS使用hdfs://localhost/作为文件系统路径，
+  MapReduce通过YARN框架执行，ResourceManager运行在localhost。
+
+  适用场景：开发测试环境，需要模拟完整Hadoop集群行为但资源有限
+-->
 <configuration>
 
+  <!--
+    HDFS默认文件系统配置
+    fs.defaultFS: 指定默认文件系统为HDFS，namenode运行在localhost
+    数据通过HDFS协议访问，适合需要HDFS特性的应用
+  -->
   <property>
     <name>fs.defaultFS</name>
     <value>hdfs://localhost/</value>
   </property>
 
+  <!--
+    MapReduce框架配置
+    mapreduce.framework.name: 指定使用YARN作为MapReduce执行框架
+    YARN负责集群资源管理和任务调度
+  -->
   <property>
     <name>mapreduce.framework.name</name>
     <value>yarn</value>
   </property>
 
+  <!--
+    YARN ResourceManager地址配置
+    yarn.resourcemanager.address: ResourceManager的主机名和端口
+    客户端和ApplicationMaster通过此地址与ResourceManager通信
+  -->
   <property>
     <name>yarn.resourcemanager.address</name>
     <value>localhost:8032</value>
   </property>
-  
+
 </configuration>

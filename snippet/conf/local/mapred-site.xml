@@ -1,8 +1,13 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 
-<!-- Put site-specific property overrides in this file. -->
+<!--
+  Hadoop本地模式 - MapReduce配置(mapred-site.xml)
 
-<configuration>
+  此文件用于配置MapReduce作业执行相关参数。
+  本地模式通常使用local框架直接运行MR任务。
 
-</configuration>
+  常见配置项：
+  - mapreduce.framework.name: MapReduce执行框架（local/yarn）
+  - mapreduce.jobhistory.address: JobHistory Server地址
+  - mapreduce.map

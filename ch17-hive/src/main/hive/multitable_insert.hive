@@ -1,36 +1,47 @@
-
-DROP TABLE IF exists records2;
+-- multitable_insert.hive: 演示Hive的多表插入和链式查询优化
+-- 步骤1: 创建records2表并加载气象数据
+DROP TABLE IF EXISTS records2;
 CREATE TABLE records2 (station STRING, year STRING, temperature INT, quality INT)
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY '\t';
 
+-- 使用绝对路径加载样本数据
 LOAD DATA LOCAL INPATH '/Users/tom/book-workspace/hadoop-book/input/ncdc/micro-tab/sample2.txt'
 OVERWRITE INTO TABLE records2;
 
-DROP TABLE IF exists stations_by_year;
-DROP TABLE IF exists records_by_year;
-DROP TABLE IF exists good_records_by_year;
+-- 步骤2: 创建三个目标表用于存储统计结果
+DROP TABLE IF EXISTS stations_by_year;  -- 每年气象站数量
+DROP TABLE IF EXISTS records_by_year;    -- 每年记录总数
+DROP TABLE IF EXISTS good_records_by_year; -- 每年有效记录数
 
 CREATE TABLE stations_by_year (year STRING, num INT);
 CREATE TABLE records_by_year (year STRING, num INT);
 CREATE TABLE good_records_by_year (year STRING, num INT);
 
+-- 步骤3: 使用多表插入,只需扫描一次records2表即可填充三个目标表
+-- FROM子句在Hive 0.5之前必需,Hive 0.5之后可直接使用INSERT
 FROM records2
 INSERT OVERWRITE TABLE stations_by_year
+  -- 按年分组,统计每年唯一气象站数量
   SELECT year, COUNT(DISTINCT station)
-  GROUP BY year 
+  GROUP BY year
 INSERT OVERWRITE TABLE records_by_year
+  -- 按年分组,统计每年记录总数
   SELECT year, COUNT(1)
   GROUP BY year
 INSERT OVERWRITE TABLE good_records_by_year
+  -- 按年分组,统计每年有效记录数(过滤无效温度和质量码)
   SELECT year, COUNT(1)
   WHERE temperature != 9999 AND quality IN (0, 1, 4, 5, 9)
-  GROUP BY year;  
-  
+  GROUP BY year;
+
+-- 步骤4: 查看三个统计表的结果
 SELECT * FROM stations_by_year;
 SELECT * FROM records_by_year;
 SELECT * FROM good_records_by_year;
 
+-- 步骤5: 使用MAPJOIN优化三表连接查询
+-- 将两个小表加载到内存中进行map端连接,避免shuffle
 SELECT /*+ MAPJOIN(records_by_year,good_records_by_year) */
   stations_by_year.year, stations_by_year.num, records_by_year.num, good_records_by_year.num
 FROM stations_by_year

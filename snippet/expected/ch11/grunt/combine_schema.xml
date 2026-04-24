@@ -1,3 +1,4 @@
+<!-- Pig Grunt 集成测试：UNION 操作后的 DESCRIBE 命令，验证 UNION 合并后关系 C 的 schema（当 schema 未知时） -->
 <screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">DESCRIBE A;</userinput>
 A: {f0: int,f1: int}
 <prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">DESCRIBE B;</userinput>

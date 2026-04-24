@@ -1,18 +1,250 @@
 <?xml version="1.0"?>
-<!-- hdfs-site.xml -->
+<!--
+  hdfs-site.xml - HDFS（Hadoop Distributed File System）配置文件
+
+  本文件用于配置 HDFS 分布式文件系统的各项参数。
+  HDFS 是 Hadoop 的核心存储层，负责海量数据的分布式存储和访问。
+
+  主要配置内容：
+  - 副本数量策略
+  - NameNode 和 DataNode 存储路径
+  - Block 大小配置
+  - 安全和权限相关设置
+  - 高可用（HA）配置
+
+  配置原则：
+  - 生产环境建议对关键路径配置多个目录
+  - 副本数通常设为 3，但在极大规模集群中可能需要调整
+  - Block 大小选择需根据数据特性和查询模式决定
+
+  重要提示：
+  - 必须与 core-site.xml 中的 fs.defaultFS 配合使用
+  - 集群中所有 DataNode 和 NameNode 应使用相同的配置
+-->
 <configuration>
+    <!--
+        dfs.replication - HDFS 数据块副本数量
+
+        配置说明：
+        - 指定每个数据块在 HDFS 中保存的副本数量
+        - 副本策略：第一个副本优先写入本地节点，其他副本分布到其他机架节点
+        - 更多的副本数可以提高数据的可靠性和读取并发度
+
+        取值建议：
+        - 开发/测试环境：1（禁用副本，本地测试）
+        - 小规模生产：2
+        - 标准生产：3（默认推荐值）
+        - 大规模集群：可能设为 2~3 以减少存储开销
+
+        注意：这个值可以被客户端在创建文件时覆盖
+        默认值：3
+    -->
+
+    <!--
+        dfs.namenode.name.dir - NameNode 元数据存储路径
+
+        配置说明：
+        - 指定 NameNode 存储元数据的本地文件系统路径
+        - 元数据包括：命名空间镜像（fsimage）、编辑日志（edits）、运行时信息
+        - 建议配置多个路径以实现元数据的冗余备份
+
+        推荐实践：
+        - 生产环境至少配置 2 个不同的存储路径
+        - 路径所在的磁盘应具有冗余（RAID）
+        - 建议使用 SSD 或高速磁盘以提升 NameNode 性能
+        - 定期检查这些目录的磁盘空间
+
+        默认值：如果不配置，默认为 ${hadoop.tmp.dir}/dfs/name
+    -->
+
+    <!--
+        dfs.datanode.data.dir - DataNode 数据块存储路径
+
+        配置说明：
+        - 指定 DataNode 在本地磁盘上存储 HDFS 数据块的目录
+        - 每个数据块默认会有多个副本分布到不同节点
+        - 路径应该指向具有足够空间的磁盘分区
+
+        推荐实践：
+        - 为每个独立的磁盘配置一个目录路径
+        - 监控磁盘使用情况，避免存储空间不足
+        - 建议与系统盘分离，使用专用数据磁盘
+
+        默认值：如果不配置，默认为 ${hadoop.tmp.dir}/dfs/data
+    -->
+
+    <!--
+        dfs.blocksize - HDFS 数据块大小
+
+        配置说明：
+        - 指定 HDFS 中每个数据块的大小
+        - 较大的块可以减少 NameNode 的元数据管理开销
+        - 较小的块有利于负载均衡和并行处理
+
+        常见取值：
+        - 64MB：Hadoop 1.x 时代的传统选择
+        - 128MB：Hadoop 2.x+ 的常见选择，适合大文件顺序访问
+        - 256MB：超大规模数据处理场景
+
+        选择依据：
+        - 数据文件的平均大小
+        - MapReduce 任务的处理粒度
+        - 网络带宽和存储性能
+
+        默认值：128MB（134217728字节）
+    -->
+
+    <!--
+        dfs.namenode.http-address - NameNode Web UI 地址
+
+        配置说明：
+        - 指定 NameNode 的 HTTP 服务器地址，用于访问 HDFS Web UI
+        - 可以通过浏览器查看 HDFS 集群状态、浏览目录、查看 DataNode 信息等
+
+        格式：host:port
+        默认端口：50070（Hadoop 2.x）、9870（Hadoop 3.x）
+
+        注意：在启用 HA 时可能需要配置不同的地址格式
+    -->
+
+    <!--
+        dfs.webhdfs.enabled - 启用 WebHDFS REST API
+
+        配置说明：
+        - 是否启用通过 HTTP/HTTPS 访问 HDFS 的 REST API
+        - 启用后可以通过 HTTP 协议操作 HDFS，适用于跨防火墙访问
+
+        应用场景：
+        - Cloudberry 等第三方工具通过 HTTP 访问 HDFS
+        - 需要通过 HTTP 代理访问 HDFS 的场景
+        - 提供公开的 HDFS 文件访问服务
+
+        注意：启用后需要在所有 DataNode 上也配置相同属性
+        默认值：false
+    -->
+
+    <!--
+        dfs.replication - HDFS 数据块副本数量
+
+        配置说明：
+        - 指定每个数据块在 HDFS 中保存的副本数量
+        - 副本策略：第一个副本优先写入本地节点，其他副本分布到其他机架节点
+        - 更多的副本数可以提高数据的可靠性和读取并发度
+
+        取值建议：
+        - 开发/测试环境：1（禁用副本，本地测试）
+        - 小规模生产：2
+        - 标准生产：3（默认推荐值）
+        - 大规模集群：可能设为 2~3 以减少存储开销
+
+        注意：这个值可以被客户端在创建文件时覆盖
+        默认值：3
+    -->
     <property>
-        <name>dfs.namenode.name.dir</name>
-        <value>/disk1/hdfs/name,/remote/hdfs/name</value>
+        <name>dfs.replication</name>
+        <value>3</value>
     </property>
 
+    <!--
+        dfs.namenode.name.dir - NameNode 元数据存储路径
+
+        配置说明：
+        - 指定 NameNode 存储元数据的本地文件系统路径
+        - 元数据包括：命名空间镜像（fsimage）、编辑日志（edits）、运行时信息
+        - 建议配置多个路径以实现元数据的冗余备份
+
+        推荐实践：
+        - 生产环境至少配置 2 个不同的存储路径
+        - 路径所在的磁盘应具有冗余（RAID）
+        - 建议使用 SSD 或高速磁盘以提升 NameNode 性能
+        - 定期检查这些目录的磁盘空间
+
+        默认值：如果不配置，默认为 ${hadoop.tmp.dir}/dfs/name
+    -->
+    <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>/disk1/hdfs/name,/disk2/hdfs/name</value>
+    </property>
+
+    <!--
+        dfs.datanode.data.dir - DataNode 数据块存储路径
+
+        配置说明：
+        - 指定 DataNode 在本地磁盘上存储 HDFS 数据块的目录
+        - 每个数据块默认会有多个副本分布到不同节点
+        - 路径应该指向具有足够空间的磁盘分区
+
+        推荐实践：
+        - 为每个独立的磁盘配置一个目录路径
+        - 监控磁盘使用情况，避免存储空间不足
+        - 建议与系统盘分离，使用专用数据磁盘
+
+        默认值：如果不配置，默认为 ${hadoop.tmp.dir}/dfs/data
+    -->
     <property>
         <name>dfs.datanode.data.dir</name>
         <value>/disk1/hdfs/data,/disk2/hdfs/data</value>
     </property>
 
+    <!--
+        dfs.blocksize - HDFS 数据块大小
+
+        配置说明：
+        - 指定 HDFS 中每个数据块的大小
+        - 较大的块可以减少 NameNode 的元数据管理开销
+        - 较小的块有利于负载均衡和并行处理
+
+        常见取值：
+        - 64MB：Hadoop 1.x 时代的传统选择
+        - 128MB：Hadoop 2.x+ 的常见选择，适合大文件顺序访问
+        - 256MB：超大规模数据处理场景
+
+        选择依据：
+        - 数据文件的平均大小
+        - MapReduce 任务的处理粒度
+        - 网络带宽和存储性能
+
+        默认值：128MB（134217728字节）
+    -->
     <property>
-        <name>dfs.namenode.checkpoint.dir</name>
-        <value>/disk1/hdfs/namesecondary,/disk2/hdfs/namesecondary</value>
+        <name>dfs.blocksize</name>
+        <value>134217728</value>
+    </property>
+
+    <!--
+        dfs.namenode.http-address - NameNode Web UI 地址
+
+        配置说明：
+        - 指定 NameNode 的 HTTP 服务器地址，用于访问 HDFS Web UI
+        - 可以通过浏览器查看 HDFS 集群状态、浏览目录、查看 DataNode 信息等
+
+        格式：host:port
+        默认端口：50070（Hadoop 2.x）、9870（Hadoop 3.x）
+
+        注意：在启用 HA 时可能需要配置不同的地址格式
+    -->
+    <property>
+        <name>dfs.namenode.http-address</name>
+        <value>0.0.0.0:9870</value>
+    </property>
+
+    <!--
+        dfs.webhdfs.enabled - 启用 WebHDFS REST API
+
+        配置说明：
+        - 是否启用通过 HTTP/HTTPS 访问 HDFS 的 REST API
+        - 启用后可以通过 HTTP 协议操作 HDFS，适用于跨防火墙访问
+
+        应用场景：
+        - Cloudberry 等第三方工具通过 HTTP 访问 HDFS
+        - 需要通过 HTTP 代理访问 HDFS 的场景
+        - 提供公开的 HDFS 文件访问服务
+
+        注意：启用后需要在所有 DataNode 上也配置相同属性
+        默认值：false
+    -->
+    <property>
+        <name>dfs.webhdfs.enabled</name>
+        <value>true</value>
     </property>
 </configuration>

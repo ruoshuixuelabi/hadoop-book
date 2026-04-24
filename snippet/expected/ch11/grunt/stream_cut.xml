@@ -1,3 +1,4 @@
+<!-- Pig Grunt 集成测试：STREAM 通过管道调用外部命令 cut 提取第二列 -->
 <screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">C = STREAM A THROUGH `cut -f 2`;</userinput>
 <prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">DUMP C;</userinput>
 (cherry)

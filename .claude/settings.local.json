@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rtk cat *)",
+      "Bash(rtk mvn *)",
+      "Bash(git checkout *)",
+      "Bash(java *)",
+      "Bash(grep -E \"\\\\.java$|\\\\.xml$\")",
+      "Bash(grep -E \"\\\\.java$\")",
+      "Bash(grep \"\\\\.java$\")",
+      "Bash(grep \"\\\\.xml$\")",
+      "Bash(git restore *)",
+      "Bash(grep \"\\\\.properties$\")",
+      "Bash(grep -E \"\\\\.\\(java|xml|properties\\)$\")"
+    ]
+  }
+}

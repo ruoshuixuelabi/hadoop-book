@@ -1,6 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <!-- 父项目：继承 hadoop-meta 的依赖管理和插件配置 -->
     <parent>
         <groupId>com.hadoopbook</groupId>
         <artifactId>hadoop-meta</artifactId>
@@ -12,23 +13,62 @@
     <packaging>jar</packaging>
     <version>4.0</version>
     <name>Chapter 12: Avro</name>
+
+    <!--
+        Avro 模块依赖配置
+
+        Avro 是一个数据序列化系统，类似于 Protocol Buffers 和 Thrift。
+        主要特点：
+        - 支持丰富的数据类型
+        - 紧凑的二进制格式
+        - 提供 Generic 和 Specific 两种 API
+        - 支持 Schema 演进和投影
+        - 与 Hadoop 深度集成
+    -->
     <dependencies>
+        <!--
+            Avro 核心库
+            提供 Avro 数据类型的定义、序列化/反序列化等功能
+        -->
         <dependency>
             <groupId>org.apache.avro</groupId>
             <artifactId>avro</artifactId>
         </dependency>
+        <!--
+            Avro MapReduce 集成库
+            提供 Avro 与 Hadoop MapReduce 的集成支持：
+            - AvroKeyInputFormat / AvroKeyOutputFormat
+            - AvroJob 工具类
+            - AvroMapper / AvroReducer 基类
+        -->
         <dependency>
             <groupId>org.apache.avro</groupId>
             <artifactId>avro-mapred</artifactId>
-            <!--            <classifier>hadoop2</classifier>-->
+            <!--
+                classifier 配置说明：
+                - 默认使用包含 Hadoop 依赖的 shaded 版本
+                - 如果与集群的 Hadoop 版本冲突，可以指定 hadoop2 classifier
+                <classifier>hadoop2</classifier>
+            -->
         </dependency>
+        <!-- JUnit 测试框架 -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
+            <!--
+                Avro Maven 插件
+                用于在编译时从 .avsc Schema 文件生成 Java 代码
+
+                配置说明：
+                - phase:generate-sources 表示在 generate-sources 阶段执行
+                - stringType: String 表示使用 Java String 类型而非 Avro Utf8
+                - outputDirectory: 生成代码的输出目录
+            -->
             <plugin>
                 <groupId>org.apache.avro</groupId>
                 <artifactId>avro-maven-plugin</artifactId>
@@ -41,17 +81,29 @@
                         </goals>
                         <configuration>
                             <includes>
+                                <!-- 指定需要生成代码的 Schema 文件 -->
                                 <include>StringPair.avsc</include>
                                 <include>WeatherRecord.avsc</include>
                             </includes>
+                            <!-- 使用 Java String 类型作为字符串类型（而非默认的 Utf8） -->
                             <stringType>String</stringType>
+                            <!-- Schema 文件所在目录 -->
                             <sourceDirectory>src/main/resources</sourceDirectory>
-                            <outputDirectory>${project.build.directory}/generated-sources/java
-                            </outputDirectory>
+                            <!-- 生成的 Java 代码输出目录 -->
+                            <outputDirectory>${project.build.directory}/generated-sources/java</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+            <!--
+                Maven Assembly 插件
+                用于打包作业 JAR 文件，包含所有依赖
+
+                配置说明：
+                - finalName: 输出的 JAR 文件名
+                - outputDirectory: 输出目录（项目根目录）
+                - appendAssemblyId: false 表示不添加 assembly id 后缀
+            -->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>

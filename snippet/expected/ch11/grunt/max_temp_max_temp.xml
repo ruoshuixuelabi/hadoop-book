@@ -1,2 +1,4 @@
-<screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">max_temp = FOREACH grouped_records GENERATE group,</userinput>
-<prompt moreinfo="none">&gt;&gt; </prompt><userinput moreinfo="none">  MAX(filtered_records.temperature);</userinput></screen>
+<!-- Pig Grunt 集成测试：DUMP 命令，查看计算出的每年最高温度结果 -->
+<screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">DUMP max_temp;</userinput>
+(1949,111)
+(1950,22)</screen>

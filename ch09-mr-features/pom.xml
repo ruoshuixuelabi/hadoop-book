@@ -1,33 +1,73 @@
+<!--
+  Maven POM - 第9章：MapReduce特性
+
+  本模块是《Hadoop权威指南》第9章的示例代码，
+  演示MapReduce的高级特性，包括：
+  - 计数器（Counters）
+  - 排序（Sorting）
+  - 连接（Join）操作
+  - 边数据分发（Side Data）
+  - 分布式缓存（Distributed Cache）
+  - 作业控制（Job Control）
+
+  本模块特点：
+  - 依赖多个模块（common、ch02、ch05-io）
+  - 展示MapReduce的高级特性和最佳实践
+  - 提供完整的特性示例
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
+  <!-- 继承hadoop-meta父POM，获取统一的依赖版本管理 -->
   <parent>
     <groupId>com.hadoopbook</groupId>
     <artifactId>hadoop-meta</artifactId>
     <version>4.0</version>
     <relativePath>../hadoop-meta/pom.xml</relativePath>
   </parent>
+
   <groupId>com.hadoopbook</groupId>
   <artifactId>ch09-mr-features</artifactId>
   <packaging>jar</packaging>
   <version>4.0</version>
+
+  <!-- 章节名称：MapReduce特性 -->
   <name>Chapter 9: MapReduce Features</name>
+
+  <!-- ==================== 依赖项配置 ==================== -->
   <dependencies>
+    <!--
+      common模块：包含共享的工具类
+      提供NcdcRecordParser等数据解析工具
+    -->
     <dependency>
       <groupId>com.hadoopbook</groupId>
       <artifactId>common</artifactId>
       <version>4.0</version>
     </dependency>
+
+    <!--
+      ch02-mr-intro模块：提供基础的MapReduce实现
+      用于演示各种特性的基础示例
+    -->
     <dependency>
       <groupId>com.hadoopbook</groupId>
       <artifactId>ch02-mr-intro</artifactId>
       <version>4.0</version>
     </dependency>
+
+    <!--
+      ch05-io模块：提供I/O格式示例
+      用于演示不同格式下的特性应用
+    -->
     <dependency>
       <groupId>com.hadoopbook</groupId>
       <artifactId>ch05-io</artifactId>
       <version>4.0</version>
     </dependency>
+
+    <!-- JUnit测试框架：用于编写和运行单元测试 -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

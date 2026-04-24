@@ -1,57 +1,244 @@
+<?xml version="1.0"?>
+<!--
+  workflow.xml - Apache Oozie 工作流配置文件
+
+  本文件定义了计算年最高温度的 MapReduce 作业的 Oozie 工作流。
+  Oozie 是一个 Hadoop 工作流调度系统，用于编排多个 MapReduce 作业、
+  Shell 命令、Java 程序等形成完整的数据处理管道。
+
+  工作流概述：
+  - 名称：max-temp-workflow（计算年度最高温度工作流）
+  - 起点：start 节点，转到 max-temp-mr Action
+  - 主流程：执行 MaxTemperature 的 MapReduce 作业
+  - 成功路径：通过 ok 转到 end 节点
+  - 失败路径：通过 error 转到 fail kill 节点
+
+  使用方式：
+  - 将此文件与相关配置（coordination）配合使用
+  - 通过 Oozie Client 或 REST API 提交作业
+  - 查看 Oozie Web Console 监控工作流执行状态
+
+  Oozie 版本：0.1（经典工作流语法）
+-->
 <workflow-app xmlns="uri:oozie:workflow:0.1" name="max-temp-workflow">
+
+    <!--
+        start 节点 - 工作流入口点
+
+        工作流执行的起点，指定第一个要执行的节点。
+        to 属性指向下一个要跳转的节点名称。
+    -->
     <start to="max-temp-mr"/>
+
+    <!--
+        max-temp-mr Action - MapReduce 主作业节点
+
+        这是工作流的核心节点，执行实际的 MapReduce 计算任务。
+        该节点包含完整的 MapReduce 作业配置。
+
+        主要配置内容：
+        1. job-tracker / name-node：指定资源管理器和NameNode地址
+        2. prepare：执行前的清理操作（删除输出目录）
+        3. configuration：MapReduce作业的具体配置
+    -->
     <action name="max-temp-mr">
-        <map-reduce>
-            <job-tracker>${resourceManager}</job-tracker>
-            <name-node>${nameNode}</name-node>
-            <prepare>
-                <delete path="${nameNode}/user/${wf:user()}/output"/>
-            </prepare>
-            <configuration>
-                <property>
-                    <name>mapred.mapper.new-api</name>
-                    <value>true</value>
-                </property>
-                <property>
-                    <name>mapred.reducer.new-api</name>
-                    <value>true</value>
-                </property>
-                <property>
-                    <name>mapreduce.job.map.class</name>
-                    <value>MaxTemperatureMapper</value>
-                </property>
-                <property>
-                    <name>mapreduce.job.combine.class</name>
-                    <value>MaxTemperatureReducer</value>
-                </property>
-                <property>
-                    <name>mapreduce.job.reduce.class</name>
-                    <value>MaxTemperatureReducer</value>
-                </property>
-                <property>
-                    <name>mapreduce.job.output.key.class</name>
-                    <value>org.apache.hadoop.io.Text</value>
-                </property>
-                <property>
-                    <name>mapreduce.job.output.value.class</name>
-                    <value>org.apache.hadoop.io.IntWritable</value>
-                </property>
-                <property>
-                    <name>mapreduce.input.fileinputformat.inputdir</name>
-                    <value>/user/${wf:user()}/input/ncdc/micro</value>
-                </property>
-                <property>
-                    <name>mapreduce.output.fileoutputformat.outputdir</name>
-                    <value>/user/${wf:user()}/output</value>
-                </property>
-            </configuration>
-        </map-reduce>
+        <!--
+            map-reduce 节点 - MapReduce 作业配置
+
+            包含作业执行所需的所有配置信息。
+        -->
+
+        <!--
+            job-tracker - YARN ResourceManager 地址配置
+
+            指定 YARN 集群的 ResourceManager 地址，用于：
+            - 作业提交
+            - 资源分配请求
+            - 作业状态查询
+
+            注意：此值通过 workflow 变量 ${resourceManager} 动态注入，
+            允许同一工作流在不同环境（dev/staging/prod）中使用不同集群。
+        -->
+        <job-tracker>${resourceManager}</job-tracker>
+
+        <!--
+            name-node - HDFS NameNode 地址配置
+
+            指定 HDFS 集群的 NameNode 地址，用于：
+            - 文件路径解析
+            - 输入数据读取
+            - 输出结果写入
+
+            同样通过 ${nameNode} 变量实现环境无关性。
+        -->
+        <name-node>${nameNode}</name-node>
+
+        <!--
+            prepare 节点 - 作业执行前的准备工作
+
+            在 MapReduce 作业启动前执行的前置操作。
+            这里配置了删除操作，防止输出目录已存在的错误。
+
+            delete 操作：
+            - path 属性指定要删除的 HDFS 路径
+            - ${nameNode} 变量会被替换为实际的 NameNode 地址
+            - ${wf:user()} 获取提交工作流的用户名，构建用户专属路径
+        -->
+        <prepare>
+            <delete path="${nameNode}/user/${wf:user()}/output"/>
+        </prepare>
+
+        <!--
+            configuration 节点 - MapReduce 作业详细配置
+
+            包含 MapReduce 作业的具体参数设置。
+        -->
+
+            <!--
+                mapred.mapper.new-api - 使用新 MapReduce API 标志
+
+                设置为 true 表示使用 Hadoop 2.x 的新 MapReduce API。
+                新 API (org.apache.hadoop.mapreduce) 相比旧 API 有更好的
+                类型安全性和扩展性。
+            -->
+            <property>
+                <name>mapred.mapper.new-api</name>
+                <value>true</value>
+            </property>
+
+            <!--
+                mapred.reducer.new-api - 使用新 MapReduce API 标志
+
+                与 mapper.new-api 类似，表示 Reducer 也使用新 API。
+            -->
+            <property>
+                <name>mapred.reducer.new-api</name>
+                <value>true</value>
+            </property>
+
+            <!--
+                mapreduce.job.map.class - Mapper 类配置
+
+                指定 Map 阶段的处理类（使用新 API 格式）。
+                这里的 MaxTemperatureMapper 负责解析气象数据并找出最高温度。
+            -->
+            <property>
+                <name>mapreduce.job.map.class</name>
+                <value>MaxTemperatureMapper</value>
+            </property>
+
+            <!--
+                mapreduce.job.combine.class - Combiner 类配置
+
+                指定 Combiner 类，用于在 Map 端进行本地聚合，减少网络传输数据量。
+                通常与 Reducer 使用相同的类实现。
+                Combiner 是 MapReduce 的优化手段，可显著提升性能。
+            -->
+            <property>
+                <name>mapreduce.job.combine.class</name>
+                <value>MaxTemperatureReducer</value>
+            </property>
+
+            <!--
+                mapreduce.job.reduce.class - Reducer 类配置
+
+                指定 Reduce 阶段的处理类，负责汇总各 Mapper 的结果，
+                最终计算出全局最高温度。
+            -->
+            <property>
+                <name>mapreduce.job.reduce.class</name>
+                <value>MaxTemperatureReducer</value>
+            </property>
+
+            <!--
+                mapreduce.job.output.key.class - 输出键类型配置
+
+                指定作业输出的 Key 的数据类型。
+                最高温度计算的输出键是文本类型（年份）。
+            -->
+            <property>
+                <name>mapreduce.job.output.key.class</name>
+                <value>org.apache.hadoop.io.Text</value>
+            </property>
+
+            <!--
+                mapreduce.job.output.value.class - 输出值类型配置
+
+                指定作业输出的 Value 的数据类型。
+                最高温度值使用 IntWritable（整数）类型。
+            -->
+            <property>
+                <name>mapreduce.job.output.value.class</name>
+                <value>org.apache.hadoop.io.IntWritable</value>
+            </property>
+
+            <!--
+                mapreduce.input.fileinputformat.inputdir - 输入路径配置
+
+                指定 MapReduce 作业读取输入数据的 HDFS 路径。
+                使用用户专属路径：
+                - /user/${wf:user()} 获取当前用户名
+                - /input/ncdc/micro 是实际的数据目录
+                - ncdc 数据是美国国家气候数据中心的气象数据
+            -->
+            <property>
+                <name>mapreduce.input.fileinputformat.inputdir</name>
+                <value>/user/${wf:user()}/input/ncdc/micro</value>
+            </property>
+
+            <!--
+                mapreduce.output.fileoutputformat.outputdir - 输出路径配置
+
+                指定 MapReduce 作业写入结果的 HDFS 路径。
+                注意：该目录在作业运行前会被 prepare 节点删除，以确保清洁的输出。
+            -->
+            <property>
+                <name>mapreduce.output.fileoutputformat.outputdir</name>
+                <value>/user/${wf:user()}/output</value>
+            </property>
+
+        </configuration>
+
+        <!--
+            ok 节点 - 作业成功后的跳转目标
+
+            当 MapReduce 作业成功完成时，工作流跳转到 end 节点。
+        -->
         <ok to="end"/>
+
+        <!--
+            error 节点 - 作业失败后的跳转目标
+
+            当 MapReduce 作业执行失败时，工作流跳转到 fail kill 节点。
+        -->
         <error to="fail"/>
     </action>
+
+    <!--
+        fail Kill 节点 - 作业失败处理节点
+
+        这是一个 Kill 节点，用于处理作业失败的情况。
+        节点名称 "fail" 是自定义的，可以是任意名称。
+        会记录失败信息并终止工作流。
+    -->
     <kill name="fail">
+        <!--
+            message 节点 - 错误消息内容
+
+            使用 Oozie 内置函数记录失败详情：
+            - ${wf:errorMessage(...)} 获取错误消息
+            - ${wf:lastErrorNode()} 获取最后一个出错的节点名称
+            帮助用户诊断工作流失败原因。
+        -->
         <message>MapReduce failed, error message[${wf:errorMessage(wf:lastErrorNode())}]
         </message>
     </kill>
+
+    <!--
+        end 节点 - 工作流正常结束节点
+
+        工作流成功完成后的终点。
+        Oozie 工作流至此结束，作业成功。
+    -->
     <end name="end"/>
 </workflow-app>

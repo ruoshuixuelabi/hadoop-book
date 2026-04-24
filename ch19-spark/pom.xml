@@ -1,39 +1,84 @@
+<!--
+  Maven POM - 第19章：Spark
+
+  本模块是《Hadoop权威指南》第19章的示例代码，
+  演示Apache Spark的基本概念和编程模型，包括：
+  - Spark RDD（弹性分布式数据集）操作
+  - Spark SQL查询
+  - Spark Streaming流处理
+  - 与Hadoop生态系统集成（Avro数据）
+
+  本模块特点：
+  - 使用Scala编写部分示例（Scala是Spark的原生态语言）
+  - 包含Scala Maven插件用于编译Scala代码
+  - 使用Avro 1.7.6版本（Spark与Avro 1.7.7存在兼容性问题）
+  - 使用Guava 14.0.1版本（Spark使用较新版本，此处显式指定以避免冲突）
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
+  <!-- 继承book父POM，使用book级别的依赖管理 -->
   <parent>
     <groupId>com.hadoopbook</groupId>
     <artifactId>book</artifactId>
     <version>4.0</version>
     <relativePath>../book/pom.xml</relativePath>
   </parent>
+
   <groupId>com.hadoopbook</groupId>
   <artifactId>ch19-spark</artifactId>
   <packaging>jar</packaging>
   <version>4.0</version>
+
+  <!-- 章节名称：Spark -->
   <name>Chapter 19: Spark</name>
+
+  <!-- ==================== 依赖项配置 ==================== -->
   <dependencies>
+    <!--
+      Spark Core：Spark核心组件
+      提供了RDD、SparkContext、SparkConf等核心API
+      Scala版本指定为2.10，与Spark 1.x兼容
+    -->
     <dependency>
       <groupId>org.apache.spark</groupId>
       <artifactId>spark-core_2.10</artifactId>
     </dependency>
+
+    <!--
+      Avro MapRed：Avro的MapReduce兼容组件
+      注意：此处使用Avro 1.7.6而非父POM中的版本
+      原因：Spark与Avro 1.7.7存在兼容性问题，导致作业失败
+    -->
     <dependency>
       <groupId>org.apache.avro</groupId>
       <artifactId>avro-mapred</artifactId>
-      <version>1.7.6</version> <!-- Spark fails with Avro 1.7.7. TODO: investigate why -->
+      <version>1.7.6</version>
     </dependency>
+
+    <!--
+      Guava：Google核心工具库
+      注意：Spark使用较新版本的Guava，此处指定14.0.1以避免版本冲突
+      TODO：当升级到Spark 1.2.0时可以移除此版本声明，因为Spark会shade Guava
+    -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <!-- Spark uses a later version of Guava than Hadoop -->
-      <!-- TODO: remove when we upgrade to Spark 1.2.0, since it shades Guava https://issues.apache.org/jira/browse/SPARK-2848 -->
       <version>14.0.1</version>
     </dependency>
+
+    <!-- JUnit测试框架：用于编写和运行单元测试 -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <!--
+      ScalaTest：Scala测试框架
+      用于测试Scala编写的Spark示例代码
+    -->
     <dependency>
       <groupId>org.scalatest</groupId>
       <artifactId>scalatest_2.10</artifactId>
@@ -41,16 +86,26 @@
     </dependency>
   </dependencies>
 
+  <!-- ==================== 构建插件配置 ==================== -->
   <build>
     <plugins>
+      <!--
+        Scala Maven Plugin：用于编译Scala源代码
+        支持Scala和Java的混合编译
+      -->
       <plugin>
         <groupId>net.alchim31.maven</groupId>
         <artifactId>scala-maven-plugin</artifactId>
       </plugin>
+
+      <!--
+        Avro Maven Plugin：用于从Avro schema生成Java代码
+        在generate-sources阶段自动生成序列化类
+      -->
       <plugin>
         <groupId>org.apache.avro</groupId>
         <artifactId>avro-maven-plugin</artifactId>
-        <version>1.7.6</version> <!-- Spark fails with Avro 1.7.7 -->
+        <version>1.7.6</version>
         <executions>
           <execution>
             <id>schemas</id>
@@ -64,10 +119,20 @@
           <stringType>String</stringType>
         </configuration>
       </plugin>
+
+      <!--
+        ScalaTest Maven Plugin：用于运行ScalaTest测试
+        集成Scala测试到Maven构建生命周期
+      -->
       <plugin>
         <groupId>org.scalatest</groupId>
         <artifactId>scalatest-maven-plugin</artifactId>
       </plugin>
+
+      <!--
+        Maven Assembly Plugin：用于打包Spark示例为可执行JAR
+        输出到项目根目录，文件名为spark-examples.jar
+      -->
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>

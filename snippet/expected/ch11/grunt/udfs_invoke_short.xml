@@ -1,2 +1,3 @@
+<!-- Pig Grunt 集成测试：DEFINE 定义 UDF 别名后使用短名称调用 (IsGoodQuality) -->
 <screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">DEFINE isGood com.hadoopbook.pig.IsGoodQuality();</userinput>
 <prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">filtered_records = FILTER records BY temperature != 9999 AND isGood(quality);</userinput></screen>

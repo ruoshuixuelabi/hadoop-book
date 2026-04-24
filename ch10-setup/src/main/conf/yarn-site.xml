@@ -1,24 +1,278 @@
 <?xml version="1.0"?>
-<!-- yarn-site.xml -->
+<!--
+  yarn-site.xml - YARN（Yet Another Resource Negotiator）配置文件
+
+  本文件用于配置 YARN 资源管理系统，这是 Hadoop 2.x 引入的核心组件，
+  负责集群资源的管理和作业调度。
+
+  YARN 架构概述：
+  - ResourceManager：集群级别资源管理中枢
+  - NodeManager：每个节点上的资源代理
+  - ApplicationMaster：每个应用程序的协调者
+  - Container：资源分配的基本单位
+
+  主要配置内容：
+  - ResourceManager 地址和端口
+  - NodeManager 资源配置（内存、CPU）
+  - 调度器策略
+  - 辅助服务（ shuffle 等）
+
+  性能调优要点：
+  - 合理配置每个 NodeManager 的内存和 CPU 核心数
+  - 根据集群规模调整调度器参数
+  - 注意配置容器重试和超时参数
+-->
 <configuration>
+    <!--
+        yarn.resourcemanager.hostname - ResourceManager 主机地址
+
+        配置说明：
+        - 指定 YARN ResourceManager 运行的主机名或 IP 地址
+        - 所有 NodeManager 和 ApplicationMaster 都通过此地址与 ResourceManager 通信
+        - 客户端也通过此地址提交作业
+
+        高可用配置：
+        - 单节点部署：直接指定 hostname
+        - HA 集群：需要配置 yarn.resourcemanager.ha.id 相关参数
+
+        建议：
+        - 生产环境使用主机名而非 IP，便于故障转移
+        - 确保该主机可以访问所有 NodeManager
+    -->
     <property>
         <name>yarn.resourcemanager.hostname</name>
         <value>resourcemanager</value>
     </property>
+
+    <!--
+        yarn.nodemanager.local-dirs - NodeManager 本地临时存储路径
+
+        配置说明：
+        - 指定 NodeManager 在本地磁盘上存储临时文件的目录
+        - 这些文件包括：中间输出、临时数据、容器日志等
+        - 作业完成后这些文件会被清理
+
+        推荐实践：
+        - 建议配置多个路径，分布在不同磁盘上
+        - 选择高性能磁盘（SSD）以提升 IO 性能
+        - 避免使用系统盘或高负载磁盘
+        - 监控这些目录的磁盘空间
+
+        格式：逗号分隔的多个路径列表
+        默认值：${hadoop.tmp.dir}/nm-local-dir
+    -->
     <property>
         <name>yarn.nodemanager.local-dirs</name>
         <value>/disk1/nm-local-dir,/disk2/nm-local-dir</value>
     </property>
+
+    <!--
+        yarn.nodemanager.aux-services - NodeManager 辅助服务配置
+
+        配置说明：
+        - 定义 NodeManager 启动的辅助服务（Auxiliary Services）
+        - 这些服务为运行在 NodeManager 上的容器提供额外功能
+
+        mapreduce.shuffle 服务：
+        - 是 MapReduce 的 Shuffle 服务，负责将 Map 输出传输给 Reduce
+        - 当 NodeManager 接收到运行 MapReduce 作业的请求时自动启用
+        - shuffle 是 MapReduce 的关键环节，配置正确性直接影响作业性能
+
+        配置说明：
+        - 值 "mapreduce.shuffle" 是 YARN 内置的 shuffle handler 标识
+        - 如需使用自定义辅助服务，需要实现 AMRMProxy 协议
+
+        默认值：如果不配置，MapReduce 无法正常执行 shuffle
+    -->
     <property>
         <name>yarn.nodemanager.aux-services</name>
         <value>mapreduce.shuffle</value>
     </property>
+
+    <!--
+        yarn.nodemanager.resource.memory-mb - NodeManager 可用内存总量
+
+        配置说明：
+        - 指定每个 NodeManager 可以分配给容器的总内存量
+        - 这个值应该根据节点的物理内存大小和系统需求来设置
+        - YARN 不会使用超过此限制的内存
+
+        计算建议：
+        - 总内存减去系统预留（通常 2-4GB）和 HDFS DataNode 内存
+        - 保留 10-15% 的内存给操作系统和缓存
+        - 例如：64GB 物理内存的节点，可能配置为 56GB 左右
+
+        配置原则：
+        - 避免设置过大导致节点 OOM
+        - 也要避免设置过小导致资源浪费
+        - 注意与 yarn.scheduler.capacity.* 参数配合使用
+
+        单位：MB
+        默认值：8192（8GB）
+    -->
     <property>
         <name>yarn.nodemanager.resource.memory-mb</name>
         <value>16384</value>
     </property>
+
+    <!--
+        yarn.nodemanager.resource.cpu-vcores - NodeManager 可用虚拟CPU核心数
+
+        配置说明：
+        - 指定每个 NodeManager 可以分配给容器的虚拟 CPU 核心数
+        - 虚拟 CPU（vcore）是 YARN 的 CPU 抽象概念
+        - 可以不等于物理核心数，用于资源隔离和配额控制
+
+        配置建议：
+        - 生产环境建议设为物理核心数的 0.8-1.0 倍
+        - 考虑开启 CPU 调度和 NUMA 亲和性优化
+        - 超线程技术允许一个物理核心模拟多个 vcore
+
+        计算公式（参考）：
+        - vcore 数量 = 物理核心数 * 超线程因子（通常为 1.0-2.0）
+        - 例如：16核 CPU 可配置 16-32 个 vcore
+
+        单位：虚拟核心数
+        默认值：8
+    -->
     <property>
         <name>yarn.nodemanager.resource.cpu-vcores</name>
         <value>16</value>
+    </property>
+
+    <!--
+        yarn.nodemanager.aux-services.mapreduce.shuffle.class - Shuffle 服务实现类
+
+        配置说明：
+        - 指定 MapReduce Shuffle 服务的具体实现类
+        - 默认为 org.apache.hadoop.mapred.ShuffleHandler
+        - 通常不需要修改，除非使用自定义 Shuffle 实现
+
+        此属性是 shuffle 辅助服务的详细配置，当需要精细调整 shuffle 行为时配置。
+    -->
+
+    <!--
+        yarn.scheduler.capacity.root.queues - 调度器队列配置
+
+        配置说明：
+        - 定义根队列下的一级队列列表
+        - Capacity Scheduler 使用队列进行资源分配
+        - 每个队列可以设置不同的资源配额和访问权限
+
+        常见配置：
+        - default：默认队列，接收未指定队列的作业
+        - production：生产环境队列，通常分配较多资源
+        - dev：开发环境队列，资源配额较低
+        - priority：优先级作业队列
+
+        注意：队列配置需要与 capacity-scheduler.xml 配合使用
+    -->
+
+    <!--
+        yarn.resourcemanager.am.max-retries - ApplicationMaster 重试次数
+
+        配置说明：
+        - 指定 ApplicationMaster 可以重试的最大次数
+        - 当 ApplicationMaster 失败时，YARN 会在不同节点上重新启动它
+        - 达到最大重试次数后，作业将被标记为失败
+
+        配置建议：
+        - 长作业建议设置较高的重试次数
+        - 短作业可以使用较低的值以快速失败
+        - 考虑启用 AM 失败恢复（yarn.app.mapreduce.am.job.recovery.enabled）
+
+        默认值：1
+    -->
+
+    <!--
+        yarn.nodemanager.vmem-check-enabled - 虚拟内存检查开关
+
+        配置说明：
+        - 控制 YARN 是否检查容器使用的虚拟内存是否超限
+        - 当设置为 false 时，YARN 仅检查物理内存使用
+        - 某些场景下（如容器使用内存映射文件）需要禁用此检查
+
+        使用建议：
+        - 如果节点内存充足且容器内存使用稳定，可以保持开启
+        - 如果经常出现内存相关问题，可以尝试禁用
+        - 注意禁用后可能导致节点内存耗尽
+
+        默认值：true（启用检查）
+    -->
+
+    <!--
+        yarn.nodemanager.aux-services.mapreduce.shuffle.class - Shuffle 服务实现类
+
+        配置说明：
+        - 指定 MapReduce Shuffle 服务的具体实现类
+        - 默认为 org.apache.hadoop.mapred.ShuffleHandler
+        - 通常不需要修改，除非使用自定义 Shuffle 实现
+
+        此属性是 shuffle 辅助服务的详细配置，当需要精细调整 shuffle 行为时配置。
+    -->
+    <property>
+        <name>yarn.nodemanager.aux-services.mapreduce.shuffle.class</name>
+        <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+    </property>
+
+    <!--
+        yarn.scheduler.capacity.root.queues - 调度器队列配置
+
+        配置说明：
+        - 定义根队列下的一级队列列表
+        - Capacity Scheduler 使用队列进行资源分配
+        - 每个队列可以设置不同的资源配额和访问权限
+
+        常见配置：
+        - default：默认队列，接收未指定队列的作业
+        - production：生产环境队列，通常分配较多资源
+        - dev：开发环境队列，资源配额较低
+        - priority：优先级作业队列
+
+        注意：队列配置需要与 capacity-scheduler.xml 配合使用
+    -->
+    <property>
+        <name>yarn.scheduler.capacity.root.queues</name>
+        <value>default,production,dev</value>
+    </property>
+
+    <!--
+        yarn.resourcemanager.am.max-retries - ApplicationMaster 重试次数
+
+        配置说明：
+        - 指定 ApplicationMaster 可以重试的最大次数
+        - 当 ApplicationMaster 失败时，YARN 会在不同节点上重新启动它
+        - 达到最大重试次数后，作业将被标记为失败
+
+        配置建议：
+        - 长作业建议设置较高的重试次数
+        - 短作业可以使用较低的值以快速失败
+        - 考虑启用 AM 失败恢复（yarn.app.mapreduce.am.job.recovery.enabled）
+
+        默认值：1
+    -->
+    <property>
+        <name>yarn.resourcemanager.am.max-retries</name>
+        <value>2</value>
+    </property>
+
+    <!--
+        yarn.nodemanager.vmem-check-enabled - 虚拟内存检查开关
+
+        配置说明：
+        - 控制 YARN 是否检查容器使用的虚拟内存是否超限
+        - 当设置为 false 时，YARN 仅检查物理内存使用
+        - 某些场景下（如容器使用内存映射文件）需要禁用此检查
+
+        使用建议：
+        - 如果节点内存充足且容器内存使用稳定，可以保持开启
+        - 如果经常出现内存相关问题，可以尝试禁用
+        - 注意禁用后可能导致节点内存耗尽
+
+        默认值：true（启用检查）
+    -->
+    <property>
+        <name>yarn.nodemanager.vmem-check-enabled</name>
+        <value>false</value>
     </property>
 </configuration>

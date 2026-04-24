@@ -1,15 +1,14 @@
+-- set.hive: 演示Hive的配置属性操作
+-- 打印各个操作的起始标记
 ! echo; # == define_function;
 ! echo; # == set_value;
 ! echo; # == set_show_value;
 
+-- 步骤1: 查看内置函数的描述
 ! echo; # vv define_function;
 DESCRIBE FUNCTION length;
 ! echo; # ^^ define_function;
 
+-- 步骤2: 设置配置属性的值
 ! echo; # vv set_value;
-SET hive.enforce.bucketing=true;
-! echo; # ^^ set_value;
-
-! echo; # vv set_show_value;
-SET hive.enforce.bucketing;
-! echo; # ^^ set_show_value;
+-- 启用强制分桶,确保INSERT OVERWRITE时按照表

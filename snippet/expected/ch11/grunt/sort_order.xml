@@ -1,3 +1,4 @@
+<!-- Pig Grunt 集成测试：ORDER BY 操作，按第一列升序、第二列降序排序 -->
 <screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">B = ORDER A BY $0, $1 DESC;</userinput>
 <prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">DUMP B;</userinput>
 (1,2)

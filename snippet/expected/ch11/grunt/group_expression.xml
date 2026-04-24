@@ -1,3 +1,4 @@
+<!-- Pig Grunt 集成测试：GROUP BY 表达式操作，使用 SIZE 函数按字符串长度分组 -->
 <screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">B = GROUP A BY SIZE($1);</userinput>
 <prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">DUMP B;</userinput>
 (5,{(Ali,apple),(Eve,apple)})

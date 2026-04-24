@@ -1,5 +1,4 @@
-<screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">DUMP A;</userinput>
-(Joe,cherry)
-(Ali,apple)
-(Joe,banana)
-(Eve,apple)</screen>
+<!-- Pig Grunt 集成测试：GROUP ALL + DUMP 操作，验证全分组后的结果 -->
+<screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">C = GROUP A ALL;</userinput>
+<prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">DUMP C;</userinput>
+(all,{(Joe,cherry),(Ali,apple),(Joe,banana),(Eve,apple)})</screen>

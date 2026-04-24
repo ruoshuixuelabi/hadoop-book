@@ -1,3 +1,4 @@
+<!-- Pig Grunt 集成测试：处理缺失字段的数据，FILTER 过滤字段数大于 1 的元组 -->
 <screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">A = LOAD 'input/pig/corrupt/missing_fields';</userinput>
 <prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">DUMP A;</userinput>
 (2,Tie)

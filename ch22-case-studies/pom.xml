@@ -1,6 +1,22 @@
+<!--
+  本项目是《Hadoop: The Definitive Guide》第四版第22章的示例代码
+  第22章介绍了一些Hadoop的实际应用案例
+
+  本模块展示了一个完整的音乐数据分析案例：
+  - 从原始的用户听歌记录数据中提取统计信息
+  - 计算每首曲目的独立听众数、播放次数、跳过次数等指标
+  - 使用多个MapReduce作业串联执行，每个作业处理特定的数据转换
+
+  该案例演示了Hadoop在音乐推荐系统和分析平台中的实际应用
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <!--
+      继承自hadoop-meta父POM
+      父POM负责管理所有Hadoop生态系统中组件的版本
+      确保各模块之间的依赖版本一致性
+  -->
   <parent>
     <groupId>com.hadoopbook</groupId>
     <artifactId>hadoop-meta</artifactId>
@@ -11,6 +27,7 @@
   <artifactId>ch22-case-studies</artifactId>
   <packaging>jar</packaging>
   <version>4.0</version>
+  <!-- 章节名称：案例研究 -->
   <name>Chapter 22: Case Studies</name>
 
 </project>

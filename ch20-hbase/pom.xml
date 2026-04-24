@@ -1,34 +1,78 @@
+<!--
+  Maven POM - 第20章：HBase
+
+  本模块是《Hadoop权威指南》第20章的示例代码，
+  演示Apache HBase的使用，HBase是一个面向列的NoSQL数据库：
+  - HBase数据模型（表、行、列族、时间戳）
+  - HBase客户端API（Get、Put、Scan等）
+  - HBase管理操作
+  - 与MapReduce集成
+
+  本模块特点：
+  - 依赖common工具类
+  - 包含HBase客户端和服务端依赖
+  - 使用maven-compiler-plugin排除部分编译文件（New*.java）
+  - 打包成hbase-examples.jar用于集群部署
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
+  <!-- 继承hadoop-meta父POM，获取统一的依赖版本管理 -->
   <parent>
     <groupId>com.hadoopbook</groupId>
     <artifactId>hadoop-meta</artifactId>
     <version>4.0</version>
     <relativePath>../hadoop-meta/pom.xml</relativePath>
   </parent>
+
   <groupId>com.hadoopbook</groupId>
   <artifactId>ch20-hbase</artifactId>
   <packaging>jar</packaging>
   <version>4.0</version>
+
+  <!-- 章节名称：HBase -->
   <name>Chapter 20: HBase</name>
+
+  <!-- ==================== 依赖项配置 ==================== -->
   <dependencies>
+    <!--
+      common模块：包含共享的工具类
+      提供HBase示例所需的基础工具
+    -->
     <dependency>
       <groupId>com.hadoopbook</groupId>
       <artifactId>common</artifactId>
       <version>4.0</version>
     </dependency>
+
+    <!--
+      HBase Client：HBase客户端库
+      提供了Admin、Table、Connection等API用于与HBase集群交互
+    -->
     <dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-client</artifactId>
     </dependency>
+
+    <!--
+      HBase Server：HBase服务端库
+      包含了RegionServer、Master等服务端组件的依赖
+      同时也包含了客户端所需的API
+    -->
     <dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-server</artifactId>
     </dependency>
   </dependencies>
+
+  <!-- ==================== 构建插件配置 ==================== -->
   <build>
     <plugins>
+      <!--
+        Maven Assembly Plugin：用于打包HBase示例为可执行JAR
+        使用jar.xml描述符，输出到项目根目录，文件名为hbase-examples.jar
+      -->
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
@@ -49,6 +93,12 @@
           </execution>
         </executions>
       </plugin>
+
+      <!--
+        Maven Compiler Plugin：Java编译器配置
+        排除New*.java文件，这些是新版本API的示例
+        在某些环境下可能不兼容
+      -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>

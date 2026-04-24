@@ -1,5 +1,8 @@
+-- sort.hive: 演示Hive的排序功能(DISTRIBUTE BY和SORT BY)
+-- 打印分隔行
 ! echo; # == sort_by_year;
 
+-- 步骤1: 创建records2表并加载气象数据
 DROP TABLE IF EXISTS records2;
 
 CREATE TABLE records2 (station STRING, year STRING, temperature INT, quality INT)
@@ -9,9 +12,8 @@ ROW FORMAT DELIMITED
 LOAD DATA LOCAL INPATH 'input/ncdc/micro-tab/sample2.txt'
 OVERWRITE INTO TABLE records2;
 
+-- 打印分隔行
 ! echo; # vv sort_by_year;
-FROM records2
-SELECT year, temperature
-DISTRIBUTE BY year
-SORT BY year ASC, temperature DESC;
-! echo; # ^^ sort_by_year;
+
+-- 步骤2: 使用DISTRIBUTE BY和SORT BY进行排序
+-- DISTRIBUTE BY: 控制数据如何分发到reducer(按year

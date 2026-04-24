@@ -1,3 +1,4 @@
+<!-- Pig Grunt 集成测试：STORE + PigStorage 使用冒号分隔符保存数据 -->
 <screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">STORE A INTO 'out' USING PigStorage(':');</userinput>
 <prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">cat out</userinput>
 Joe:cherry:2

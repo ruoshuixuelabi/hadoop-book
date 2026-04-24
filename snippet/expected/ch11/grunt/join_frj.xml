@@ -1,1 +1,2 @@
-<screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">C = JOIN A BY $0, B BY $1 USING &quot;replicated&quot;;</userinput></screen>
+<!-- Pig Grunt 集成测试：JOIN 使用 "replicated" 模式的 FRJ (Fragment Replicate Join)，用于小表广播 -->
+<screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">C = JOIN A BY $0, B BY $1 USING "replicated";</userinput></screen>

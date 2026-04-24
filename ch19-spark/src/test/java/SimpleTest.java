@@ -1,3 +1,19 @@
+/**
+ * Chapter 19: Spark - SimpleTest
+ *
+ * 本章演示了Apache Spark的基本操作和单元测试方法。
+ *
+ * 主要测试内容:
+ * - RDD创建和缓存
+ * - 过滤(filter)操作
+ * - 计数(count)操作
+ * - RDD到PairRDD的转换
+ * - dump工具方法用于调试输出
+ *
+ * 运行命令:
+ * mvn test -pl ch19-spark
+ */
+
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import java.io.File;
@@ -15,54 +31,96 @@ import scala.Tuple2;
 
 import static org.junit.Assert.assertEquals;
 
-public class SimpleTest implements Serializable { // needs to be serializable for the Fn
+/**
+ * Spark简单测试类
+ *
+ * 演示Spark的基本API使用方法和单元测试技巧。
+ * 测试包括RDD创建、转换操作和行动操作。
+ *
+ * 注意: 由于Spark的Function需要序列化,测试类实现了Serializable接口
+ */
+public class SimpleTest implements Serializable { // 需要序列化,因为Spark的Function需要通过网络传输
 
-  @Rule
-  public transient TemporaryFolder tmpDir = new TemporaryFolder();
+    /** 临时文件夹规则,测试结束后自动清理 */
+    @Rule
+    public transient TemporaryFolder tmpDir = new TemporaryFolder();
 
-  @Test
-  public void test() throws IOException {
-    File inputFile = tmpDir.newFile("input");
-    Files.copy(Resources.newInputStreamSupplier(Resources.getResource("fruit.txt")),
-        inputFile);
-    SparkConf conf = new SparkConf();
-    JavaSparkContext sc = new JavaSparkContext("local", "Simple App", conf);
-    JavaRDD<String> a = sc.textFile(inputFile.getPath()).cache();
+    /**
+     * 测试Spark基本功能
+     *
+     * 测试流程:
+     * 1. 创建临时输入文件
+     * 2. 创建Spark上下文
+     * 3. 读取文件创建RDD
+     * 4. 缓存RDD
+     * 5. 过滤偶数长度的字符串
+     * 6. 计数并验证结果
+     *
+     * @throws IOException 如果文件操作失败
+     */
+    @Test
+    public void test() throws IOException {
+        // 创建临时输入文件
+        File inputFile = tmpDir.newFile("input");
+        // 从classpath复制fruit.txt到临时文件
+        Files.copy(Resources.newInputStreamSupplier(Resources.getResource("fruit.txt")),
+            inputFile);
 
-    dump(a);
+        // 创建Spark配置,使用local模式运行
+        SparkConf conf = new SparkConf();
+        // 创建Spark上下文
+        JavaSparkContext sc = new JavaSparkContext("local", "Simple App", conf);
 
-    long numEven = a.filter(new Function<String, Boolean>() {
-      public Boolean call(String input) {
-        return input.length() % 2 == 0; // even
-      }
-    }).count();
+        // 读取文本文件并缓存(避免重复计算)
+        JavaRDD<String> a = sc.textFile(inputFile.getPath()).cache();
 
-    assertEquals(2, numEven);
+        // 打印RDD内容(用于调试)
+        dump(a);
 
-    sc.stop();
-  }
+        // 过滤偶数长度的字符串并计数
+        long numEven = a.filter(new Function<String, Boolean>() {
+            public Boolean call(String input) {
+                return input.length() % 2 == 0; // 偶数长度
+            }
+        }).count();
 
-  <T> String dump(JavaRDD<T> rdd) {
-    final StringBuilder sb = new StringBuilder("{");
-    for (T t : rdd.collect()) {
-      sb.append(t).append(",");
+        // 验证结果: fruit.txt中应该有2个偶数长度的单词
+        // cherry(6), apple(5), banana(6) -> cherry和banana是偶数
+        assertEquals(2, numEven);
+
+        // 停止Spark上下文,释放资源
+        sc.stop();
     }
-    if (sb.length() > 1) {
-      sb.deleteCharAt(sb.length() - 1);
-    }
-    sb.append("}");
-    return sb.toString();
-  }
 
-  <K, V> String dump(JavaPairRDD<K, V> rdd) {
-    final StringBuilder sb = new StringBuilder("{");
-    for (Tuple2<K, V> pair : rdd.collect()) {
-      sb.append("(").append(pair._1()).append(",").append(pair._2()).append(")").append(",");
+    /**
+     * 将JavaRDD转换为字符串表示
+     *
+     * 用于调试和日志输出,格式为{element1,element2,...}
+     *
+     * @param rdd 输入的RDD
+     * @return RDD内容的字符串表示
+     */
+    <T> String dump(JavaRDD<T> rdd) {
+        final StringBuilder sb = new StringBuilder("{");
+        for (T t : rdd.collect()) {
+            sb.append(t).append(",");
+        }
+        if (sb.length() > 1) {
+            sb.deleteCharAt(sb.length() - 1); // 删除最后一个逗号
+        }
+        sb.append("}");
+        return sb.toString();
     }
-    if (sb.length() > 1) {
-      sb.deleteCharAt(sb.length() - 1);
-    }
-    sb.append("}");
-    return sb.toString();
-  }
-}
+
+    /**
+     * 将JavaPairRDD转换为字符串表示
+     *
+     * 用于调试和日志输出,格式为{(key1,value1),(key2,value2),...}
+     *
+     * @param rdd 输入的PairRDD
+     * @return PairRDD内容的字符串表示
+     */
+    <K, V> String dump(JavaPairRDD<K, V> rdd) {
+        final StringBuilder sb = new StringBuilder("{");
+        for (Tuple2<K, V> pair : rdd.collect()) {
+            sb.append("(").append(pair._1()).append(",").append(pair._2()).append(")").append(",");

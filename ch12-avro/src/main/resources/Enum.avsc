@@ -1,6 +1,6 @@
 {
   "type": "enum",
   "name": "Cutlery",
-  "doc": "An eating utensil.",
+  "doc": "餐具枚举类型，常见的餐具包括刀、叉、勺。",
   "symbols": ["KNIFE", "FORK", "SPOON"]
 }

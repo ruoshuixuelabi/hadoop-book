@@ -1,1 +1,5 @@
-<screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">C = FOREACH B GENERATE *;</userinput></screen>
+<!-- Pig Grunt 集成测试：DUMP 操作，查看数据（无 ORDER，结果无序） -->
+<screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">DUMP A;</userinput>
+(2,3)
+(1,2)
+(2,4)</screen>

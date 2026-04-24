@@ -1,23 +1,60 @@
+<!--
+  Maven Assembly Descriptor - Hadoop作业打包描述符
+
+  此描述符用于将Crunch/Spark等作业打包成可部署到Hadoop集群的JAR包。
+
+  打包策略：
+  1. 输出格式为JAR文件
+  2. 不包含基础目录
+  3. 将依赖项分类处理：
+     - 项目自身artifact（${groupId}:${artifactId}）：解压后打包
+     - 其他运行时依赖：输出到lib目录，作为引用JAR
+  4. 排除了项目artifact本身，避免重复打包
+
+  这种打包方式使得：
+  - 应用程序类可以直接从JAR根目录加载
+  - 依赖JAR在lib目录下，通过Hadoop的类路径加载
+  - 便于在集群上分发和更新应用程序代码
+-->
 <?xml version="1.0" encoding="UTF-8"?>
 
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
 
+  <!-- 打包标识符，输出文件名为artifactId-version-job.jar -->
   <id>job</id>
+
+  <!-- 输出格式：打包成单个JAR文件 -->
   <formats>
     <format>jar</format>
   </formats>
+
+  <!-- 不包含基础目录 -->
   <includeBaseDirectory>false</includeBaseDirectory>
+
+  <!-- 依赖项配置 -->
   <dependencySets>
+    <!--
+      第一组依赖：运行时依赖JAR
+      输出到lib目录，不解压，作为引用JAR
+      这样Hadoop会从lib目录加载这些依赖
+    -->
     <dependencySet>
       <unpack>false</unpack>
       <scope>runtime</scope>
       <outputDirectory>lib</outputDirectory>
+      <!-- 排除项目自身的artifact，避免重复打包 -->
       <excludes>
         <exclude>${groupId}:${artifactId}</exclude>
       </excludes>
     </dependencySet>
+
+    <!--
+      第二组依赖：项目自身artifact
+      解压后打包到JAR根目录，包含应用程序类和资源
+      这样可以直接从JAR加载应用程序类
+    -->
     <dependencySet>
       <unpack>true</unpack>
       <includes>
