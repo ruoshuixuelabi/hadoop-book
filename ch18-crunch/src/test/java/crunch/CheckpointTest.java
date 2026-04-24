@@ -109,5 +109,11 @@ public class CheckpointTest implements Serializable {
         inverseCounts.write(To.sequenceFile(checkpointPath), Target.WriteMode.CHECKPOINT);
         // 统计每组值数量
         PTable<Long, Integer> hist = inverseCounts
-            .groupByKey()
-            .mapValues(new CountValuesFn<String
+                .groupByKey()
+                .mapValues(new CountValuesFn<String>(), ints());
+        hist.write(To.textFile(outputPath), Target.WriteMode.OVERWRITE);
+        return pipeline.done();
+    }
+
+}
+

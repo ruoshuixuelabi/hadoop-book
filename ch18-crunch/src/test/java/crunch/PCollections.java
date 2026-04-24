@@ -94,4 +94,7 @@ public class PCollections {
      */
     public static <K, V> PTable<V, K> invert(PTable<K, V> table) {
         PTypeFamily tf = table.getTypeFamily();
-        PTableType<V, K> type = tf.tableOf(table.getValue
+        PTableType<V, K> type = tf.tableOf(table.getValueType(), table.getKeyType());
+        return table.parallelDo(new InversePairFn<K, V>(), type);
+    }
+}

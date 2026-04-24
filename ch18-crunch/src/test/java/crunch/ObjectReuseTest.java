@@ -131,4 +131,10 @@ public class ObjectReuseTest implements Serializable {
                 public Set<V> map(Iterable<V> values) {
                     Set<V> collected = new HashSet<V>();
                     for (V value : values) {
-                        // 使用getDetachedValue获取独立副本
+                        collected.add(valueType.getDetachedValue(value));
+                    }
+                    return collected;
+                }
+            }, tf.collections(table.getValueType()));
+    }
+}

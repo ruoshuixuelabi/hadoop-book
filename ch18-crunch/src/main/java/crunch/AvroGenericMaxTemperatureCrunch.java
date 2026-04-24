@@ -137,8 +137,16 @@ public class AvroGenericMaxTemperatureCrunch implements Serializable {
             public void process(String input, Emitter<Pair<Integer, GenericData.Record>> emitter) {
                 parser.parse(input.toString());
                 if (parser.isValidTemperature()) {
-                    // 复用record对象以提高效率
                     if (record == null) {
                         record = new GenericData.Record(SCHEMA);
                     }
                     record.put("year", parser.getYearInt());
+                    record.put("temperature", parser.getAirTemperature());
+                    record.put("stationId", parser.getStationId());
+                    emitter.emit(Pair.of(parser.getYearInt(), record));
+                }
+            }
+        };
+    }
+
+}

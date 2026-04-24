@@ -1,24 +1,26 @@
 /**
  * Chapter 19: Spark - SimpleTest
- *
+ * <p>
  * 本章演示了Apache Spark的基本操作和单元测试方法。
- *
+ * <p>
  * 主要测试内容:
  * - RDD创建和缓存
  * - 过滤(filter)操作
  * - 计数(count)操作
  * - RDD到PairRDD的转换
  * - dump工具方法用于调试输出
- *
+ * <p>
  * 运行命令:
  * mvn test -pl ch19-spark
  */
 
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
@@ -64,7 +66,7 @@ public class SimpleTest implements Serializable { // 需要序列化,因为Spark
         File inputFile = tmpDir.newFile("input");
         // 从classpath复制fruit.txt到临时文件
         Files.copy(Resources.newInputStreamSupplier(Resources.getResource("fruit.txt")),
-            inputFile);
+                inputFile);
 
         // 创建Spark配置,使用local模式运行
         SparkConf conf = new SparkConf();
@@ -124,3 +126,11 @@ public class SimpleTest implements Serializable { // 需要序列化,因为Spark
         final StringBuilder sb = new StringBuilder("{");
         for (Tuple2<K, V> pair : rdd.collect()) {
             sb.append("(").append(pair._1()).append(",").append(pair._2()).append(")").append(",");
+        }
+        if (sb.length() > 1) {
+            sb.deleteCharAt(sb.length() - 1);
+        }
+        sb.append("}");
+        return sb.toString();
+    }
+}

@@ -94,3 +94,10 @@ public class MaxTemperatureWithCompressionCrunch {
                 String quality = line.substring(92, 93);
                 // 过滤无效数据: 非缺失值 且 质量标识有效
                 if (airTemperature != MISSING && quality.matches("[01459]")) {
+                    emitter.emit(Pair.of(year, airTemperature));
+                }
+            }
+        };
+    }
+
+}

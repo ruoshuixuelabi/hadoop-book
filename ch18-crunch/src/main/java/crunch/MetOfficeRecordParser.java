@@ -3,26 +3,27 @@ package crunch;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
 import org.apache.hadoop.io.Text;
 
 /**
  * Met Office气象数据解析器
- *
+ * <p>
  * 用于解析英国气象局(Met Office)格式的气象数据记录。
  * 该解析器实现了Serializable接口,可以在Crunch管道中序列化传输。
- *
+ * <p>
  * Met Office数据格式(固定宽度文本):
  * - 位置3-7: 年份
  * - 位置13-18: 气温(可能为空或"---")
- *
+ * <p>
  * 示例记录:
  * 0195010071900004-001-009... (1950年,气温-0.1度)
- *
+ * <p>
  * 气温转换:
  * - 原始数据: -0.1(华氏度,一位小数)
  * - 存储值: -1(放大10倍,去掉小数点)
  * - 转换公式: temp * 10
- *
+ * <p>
  * 与NCDC格式的区别:
  * - 不同的列位置
  * - 不同的缺失值表示(--- vs 9999)
@@ -30,16 +31,24 @@ import org.apache.hadoop.io.Text;
  */
 public class MetOfficeRecordParser implements Serializable {
 
-    /** 年份字符串 */
+    /**
+     * 年份字符串
+     */
     private String year;
 
-    /** 气温字符串表示 */
+    /**
+     * 气温字符串表示
+     */
     private String airTemperatureString;
 
-    /** 气温整数值(放大10倍) */
+    /**
+     * 气温整数值(放大10倍)
+     */
     private int airTemperature;
 
-    /** 气温是否有效 */
+    /**
+     * 气温是否有效
+     */
     private boolean airTemperatureValid;
 
     /**
@@ -83,7 +92,8 @@ public class MetOfficeRecordParser implements Serializable {
         try {
             Integer.parseInt(year);
             return true;
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             return false;
         }
     }
@@ -108,5 +118,19 @@ public class MetOfficeRecordParser implements Serializable {
 
     /**
      * 获取气温整数值
-     *
+     * <p>
      * 注意:
+     */
+    public int getAirTemperature() {
+        return airTemperature;
+    }
+
+    public String getAirTemperatureString() {
+        return airTemperatureString;
+    }
+
+    public boolean isValidTemperature() {
+        return airTemperatureValid;
+    }
+
+}
