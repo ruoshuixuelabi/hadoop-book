@@ -1,34 +1,11 @@
-/**
- * MapFileFixer - 修复损坏的 MapFile 索引文件
- *
- * <p>MapFile 是一种带有索引的 SequenceFile 变体,用于支持快速键值查找。
- * 索引文件(index)默认每 128 条记录创建一个索引项,用于快速定位。
- * 如果索引文件损坏或丢失,可以使用 MapFile.fix() 方法重建。</p>
- *
- * <p><b>MapFile 结构:</b></p>
- * <ul>
- *   <li>data 文件: 存储实际的键值对序列,按键排序</li>
- *   <li>index 文件: 存储索引,包含键和文件位置,用于快速随机访问</li>
- * </ul>
- *
- * <p><b>使用场景:</b></p>
- * <ul>
- *   <li>索引文件意外删除或损坏</li>
- *   <li>需要重新生成索引以优化查找性能</li>
- *   <li>MapReduce 任务中断导致索引不完整</li>
- * </ul>
- *
- * <p><b>注意事项:</b></p>
- * <ul>
- *   <li>data 文件必须存在且完整</li>
- *   <li>键值对必须按键排序</li>
- *   <li>重建索引会遍历整个 data 文件</li>
- * </ul>
- *
- * @see MapFile
- * @see MapFile.Writer
- * @see MapFile.Reader
- */
+import java.net.URI;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.MapFile;
+import org.apache.hadoop.io.SequenceFile;
+
 public class MapFileFixer {
 
   /**

@@ -2,27 +2,8 @@ package oldapi;
 
 import java.io.*;
 
-/**
- * TextPair - 旧版 MapReduce API 的 Text 键值对实现
- *
- * <p>此类实现了 Hadoop 旧版 MapReduce API 中的 WritableComparable 接口,
- * 用于存储一对 UTF-8 编码的字符串。</p>
- *
- * <p><b>序列化格式:</b></p>
- * <ul>
- *   <li>first: Text 序列化 (变长整数长度 + UTF-8 字节)</li>
- *   <li>second: Text 序列化 (变长整数长度 + UTF-8 字节)</li>
- * </ul>
- *
- * <p><b>排序规则:</b></p>
- * <ul>
- *   <li>首先按 first 字段字典序排序</li>
- *   <li>若 first 相等,则按 second 字段字典序排序</li>
- * </ul>
- *
- * @see Writable
- * @see WritableComparable
- */
+import org.apache.hadoop.io.*;
+
 public class TextPair implements WritableComparable<TextPair> {
 
   /** 第一个 Text 对象 */

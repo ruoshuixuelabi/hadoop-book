@@ -1,28 +1,8 @@
 package oldapi;
-
 import java.io.*;
 
-/**
- * IntPair - 旧版 MapReduce API 的整数键值对实现
- *
- * <p>此类实现了 Hadoop 旧版 MapReduce API 中的 WritableComparable 接口。
- * 与新版 API (mapreduce 包) 不同,旧版 API 使用 org.apache.hadoop.mapred 包。</p>
- *
- * <p><b>新旧 API 区别:</b></p>
- * <ul>
- *   <li>旧版: org.apache.hadoop.mapred (JobConf, MapReduce1)</li>
- *   <li>新版: org.apache.hadoop.mapreduce (Job, MapReduce2/YARN)</li>
- * </ul>
- *
- * <p><b>序列化格式:</b></p>
- * <ul>
- *   <li>first: 4 字节 big-endian int</li>
- *   <li>second: 4 字节 big-endian int</li>
- * </ul>
- *
- * @see Writable
- * @see WritableComparable
- */
+import org.apache.hadoop.io.*;
+
 public class IntPair implements WritableComparable<IntPair> {
 
   /** 第一个整数 */
