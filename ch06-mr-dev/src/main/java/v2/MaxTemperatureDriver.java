@@ -4,19 +4,19 @@ package v2;
 
 /**
  * 最高温度MapReduce作业驱动器（版本2）
- *
+ * <p>
  * 使用Tool接口实现的驱动器，支持GenericOptions标准选项。
- *
- * 功能：
- * - 配置并执行计算每年最高温度的MapReduce作业
- * - 输入：NCDC格式气象数据
+ * <p>
+ * 功能：<br/>
+ * - 配置并执行计算每年最高温度的MapReduce作业<br/>
+ * - 输入：NCDC格式气象数据<br/>
  * - 输出：每年最高温度记录
- *
- * 主要配置项：
- * - Mapper: MaxTemperatureMapper（解析气象记录）
- * - Combiner: MaxTemperatureReducer（本地聚合温度）
- * - Reducer: MaxTemperatureReducer（全局聚合）
- * - 输出键类型: Text（年份）
+ * <p>
+ * 主要配置项：<br/>
+ * - Mapper: MaxTemperatureMapper（解析气象记录）<br/>
+ * - Combiner: MaxTemperatureReducer（本地聚合温度）<br/>
+ * - Reducer: MaxTemperatureReducer（全局聚合）<br/>
+ * - 输出键类型: Text（年份）<br/>
  * - 输出值类型: IntWritable（温度）
  *
  * @see MaxTemperatureMapper
@@ -38,6 +38,17 @@ public class MaxTemperatureDriver extends Configured implements Tool {
 
   /**
    * 执行MapReduce作业
+   * <p>
+   * 参数校验：需要输入路径和输出路径<br/>
+   * 创建Job实例并设置作业名称<br/>
+   * 设置输入路径<br/>
+   * 设置输出路径<br/>
+   * 设置Mapper类<br/>
+   * 设置Combiner类（本地Reducer，减少网络传输）<br/>
+   * 设置Reducer类<br/>
+   * 设置输出键类型<br/>
+   * 设置输出值类型<br/>
+   * 提交作业并等待完成，返回状态码
    *
    * @param args 命令行参数
    * @return 作业退出码（0成功，非0失败）
@@ -76,6 +87,8 @@ public class MaxTemperatureDriver extends Configured implements Tool {
 
   /**
    * 程序入口点
+   * <p>
+   * 使用ToolRunner运行，支持GenericOptions
    *
    * @param args 命令行参数
    * @throws Exception 异常

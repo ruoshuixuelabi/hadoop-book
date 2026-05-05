@@ -2,19 +2,19 @@ package v4;
 
 /**
  * NCDC气象记录解析器（版本4）
- *
+ * <p>
  * 这是解析器的增强版本，相比v2版本增加了对格式错误温度的检测能力。
- *
- * NCDC记录格式说明：
- * - 位置15-18：年份（4位数字）
- * - 位置87-91：温度（可能以'+'或'-'开头）
+ * <p>
+ * NCDC记录格式说明：<br/>
+ * - 位置15-18：年份（4位数字）<br/>
+ * - 位置87-91：温度（可能以'+'或'-'开头）<br/>
  * - 位置92：质量码
- *
- * 温度数据说明：
- * - 9999表示温度缺失
+ * <p>
+ * 温度数据说明：<br/>
+ * - 9999表示温度缺失<br/>
  * - 有效的质量码包括：0、1、4、5、9
- *
- * 增强功能：
+ * <p>
+ * 增强功能：<br/>
  * - 能够检测格式错误的温度数据（如非数字字符导致解析失败）
  *
  * @version 4.0
@@ -25,6 +25,7 @@ public class NcdcRecordParser {
 
     /**
      * 缺失温度标记值
+     * <p/>
      * NCDC数据中使用9999表示温度数据缺失
      */
     private static final int MISSING_TEMPERATURE = 9999;
@@ -33,6 +34,7 @@ public class NcdcRecordParser {
     private int airTemperature;
     /**
      * 标记温度数据是否格式错误
+     * <p/>
      * 当无法正确解析温度时设为true
      */
     private boolean airTemperatureMalformed;
@@ -40,6 +42,10 @@ public class NcdcRecordParser {
 
     /**
      * 解析NCDC格式的字符串记录
+     * <p/>
+     * 提取年份（位置15-18）<br/>
+     * 移除前导加号，处理正负温度<br/>
+     * 提取质量码（位置92）
      *
      * @param record NCDC格式的原始记录
      */
@@ -65,6 +71,8 @@ public class NcdcRecordParser {
 
     /**
      * 解析Text类型的记录
+     * <p/>
+     * 将Text对象转换为字符串后调用parse方法
      *
      * @param record NCDC格式的Text记录
      */
@@ -74,10 +82,10 @@ public class NcdcRecordParser {
 
     /**
      * 判断温度是否有效
-     *
-     * 有效温度必须同时满足：
-     * 1. 格式正确（非airTemperatureMalformed）
-     * 2. 不是缺失值（不等于9999）
+     * <p>
+     * 有效温度必须同时满足：<br/>
+     * 1. 格式正确（非airTemperatureMalformed）<br/>
+     * 2. 不是缺失值（不等于9999）<br/>
      * 3. 质量码合法（匹配[01459]）
      *
      * @return 如果温度有效返回true
@@ -89,7 +97,7 @@ public class NcdcRecordParser {
 
     /**
      * 判断温度是否格式错误
-     *
+     * <p>
      * 当温度字段包含无法解析的字符时返回true
      *
      * @return 如果温度格式错误返回true
