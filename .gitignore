@@ -14,3 +14,5 @@ target
 .settings
 metastore_db
 .idea
+*/*.iml
+.fastRequest
