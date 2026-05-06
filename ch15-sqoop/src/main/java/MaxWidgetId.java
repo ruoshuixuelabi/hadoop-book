@@ -28,16 +28,16 @@ import org.apache.hadoop.util.*;
 
 /**
  * 从Sqoop导入的widget数据中找出最大ID的widget记录。
- *
- * 本类实现MapReduce模式来处理这个问题：
- * - Map阶段：每个mapper找出其处理数据中的最大widget
+ * <p>
+ * 本类实现MapReduce模式来处理这个问题：<br/>
+ * - Map阶段：每个mapper找出其处理数据中的最大widget<br/>
  * - Reduce阶段：从所有mapper的结果中选出全局最大ID的widget
- *
- * 设计要点：
- * 1. 使用Sqoop生成的Widget类（继承自SqoopRecord）来表示数据记录
- * 2. Widget类实现了DBWritable和Writable接口，支持Hadoop序列化
+ * <p>
+ * 设计要点：<br/>
+ * 1. 使用Sqoop生成的Widget类（继承自SqoopRecord）来表示数据记录<br/>
+ * 2. Widget类实现了DBWritable和Writable接口，支持Hadoop序列化<br/>
  * 3. 在map任务cleanup阶段输出当前map的最大widget，减少网络传输
- *
+ * <p>
  * 使用示例：
  * <pre>
  * hadoop jar sqoop-examples.jar MaxWidgetId
@@ -52,13 +52,13 @@ public class MaxWidgetId extends Configured implements Tool {
 
     /**
      * Mapper类：负责在map任务内找出最大ID的widget。
-     *
-     * 输入：LongWritable（行偏移量）, Text（原始行数据）
+     * <p/>
+     * 输入：LongWritable（行偏移量）, Text（原始行数据）<br/>
      * 输出：LongWritable（固定key=0）, Widget（当前map内的最大widget）
-     *
-     * 设计说明：
-     * - 使用固定key=0将所有mapper的输出发送到同一个reducer
-     * - 这样reducer可以方便地比较所有mapper的结果
+     * <p/>
+     * 设计说明：<br/>
+     * - 使用固定key=0将所有mapper的输出发送到同一个reducer<br/>
+     * - 这样reducer可以方便地比较所有mapper的结果<br/>
      * - maxWidget在map方法中持续更新，在cleanup中一次性输出
      */
     public static class MaxWidgetMapper
@@ -69,6 +69,9 @@ public class MaxWidgetId extends Configured implements Tool {
 
         /**
          * Map方法：处理每一行文本数据。
+         * <p/>
+         * 调用Sqoop生成的parse方法，自动解析所有字段<br/>
+         * 解析格式为：id,widget_name,price,design_date,version,design_comment
          *
          * @param key 行在文件中的偏移量（本例中未使用）
          * @param v 原始文本行，内容为逗号分隔的widget字段
@@ -101,10 +104,10 @@ public class MaxWidgetId extends Configured implements Tool {
 
         /**
          * Cleanup方法：在map任务结束前输出当前map内的最大widget。
-         *
-         * 选择在cleanup而不是map中逐条输出，是因为：
-         * 1. 减少输出数据量（每个map只输出1条而不是数万条）
-         * 2. 减少shuffle阶段的网络传输
+         * <p/>
+         * 选择在cleanup而不是map中逐条输出，是因为：<br/>
+         * 1. 减少输出数据量（每个map只输出1条而不是数万条）<br/>
+         * 2. 减少shuffle阶段的网络传输<br/>
          * 3. 保证每个map只贡献一个widget到reducer
          *
          * @param context MapReduce上下文
@@ -122,12 +125,12 @@ public class MaxWidgetId extends Configured implements Tool {
 
     /**
      * Reducer类：负责从所有mapper的结果中找出全局最大ID的widget。
-     *
-     * 输入：LongWritable（固定key=0）, Iterable<Widget>（来自所有mapper的最大widget列表）
+     * <p/>
+     * 输入：LongWritable（固定key=0）, Iterable<Widget>（来自所有mapper的最大widget列表）<br/>
      * 输出：Widget（全局最大ID的widget）, NullWritable
-     *
-     * 设计说明：
-     * - 由于所有mapper都使用key=0，reducer只会收到一个key对应的值迭代器
+     * <p/>
+     * 设计说明：<br/>
+     * - 由于所有mapper都使用key=0，reducer只会收到一个key对应的值迭代器<br/>
      * - 使用clone方法复制widget对象，避免迭代器返回的同一对象被覆盖
      */
     public static class MaxWidgetReducer
@@ -138,6 +141,9 @@ public class MaxWidgetId extends Configured implements Tool {
         // this list.
         /**
          * Reduce方法：遍历所有mapper传来的widget，找出最大ID。
+         * <p/>
+         * 遍历所有mapper传来的widget，找出最大ID<br/>
+         * 必须clone，因为迭代器可能返回同一个对象
          *
          * @param k 固定值0，表示所有mapper都使用相同key
          * @param vals 所有mapper输出的最大widget迭代器
@@ -170,10 +176,10 @@ public class MaxWidgetId extends Configured implements Tool {
 
     /**
      * 配置并执行MapReduce作业。
-     *
-     * 作业配置要点：
-     * - 设置输入路径为"widgets"目录（需要预先存在Sqoop导入的数据）
-     * - 设置输出路径为"maxwidget"目录
+     * <p/>
+     * 作业配置要点：<br/>
+     * - 设置输入路径为"widgets"目录（需要预先存在Sqoop导入的数据）<br/>
+     * - 设置输出路径为"maxwidget"目录<br/>
      * - 使用单个reducer确保最终只输出一个最大widget
      *
      * @param args 命令行参数（本程序不使用，通过硬编码配置路径）
@@ -214,8 +220,8 @@ public class MaxWidgetId extends Configured implements Tool {
 
     /**
      * 程序入口：使用ToolRunner运行本作业。
-     *
-     * ToolRunner是Hadoop提供的工具类，简化了Tool接口的实现
+     * <p/>
+     * ToolRunner是Hadoop提供的工具类，简化了Tool接口的实现<br/>
      * 它会自动处理配置文件的加载和命令行参数的解析
      *
      * @param args 命令行参数

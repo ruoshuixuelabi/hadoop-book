@@ -8,11 +8,11 @@ import org.apache.zookeeper.KeeperException;
 
 /**
  * 删除ZooKeeper组节点程序
- *
+ * <p>
  * 该程序继承自ConnectionWatcher,用于删除指定的ZooKeeper组节点及其所有子节点。
  * 删除操作采用深度优先遍历,先删除所有子节点,再删除组节点本身。
- *
- * 使用说明:
+ * <p>
+ * 使用说明:<br/>
  * java DeleteGroup <zookeeper地址> <组名>
  *
  * @example
@@ -24,9 +24,9 @@ public class DeleteGroup extends ConnectionWatcher {
 
     /**
      * 删除指定组及其所有成员
-     *
-     * 递归删除该组节点下的所有子节点,然后删除组节点本身。
-     * 如果组不存在,则输出错误信息并退出程序。
+     * <p/>
+     * 递归删除该组节点下的所有子节点,然后删除组节点本身<br/>
+     * 如果组不存在,则输出错误信息并退出程序
      *
      * @param groupName 要删除的组名称(不含前导斜杠)
      * @throws KeeperException 如果ZooKeeper操作失败

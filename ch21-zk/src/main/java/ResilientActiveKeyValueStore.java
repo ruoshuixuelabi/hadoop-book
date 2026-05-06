@@ -11,13 +11,13 @@ import org.apache.zookeeper.data.Stat;
 
 /**
  * 可恢复的活跃键值存储类
- *
+ * <p>
  * 继承自ConnectionWatcher,提供具有重试机制的ZooKeeper读写操作。
  * 当遇到临时性错误(如连接中断)时,会自动重试指定次数。
- *
- * 主要改进:
- * - 写入操作包含存在性检查 and 版本控制
- * - 失败时自动重试,最多5次
+ * <p>
+ * 主要改进:<br/>
+ * - 写入操作包含存在性检查 and 版本控制<br/>
+ * - 失败时自动重试,最多5次<br/>
  * - 区分会话过期错误和其他错误
  *
  * @see ConnectionWatcher
@@ -37,9 +37,9 @@ public class ResilientActiveKeyValueStore extends ConnectionWatcher {
 
     /**
      * 写入数据到指定路径(带重试机制)
-     *
-     * 如果节点不存在则创建,存在则更新。
-     * 使用版本号进行乐观锁控制,确保并发更新的正确性。
+     * <p/>
+     * 如果节点不存在则创建,存在则更新。<br/>
+     * 使用版本号进行乐观锁控制,确保并发更新的正确性。<br/>
      * 当遇到临时性错误时自动重试,直到成功或达到最大重试次数。
      *
      * @param path 节点路径
@@ -81,6 +81,8 @@ public class ResilientActiveKeyValueStore extends ConnectionWatcher {
 
     /**
      * 读取指定路径的数据
+     * <p/>
+     * 设置watcher用于监视数据变化
      *
      * @param path 节点路径
      * @param watcher 用于监视数据变化的watcher,传入null表示不监视

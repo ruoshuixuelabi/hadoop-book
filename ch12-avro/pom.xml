@@ -13,7 +13,6 @@
     <packaging>jar</packaging>
     <version>4.0</version>
     <name>Chapter 12: Avro</name>
-
     <!--
         Avro 模块依赖配置
 

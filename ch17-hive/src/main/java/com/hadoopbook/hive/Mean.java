@@ -48,9 +48,13 @@ public class Mean extends UDAF {
          * 而不是直接传递平均值，避免多次除法带来的精度损失。
          */
         public static class PartialResult {
-            /** 所有数值的累加和 */
+            /**
+             * 所有数值的累加和
+             */
             double sum;
-            /** 已处理的数值个数 */
+            /**
+             * 已处理的数值个数
+             */
             long count;
         }
 

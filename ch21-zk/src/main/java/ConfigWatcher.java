@@ -11,17 +11,17 @@ import org.apache.zookeeper.Watcher.Event.EventType;
 
 /**
  * 配置监视器程序
- *
+ * <p>
  * 该程序实现Watcher接口,用于监视ZooKeeper中指定节点的数据变化。
  * 当节点数据发生更新时,自动读取新数据并打印到控制台。
- *
- * 使用说明:
+ * <p>
+ * 使用说明:<br/>
  * java ConfigWatcher <zookeeper地址>
- *
- * 工作流程:
- * 1. 连接到ZooKeeper服务器
- * 2. 读取/config节点的数据并显示
- * 3. 设置watch监视数据变化
+ * <p>
+ * 工作流程:<br/>
+ * 1. 连接到ZooKeeper服务器<br/>
+ * 2. 读取/config节点的数据并显示<br/>
+ * 3. 设置watch监视数据变化<br/>
  * 4. 当数据变化时,自动重新读取并显示
  *
  * @example
@@ -38,6 +38,8 @@ public class ConfigWatcher implements Watcher {
 
     /**
      * 构造函数
+     * <p/>
+     * 创建ActiveKeyValueStore实例并连接到ZooKeeper服务器
      *
      * @param hosts ZooKeeper服务器地址
      * @throws IOException 如果发生I/O错误
@@ -50,7 +52,7 @@ public class ConfigWatcher implements Watcher {
 
     /**
      * 显示当前配置值
-     *
+     * <p/>
      * 读取/config节点的数据并打印到控制台
      *
      * @throws InterruptedException 如果读取被中断
@@ -63,7 +65,7 @@ public class ConfigWatcher implements Watcher {
 
     /**
      * 处理ZooKeeper事件回调
-     *
+     * <p/>
      * 当监视的节点数据发生变化时,自动重新读取并显示新值
      *
      * @param event ZooKeeper事件

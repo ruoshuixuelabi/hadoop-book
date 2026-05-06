@@ -10,17 +10,17 @@ import org.apache.zookeeper.KeeperException;
 
 /**
  * 配置更新器程序
- *
+ * <p>
  * 该程序定期随机更新ZooKeeper中/config节点的数据。
  * 用于演示ZooKeeper的配置管理功能和watch机制。
- *
- * 使用说明:
+ * <p>
+ * 使用说明:<br/>
  * java ConfigUpdater <zookeeper地址>
- *
- * 工作流程:
- * 1. 连接到ZooKeeper服务器
- * 2. 每隔1-10秒随机生成一个0-99的数值
- * 3. 将新值写入/config节点
+ * <p>
+ * 工作流程:<br/>
+ * 1. 连接到ZooKeeper服务器<br/>
+ * 2. 每隔1-10秒随机生成一个0-99的数值<br/>
+ * 3. 将新值写入/config节点<br/>
  * 4. 重复执行
  *
  * @example
@@ -44,6 +44,8 @@ public class ConfigUpdater {
 
     /**
      * 构造函数
+     * <p/>
+     * 创建ActiveKeyValueStore实例并连接到ZooKeeper服务器
      *
      * @param hosts ZooKeeper服务器地址
      * @throws IOException 如果发生I/O错误
@@ -56,7 +58,7 @@ public class ConfigUpdater {
 
     /**
      * 运行更新循环
-     *
+     * <p/>
      * 持续随机更新配置值,每次更新间隔1-10秒
      *
      * @throws InterruptedException 如果等待被中断

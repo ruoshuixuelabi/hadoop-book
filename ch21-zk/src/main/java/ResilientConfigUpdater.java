@@ -8,13 +8,13 @@ import org.apache.zookeeper.KeeperException;
 
 /**
  * 可恢复的配置更新器
- *
+ * <p>
  * 继承自ConfigUpdater,具有更强的容错能力。
  * 当ZooKeeper会话过期时,会自动创建新会话来恢复连接,
  * 而不会丢失正在运行的更新任务。
- *
- * 主要改进:
- * - 捕获会话过期异常并自动重连
+ * <p>
+ * 主要改进:<br/>
+ * - 捕获会话过期异常并自动重连<br/>
  * - 持续运行直到遇到无法恢复的错误
  *
  * @see ConfigUpdater
@@ -33,6 +33,8 @@ public class ResilientConfigUpdater {
 
     /**
      * 构造函数
+     * <p/>
+     * 创建ResilientActiveKeyValueStore实例并连接到ZooKeeper服务器
      *
      * @param hosts ZooKeeper服务器地址
      * @throws IOException 如果发生I/O错误
@@ -46,7 +48,7 @@ public class ResilientConfigUpdater {
 
     /**
      * 运行更新循环
-     *
+     * <p/>
      * 持续随机更新配置值,每次更新间隔1-10秒
      *
      * @throws InterruptedException 如果等待被中断

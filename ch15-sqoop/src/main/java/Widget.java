@@ -69,22 +69,22 @@ import java.util.TreeMap;
 
 /**
  * Widget数据模型类 - 对应MySQL数据库中的widgets表。
- *
+ * <p>
  * 本类由Sqoop工具自动生成，代表一个Widget实体。
- * 包含以下属性：
- * - id: 唯一标识符
- * - widget_name: Widget名称
- * - price: 价格
- * - design_date: 设计日期
- * - version: 版本号
+ * 包含以下属性：<br/>
+ * - id: 唯一标识符<br/>
+ * - widget_name: Widget名称<br/>
+ * - price: 价格<br/>
+ * - design_date: 设计日期<br/>
+ * - version: 版本号<br/>
  * - design_comment: 设计备注
- *
- * 本类是Java ORM（对象关系映射）类，用于：
- * 1. 从数据库读取数据（实现DBWritable接口）
- * 2. 在Hadoop MapReduce中传输数据（实现Writable接口）
+ * <p>
+ * 本类是Java ORM（对象关系映射）类，用于：<br/>
+ * 1. 从数据库读取数据（实现DBWritable接口）<br/>
+ * 2. 在Hadoop MapReduce中传输数据（实现Writable接口）<br/>
  * 3. Sqoop导入导出时的序列化/反序列化
- *
- * 注意：此类是自动生成的，手动修改会在重新生成时丢失。
+ * <p>
+ * 注意：此类是自动生成的，手动修改会在重新生成时丢失。<br/>
  * 如需修改，请更改数据库表结构或Sqoop导入选项。
  *
  * @see SqoopRecord
@@ -278,7 +278,8 @@ public class Widget extends SqoopRecord  implements DBWritable, Writable {
 
     /**
      * 比较两个Widget对象是否相等。
-     * 比较所有字段的值。
+     * <p/>
+     * 比较所有字段的值
      *
      * @param o 要比较的对象
      * @return 如果所有字段都相等返回true，否则返回false
@@ -303,6 +304,8 @@ public class Widget extends SqoopRecord  implements DBWritable, Writable {
 
     /**
      * 内部使用的equals方法（实现细节）。
+     * <p/>
+     * 比较所有字段的值
      *
      * @param o 要比较的对象
      * @return 比较结果
@@ -327,7 +330,8 @@ public class Widget extends SqoopRecord  implements DBWritable, Writable {
 
     /**
      * 从JDBC ResultSet读取字段值。
-     * 实现DBWritable接口，用于Sqoop从数据库导入数据。
+     * <p/>
+     * 实现DBWritable接口，用于Sqoop从数据库导入数据
      *
      * @param __dbResults JDBC结果集
      * @throws SQLException 如果数据库访问出错
@@ -360,7 +364,8 @@ public class Widget extends SqoopRecord  implements DBWritable, Writable {
 
     /**
      * 加载大对象（Blob/Clob）。
-     * 本实现为空，因为widgets表没有大对象字段。
+     * <p/>
+     * 本实现为空，因为widgets表没有大对象字段
      *
      * @param __loader 大对象加载器
      * @throws SQLException 如果数据库访问出错

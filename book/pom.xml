@@ -509,12 +509,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.15.0</version>
                 <configuration>
                     <!-- 源码兼容 Java 1.6 -->
-                    <source>1.6</source>
+                    <source>25</source>
                     <!-- 目标字节码 Java 1.6 -->
-                    <target>1.6</target>
+                    <target>25</target>
                     <compilerArgs>
                         <!-- 显示未检查操作警告（如泛型转换） -->
                         <arg>-Xlint:unchecked</arg>

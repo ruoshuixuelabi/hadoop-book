@@ -12,14 +12,14 @@ import org.apache.zookeeper.Watcher.Event.KeeperState;
 
 /**
  * ZooKeeper连接监视器类
- *
+ * <p>
  * 该类实现了Watcher接口,用于处理ZooKeeper连接事件。
  * 主要功能是等待ZooKeeper客户端与服务器之间的连接成功建立。
- *
- * 使用说明:
- * 1. 创建ConnectionWatcher实例
- * 2. 调用connect(hosts)方法连接到ZooKeeper服务器
- * 3. 连接建立后,connectedSignal倒计数器会归零,表示连接就绪
+ * <p>
+ * 使用说明:<br/>
+ * 1. 创建ConnectionWatcher实例<br/>
+ * 2. 调用connect(hosts)方法连接到ZooKeeper服务器<br/>
+ * 3. 连接建立后,connectedSignal倒计数器会归零,表示连接就绪<br/>
  * 4. 操作完成后调用close()方法关闭连接
  *
  * @example
@@ -41,6 +41,9 @@ public class ConnectionWatcher implements Watcher {
 
     /**
      * 连接到ZooKeeper服务器
+     * <p/>
+     * 创建ZooKeeper客户端,注册当前watcher<br/>
+     * 阻塞等待连接建立完成
      *
      * @param hosts ZooKeeper服务器地址列表,格式如"host1:port1,host2:port2"
      * @throws IOException 如果发生I/O错误
@@ -55,7 +58,7 @@ public class ConnectionWatcher implements Watcher {
 
     /**
      * 处理ZooKeeper事件回调
-     *
+     * <p/>
      * 当收到SyncConnected状态事件时,表示连接已建立,释放信号量
      *
      * @param event ZooKeeper事件

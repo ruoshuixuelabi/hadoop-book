@@ -13,10 +13,8 @@
     <packaging>jar</packaging>
     <version>4.0</version>
     <name>Chapter 13: Parquet</name>
-
     <!--
         Parquet 模块依赖配置
-
         Parquet 是一个列式存储格式，专为 Hadoop 设计。
         主要特点：
         - 列式存储：相同类型的数据连续存放，压缩效率高
@@ -28,12 +26,10 @@
     <dependencies>
         <!--
             Parquet Avro 集成库
-
             重要依赖，用于：
             - 使用 Avro Schema 定义 Parquet 文件结构
             - AvroParquetWriter / AvroParquetReader 读写 Parquet 文件
             - 支持 Avro 数据的 Parquet 列式存储
-
             这个库封装了 Parquet 的底层细节，提供便捷的 Avro API
         -->
         <dependency>
@@ -48,7 +44,6 @@
         </dependency>
         <!--
             Google Guava 工具库
-
             Parquet 的一些工具类依赖 Guava：
             - Files.copy() 文件操作
             - Resources.getResource() 资源加载
@@ -59,13 +54,11 @@
             <artifactId>guava</artifactId>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <!--
                 Maven Assembly 插件
                 用于打包作业 JAR 文件
-
                 配置说明：
                 - finalName: 输出的 JAR 文件名
                 - outputDirectory: 输出目录（项目根目录的 target 目录）

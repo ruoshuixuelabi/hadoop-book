@@ -7,9 +7,9 @@ import org.apache.hadoop.io.IntWritable;
 /**
  * 计算整型最大值的自定义聚合函数（UDAF）。
  *
- * <p>此类实现了Hive的用户自定义聚合函数（User Defined Aggregate Function），
- * 用于计算一组整数中的最大值。它遵循MapReduce的combine-reduce模式，
- * 支持部分聚合（partial aggregation），能够显著提升大规模数据集的处理效率。
+ * <p>此类实现了Hive的用户自定义聚合函数（User Defined Aggregate Function），<br>
+ * 用于计算一组整数中的最大值。它遵循MapReduce的combine-reduce模式，<br>
+ * 支持部分聚合（partial aggregation），能够显著提升大规模数据集的处理效率。<br>
  *
  * <p>聚合流程：
  * <ol>
@@ -21,8 +21,8 @@ import org.apache.hadoop.io.IntWritable;
  *
  * <p>示例Hive查询：
  * <pre>
- * CREATE TEMPORARY FUNCTION maximum AS 'com.hadoopbook.hive.Maximum';
- * SELECT maximum(temperature) FROM records WHERE temperature != 9999;
+ * CREATE TEMPORARY FUNCTION maximum AS 'com.hadoopbook.hive.Maximum';<br>
+ * SELECT maximum(temperature) FROM records WHERE temperature != 9999;<br>
  * </pre>
  *
  * @see UDAF
@@ -31,14 +31,13 @@ import org.apache.hadoop.io.IntWritable;
 public class Maximum extends UDAF {
 
     /**
-     * 最大值聚合函数的求值器实现类。
      *
-     * <p>内部类实现完整的UDAF逻辑，支持部分聚合以优化性能。
-     * 通过{@link #iterate(IntWritable)}处理每个输入值，
-     * 通过{@link #merge(IntWritable)}合并多个mapper/reducer的结果。
+     * 最大值聚合函数的求值器实现类。<br>
+     * <p>内部类实现完整的UDAF逻辑，支持部分聚合以优化性能。<br>
+     * 通过{@link #iterate(IntWritable)}处理每个输入值，<br>
+     * 通过{@link #merge(IntWritable)}合并多个mapper/reducer的结果。<br>
      */
     public static class MaximumIntUDAFEvaluator implements UDAFEvaluator {
-
         /**
          * 当前已处理的最大值。
          * 初始为null，表示尚未处理任何有效值。
@@ -46,11 +45,10 @@ public class Maximum extends UDAF {
         private IntWritable result;
 
         /**
-         * 初始化求值器。
-         * 在每次聚合开始时被调用，重置内部状态为初始值。
-         *
-         * <p>调试信息输出当前实例的hashCode和操作名称，
-         * 用于追踪多线程或分布式环境中的调用情况。
+         * 初始化求值器。<br>
+         * 在每次聚合开始时被调用，重置内部状态为初始值。<br>
+         * <p>调试信息输出当前实例的hashCode和操作名称，<br>
+         * 用于追踪多线程或分布式环境中的调用情况。<br>
          */
         public void init() {
             System.err.printf("%s %s\n", hashCode(), "init");
@@ -58,12 +56,12 @@ public class Maximum extends UDAF {
         }
 
         /**
-         * 处理一个输入值，更新当前最大值。
+         * 处理一个输入值，更新当前最大值。<br>
          *
-         * <p>此方法在MapReduce的map阶段被调用，用于处理每条记录。
-         * 如果输入值为null或空值，直接返回true跳过处理。
-         * 如果result尚未初始化（为null），则用当前值创建新的IntWritable。
-         * 否则比较当前值与已有最大值，取较大者更新。
+         * <p>此方法在MapReduce的map阶段被调用，用于处理每条记录。<br>
+         * 如果输入值为null或空值，直接返回true跳过处理。<br>
+         * 如果result尚未初始化（为null），则用当前值创建新的IntWritable。<br>
+         * 否则比较当前值与已有最大值，取较大者更新。<br>
          *
          * @param value 待处理的整型输入值，不允许为null
          * @return 处理成功返回true，始终返回true（null值被视为有效处理）
@@ -99,11 +97,11 @@ public class Maximum extends UDAF {
         }
 
         /**
-         * 合并来自其他节点的部分结果。
+         * 合并来自其他节点的部分结果。<br>
          *
-         * <p>此方法在Reduce阶段被调用，接收来自不同mapper/combiner的
-         * 部分结果并合并。由于本实现中部分结果就是当前最大值，
-         * 因此直接调用{@link #iterate(IntWritable)}来处理合并逻辑。
+         * <p>此方法在Reduce阶段被调用，接收来自不同mapper/combiner的<br>
+         * 部分结果并合并。由于本实现中部分结果就是当前最大值，<br>
+         * 因此直接调用{@link #iterate(IntWritable)}来处理合并逻辑。<br>
          *
          * <p>这种设计确保了合并逻辑与处理新输入值的逻辑完全一致，
          * 避免了代码重复和潜在的逻辑不一致问题。

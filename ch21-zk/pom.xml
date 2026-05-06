@@ -15,74 +15,68 @@
   - 使用maven-assembly-plugin打包成zookeeper-examples.jar
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
-  <!-- 继承book父POM，使用book级别的依赖管理 -->
-  <parent>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <!-- 继承book父POM，使用book级别的依赖管理 -->
+    <parent>
+        <groupId>com.hadoopbook</groupId>
+        <artifactId>book</artifactId>
+        <version>4.0</version>
+        <relativePath>../book/pom.xml</relativePath>
+    </parent>
     <groupId>com.hadoopbook</groupId>
-    <artifactId>book</artifactId>
+    <artifactId>ch21-zk</artifactId>
+    <packaging>jar</packaging>
     <version>4.0</version>
-    <relativePath>../book/pom.xml</relativePath>
-  </parent>
-
-  <groupId>com.hadoopbook</groupId>
-  <artifactId>ch21-zk</artifactId>
-  <packaging>jar</packaging>
-  <version>4.0</version>
-
-  <!-- 章节名称：ZooKeeper -->
-  <name>Chapter 21: ZooKeeper</name>
-
-  <!-- ==================== 依赖项配置 ==================== -->
-  <dependencies>
-    <!--
-      Log4j：日志框架
-      ZooKeeper客户端使用Log4j进行日志输出
-    -->
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-    </dependency>
-
-    <!--
-      ZooKeeper Client：ZooKeeper客户端库
-      提供了ZooKeeper API，用于开发和测试ZooKeeper应用
-      版本由父POM统一管理（3.9.4）
-    -->
-    <dependency>
-      <groupId>org.apache.zookeeper</groupId>
-      <artifactId>zookeeper</artifactId>
-    </dependency>
-  </dependencies>
-
-  <!-- ==================== 构建插件配置 ==================== -->
-  <build>
-    <plugins>
-      <!--
-        Maven Assembly Plugin：用于打包ZooKeeper示例为可执行JAR
-        使用jar.xml描述符，输出到项目根目录，文件名为zookeeper-examples.jar
-      -->
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-          <descriptors>
-            <descriptor>../book/src/main/assembly/jar.xml</descriptor>
-          </descriptors>
-          <finalName>zookeeper-examples</finalName>
-          <outputDirectory>${project.build.directory}/../..</outputDirectory>
-          <appendAssemblyId>false</appendAssemblyId>
-        </configuration>
-        <executions>
-          <execution>
-            <id>make-assembly</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+    <!-- 章节名称：ZooKeeper -->
+    <name>Chapter 21: ZooKeeper</name>
+    <!-- ==================== 依赖项配置 ==================== -->
+    <dependencies>
+        <!--
+          Log4j：日志框架
+          ZooKeeper客户端使用Log4j进行日志输出
+        -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
+        <!--
+          ZooKeeper Client：ZooKeeper客户端库
+          提供了ZooKeeper API，用于开发和测试ZooKeeper应用
+          版本由父POM统一管理（3.9.4）
+        -->
+        <dependency>
+            <groupId>org.apache.zookeeper</groupId>
+            <artifactId>zookeeper</artifactId>
+        </dependency>
+    </dependencies>
+    <!-- ==================== 构建插件配置 ==================== -->
+    <build>
+        <plugins>
+            <!--
+              Maven Assembly Plugin：用于打包ZooKeeper示例为可执行JAR
+              使用jar.xml描述符，输出到项目根目录，文件名为zookeeper-examples.jar
+            -->
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptors>
+                        <descriptor>../book/src/main/assembly/jar.xml</descriptor>
+                    </descriptors>
+                    <finalName>zookeeper-examples</finalName>
+                    <outputDirectory>${project.build.directory}/../..</outputDirectory>
+                    <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -42,19 +42,19 @@ import org.apache.hadoop.util.ToolRunner;
 
 /**
  * 使用Generic Avro API从Sqoop导入的Avro格式数据中找出最大ID的widget。
- *
- * 本程序与MaxWidgetId.java功能相同，但使用了不同的实现方式：
- * - 不依赖Sqoop生成的特定类
+ * <p>
+ * 本程序与MaxWidgetId.java功能相同，但使用了不同的实现方式：<br/>
+ * - 不依赖Sqoop生成的特定类<br/>
  * - 使用GenericRecord和Avro的通用API处理数据
- *
- * 技术要点：
- * 1. 使用AvroKeyInputFormat/AvroKeyOutputFormat处理Avro数据
- * 2. 使用GenericRecord表示任意Avro数据，无需编译时类型
+ * <p>
+ * 技术要点：<br/>
+ * 1. 使用AvroKeyInputFormat/AvroKeyOutputFormat处理Avro数据<br/>
+ * 2. 使用GenericRecord表示任意Avro数据，无需编译时类型<br/>
  * 3. 从Avro文件的header中读取schema信息
- *
- * Avro序列化格式：
- * - Avro数据通常存储在.avro扩展名的文件中
- * - 文件包含schema定义和数据块
+ * <p>
+ * Avro序列化格式：<br/>
+ * - Avro数据通常存储在.avro扩展名的文件中<br/>
+ * - 文件包含schema定义和数据块<br/>
  * - 支持压缩，提高存储效率
  *
  * @see MaxWidgetId 使用Sqoop生成类的版本
@@ -63,12 +63,12 @@ public class MaxWidgetIdGenericAvro extends Configured implements Tool {
 
     /**
      * Mapper：使用GenericRecord处理Avro格式的widget数据。
-     *
-     * 输入：AvroKey<GenericRecord>（包含Avro数据的key）, NullWritable（value为空）
+     * <p/>
+     * 输入：AvroKey<GenericRecord>（包含Avro数据的key）, NullWritable（value为空）<br/>
      * 输出：AvroKey<Long>（widget的id）, AvroValue<GenericRecord>（完整的widget记录）
-     *
-     * 设计说明：
-     * - 使用GenericRecord而非特定类，保持灵活性
+     * <p/>
+     * 设计说明：<br/>
+     * - 使用GenericRecord而非特定类，保持灵活性<br/>
      * - AvroKey/AvroValue是Hadoop与Avro之间的桥梁类型
      */
     public static class MaxWidgetMapper extends Mapper<AvroKey<GenericRecord>, NullWritable,
@@ -79,6 +79,9 @@ public class MaxWidgetIdGenericAvro extends Configured implements Tool {
 
         /**
          * Map方法：处理每条Avro格式的widget记录。
+         * <p/>
+         * 从AvroKey中获取GenericRecord（通用的Avro数据表示）<br/>
+         * 通过字段名"id"获取值，而不是通过getter方法
          *
          * @param key 包含widget数据的AvroKey
          * @param value 固定为NullWritable（Avro数据在key中）
@@ -101,6 +104,8 @@ public class MaxWidgetIdGenericAvro extends Configured implements Tool {
 
         /**
          * Cleanup方法：输出当前map的最大widget。
+         * <p/>
+         * 输出到固定key=0，使得所有mapper结果发送到同一reducer
          *
          * @param context 上下文
          */
@@ -113,8 +118,8 @@ public class MaxWidgetIdGenericAvro extends Configured implements Tool {
 
     /**
      * Reducer：汇总所有mapper的结果，找出全局最大ID的widget。
-     *
-     * 输入：AvroKey<Long>（固定key=0）, AvroValue<GenericRecord>（各mapper的最大widget）
+     * <p/>
+     * 输入：AvroKey<Long>（固定key=0）, AvroValue<GenericRecord>（各mapper的最大widget）<br/>
      * 输出：AvroKey<GenericRecord>（全局最大widget）, NullWritable
      */
     public static class MaxWidgetReducer
@@ -123,6 +128,9 @@ public class MaxWidgetIdGenericAvro extends Configured implements Tool {
 
         /**
          * Reduce方法：遍历所有mapper的输出，找出最大ID。
+         * <p/>
+         * 遍历所有mapper的输出，找出最大ID<br/>
+         * 需要复制record，因为迭代器可能返回同一个对象
          *
          * @param key 固定值0
          * @param values 各mapper最大widget的迭代器
@@ -145,8 +153,8 @@ public class MaxWidgetIdGenericAvro extends Configured implements Tool {
 
         /**
          * 创建GenericRecord的深拷贝。
-         *
-         * 由于GenericRecord可能是只读的，需要创建一个可修改的副本
+         * <p/>
+         * 由于GenericRecord可能是只读的，需要创建一个可修改的副本<br/>
          * 用于在比较过程中保存最大值
          *
          * @param record 要复制的原始记录
@@ -167,10 +175,10 @@ public class MaxWidgetIdGenericAvro extends Configured implements Tool {
 
     /**
      * 配置并执行MapReduce作业。
-     *
-     * Avro MapReduce作业的特殊配置：
-     * 1. 使用AvroJob工具类设置Avro特定的schema
-     * 2. 使用AvroKeyInputFormat和AvroKeyOutputFormat
+     * <p/>
+     * Avro MapReduce作业的特殊配置：<br/>
+     * 1. 使用AvroJob工具类设置Avro特定的schema<br/>
+     * 2. 使用AvroKeyInputFormat和AvroKeyOutputFormat<br/>
      * 3. 需要预先读取schema以配置作业
      *
      * @param args 命令行参数（未使用）
@@ -215,12 +223,12 @@ public class MaxWidgetIdGenericAvro extends Configured implements Tool {
 
     /**
      * 从Avro文件目录中读取第一个文件的schema。
-     *
-     * Avro文件是自描述的，schema信息存储在文件头中
+     * <p/>
+     * Avro文件是自描述的，schema信息存储在文件头中<br/>
      * 本方法打开第一个.avro文件并提取其schema
-     *
-     * 设计说明：
-     * - 假设所有widget文件使用相同的schema
+     * <p/>
+     * 设计说明：<br/>
+     * - 假设所有widget文件使用相同的schema<br/>
      * - 使用FsInput直接读取HDFS上的Avro文件
      *
      * @param inputDir 包含Avro文件的目录

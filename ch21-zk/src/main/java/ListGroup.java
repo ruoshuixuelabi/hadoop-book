@@ -8,10 +8,10 @@ import org.apache.zookeeper.KeeperException;
 
 /**
  * 列出ZooKeeper组中成员的程序
- *
+ * <p>
  * 该程序继承自ConnectionWatcher,用于获取并显示指定组下的所有成员节点名称。
- *
- * 使用说明:
+ * <p>
+ * 使用说明:<br/>
  * java ListGroup <zookeeper地址> <组名>
  *
  * @example
@@ -26,8 +26,8 @@ public class ListGroup extends ConnectionWatcher {
 
     /**
      * 列出组中的所有成员
-     *
-     * 获取指定组节点的所有子节点名称并打印到标准输出。
+     * <p/>
+     * 获取指定组节点的所有子节点名称并打印到标准输出。<br/>
      * 如果组不存在或没有成员,则输出相应的提示信息。
      *
      * @param groupName 组名称(不含前导斜杠)

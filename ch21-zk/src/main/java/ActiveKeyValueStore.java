@@ -14,12 +14,12 @@ import org.apache.zookeeper.data.Stat;
 
 /**
  * 活跃键值存储类
- *
+ * <p>
  * 封装了对ZooKeeper节点的读写操作,提供简洁的API。
  * 使用ConnectionWatcher作为基类,继承ZooKeeper连接管理功能。
- *
- * 主要功能:
- * - write(): 写入数据到指定路径(支持创建或更新)
+ * <p>
+ * 主要功能:<br/>
+ * - write(): 写入数据到指定路径(支持创建或更新)<br/>
  * - read(): 读取指定路径的数据(支持设置watcher)
  *
  * @see ConnectionWatcher
@@ -34,7 +34,7 @@ public class ActiveKeyValueStore extends ConnectionWatcher {
 
   /**
    * 写入数据到指定路径
-   *
+   * <p/>
    * 如果节点不存在则创建,存在则更新。-1表示使用任意版本号进行更新。
    *
    * @param path 节点路径
@@ -62,6 +62,8 @@ public class ActiveKeyValueStore extends ConnectionWatcher {
 
   /**
    * 读取指定路径的数据
+   * <p/>
+   * 设置watcher用于监视数据变化
    *
    * @param path 节点路径
    * @param watcher 用于监视数据变化的watcher,传入null表示不监视

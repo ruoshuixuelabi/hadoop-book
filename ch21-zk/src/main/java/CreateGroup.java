@@ -15,11 +15,11 @@ import org.apache.zookeeper.ZooDefs.Ids;
 
 /**
  * 创建ZooKeeper组节点程序
- *
+ * <p>
  * 该程序实现Watcher接口,用于在ZooKeeper中创建一个持久化的组节点。
  * 演示了ZooKeeper基本的节点创建操作。
- *
- * 使用说明:
+ * <p>
+ * 使用说明:<br/>
  * java CreateGroup <zookeeper地址> <组名>
  *
  * @example
@@ -39,6 +39,8 @@ public class CreateGroup implements Watcher {
 
     /**
      * 连接到ZooKeeper服务器
+     * <p/>
+     * 创建ZooKeeper客户端实例并等待连接建立
      *
      * @param hosts ZooKeeper服务器地址列表
      * @throws IOException 如果发生I/O错误
@@ -51,6 +53,8 @@ public class CreateGroup implements Watcher {
 
     /**
      * 处理ZooKeeper事件回调
+     * <p/>
+     * 当收到SyncConnected状态事件时,释放信号量表示连接就绪
      *
      * @param event ZooKeeper事件
      */
@@ -64,8 +68,8 @@ public class CreateGroup implements Watcher {
 
     /**
      * 创建组节点
-     *
-     * 在ZooKeeper中创建一个持久化节点,节点数据为空。
+     * <p/>
+     * 在ZooKeeper中创建一个持久化节点,节点数据为空
      *
      * @param groupName 要创建的组名称(不含前导斜杠)
      * @throws KeeperException 如果ZooKeeper操作失败

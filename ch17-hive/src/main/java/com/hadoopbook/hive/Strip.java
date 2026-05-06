@@ -69,7 +69,7 @@ public class Strip extends UDF {
      *   <li>{@code strip("<<hello>>", "<>")} 返回 {@code "hello"}</li>
      * </ul>
      *
-     * @param str 待处理的输入字符串
+     * @param str        待处理的输入字符串
      * @param stripChars 要去除的字符集合（每个字符都会被去除）
      * @return 去除两端指定字符后的字符串；如果输入为null则返回null
      */
