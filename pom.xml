@@ -2,78 +2,74 @@
   Hadoop Book 项目根 POM
   =====================
   本项目是《Hadoop: The Definitive Guide, Fourth Edition》(Tom White, O'Reilly) 的示例代码仓库。
-
   项目结构:
   - 父 POM (book/) 定义了所有组件的版本和依赖管理
   - 各章节模块 (ch02-mr-intro 等) 包含对应章节的示例代码
   - hadoop-meta/ 提供统一的 Hadoop 依赖配置
   - common/ 包含各模块共享的工具类
   - hadoop-examples/ 聚合所有示例到单个 JAR 包
-
   构建命令:
   - mvn package -DskipTests    # 全量构建（跳过测试）
   - mvn package -pl ch05-io -am  # 构建单个模块及其依赖
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <!-- POM 模型版本，固定为 4.0.0 -->
-  <modelVersion>4.0.0</modelVersion>
-
-  <!-- 项目坐标信息 -->
-  <groupId>com.hadoopbook</groupId>
-  <artifactId>root</artifactId>
-  <!-- 打包类型为 pom，表示这是一个聚合项目 -->
-  <packaging>pom</packaging>
-  <version>4.0</version>
-  <!-- 项目名称，与书籍标题对应 -->
-  <name>Hadoop: The Definitive Guide, Example Code</name>
-  <url>http://hadoopbook.com</url>
-
-  <!--
-    定义本项目包含的模块列表
-    Maven 会按照这里声明的顺序处理各模块
-    每个模块都是一个独立的 Maven 项目
-  -->
-  <modules>
-    <!-- 父 POM 模块，负责统一版本管理 -->
-    <module>book</module>
-    <!-- 共享工具模块，包含如 NcdcRecordParser 等工具类 -->
-    <module>common</module>
-    <!-- 第2章：MapReduce 入门示例 -->
-    <module>ch02-mr-intro</module>
-    <!-- 第3章：HDFS 操作示例 -->
-    <module>ch03-hdfs</module>
-    <!-- 第5章：Hadoop IO 格式（Writable、SequenceFile、MapFile 等） -->
-    <module>ch05-io</module>
-    <!-- 第6章：MapReduce 开发（包含新旧 API 示例） -->
-    <module>ch06-mr-dev</module>
-    <!-- 第8章：MapReduce 数据类型与输入输出格式 -->
-    <module>ch08-mr-types</module>
-    <!-- 第9章：MapReduce 特性（计数器、排序、连接等） -->
-    <module>ch09-mr-features</module>
-    <!-- 第12章：Avro 数据序列化 -->
-    <module>ch12-avro</module>
-    <!-- 第13章：Parquet 列式存储 -->
-    <module>ch13-parquet</module>
-    <!-- 第15章：Sqoop 数据传输 -->
-    <module>ch15-sqoop</module>
-    <!-- 第16章：Pig Latin 脚本 -->
-    <module>ch16-pig</module>
-    <!-- 第17章：Hive 查询 -->
-    <module>ch17-hive</module>
-    <!-- 第18章：Crunch 管道 API -->
-    <module>ch18-crunch</module>
-    <!-- 第19章：Spark 示例 -->
-    <module>ch19-spark</module>
-    <!-- 第20章：HBase 操作 -->
-    <module>ch20-hbase</module>
-    <!-- 第21章：ZooKeeper 分布式协调 -->
-    <module>ch21-zk</module>
-    <!-- 第22章：案例研究 -->
-    <module>ch22-case-studies</module>
-    <!-- 聚合模块，将所有示例打包到单个 JAR -->
-    <module>hadoop-examples</module>
-    <!-- 测试代码片段模块 -->
-    <module>snippet</module>
-  </modules>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
+    <!-- POM 模型版本，固定为 4.0.0 -->
+    <modelVersion>4.0.0</modelVersion>
+    <!-- 项目坐标信息 -->
+    <groupId>com.hadoopbook</groupId>
+    <artifactId>root</artifactId>
+    <!-- 打包类型为 pom，表示这是一个聚合项目 -->
+    <packaging>pom</packaging>
+    <version>4.0</version>
+    <!-- 项目名称，与书籍标题对应 -->
+    <name>Hadoop: The Definitive Guide, Example Code</name>
+    <url>https://hadoopbook.com</url>
+    <!--
+      定义本项目包含的模块列表
+      Maven 会按照这里声明的顺序处理各模块
+      每个模块都是一个独立的 Maven 项目
+    -->
+    <modules>
+        <!-- 父 POM 模块，负责统一版本管理 -->
+        <module>book</module>
+        <!-- 共享工具模块，包含如 NcdcRecordParser 等工具类 -->
+        <module>common</module>
+        <!-- 第2章：MapReduce 入门示例 -->
+        <module>ch02-mr-intro</module>
+        <!-- 第3章：HDFS 操作示例 -->
+        <module>ch03-hdfs</module>
+        <!-- 第5章：Hadoop IO 格式（Writable、SequenceFile、MapFile 等） -->
+        <module>ch05-io</module>
+        <!-- 第6章：MapReduce 开发（包含新旧 API 示例） -->
+        <module>ch06-mr-dev</module>
+        <!-- 第8章：MapReduce 数据类型与输入输出格式 -->
+        <module>ch08-mr-types</module>
+        <!-- 第9章：MapReduce 特性（计数器、排序、连接等） -->
+        <module>ch09-mr-features</module>
+        <!-- 第12章：Avro 数据序列化 -->
+        <module>ch12-avro</module>
+        <!-- 第13章：Parquet 列式存储 -->
+        <module>ch13-parquet</module>
+        <!-- 第15章：Sqoop 数据传输 -->
+        <module>ch15-sqoop</module>
+        <!-- 第16章：Pig Latin 脚本 -->
+        <module>ch16-pig</module>
+        <!-- 第17章：Hive 查询 -->
+        <module>ch17-hive</module>
+        <!-- 第18章：Crunch 管道 API -->
+        <module>ch18-crunch</module>
+        <!-- 第19章：Spark 示例 -->
+        <module>ch19-spark</module>
+        <!-- 第20章：HBase 操作 -->
+        <module>ch20-hbase</module>
+        <!-- 第21章：ZooKeeper 分布式协调 -->
+        <module>ch21-zk</module>
+        <!-- 第22章：案例研究 -->
+        <module>ch22-case-studies</module>
+        <!-- 聚合模块，将所有示例打包到单个 JAR -->
+        <module>hadoop-examples</module>
+        <!-- 测试代码片段模块 -->
+        <module>snippet</module>
+    </modules>
 </project>

@@ -1,13 +1,11 @@
 <!--
   Maven POM - 第19章：Spark
-
   本模块是《Hadoop权威指南》第19章的示例代码，
   演示Apache Spark的基本概念和编程模型，包括：
   - Spark RDD（弹性分布式数据集）操作
   - Spark SQL查询
   - Spark Streaming流处理
   - 与Hadoop生态系统集成（Avro数据）
-
   本模块特点：
   - 使用Scala编写部分示例（Scala是Spark的原生态语言）
   - 包含Scala Maven插件用于编译Scala代码
@@ -15,7 +13,7 @@
   - 使用Guava 14.0.1版本（Spark使用较新版本，此处显式指定以避免冲突）
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <!-- 继承book父POM，使用book级别的依赖管理 -->
     <parent>
@@ -37,9 +35,14 @@
           提供了RDD、SparkContext、SparkConf等核心API
           Scala版本指定为2.10，与Spark 1.x兼容
         -->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.spark</groupId>-->
+<!--            <artifactId>spark-core_2.10</artifactId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.apache.spark</groupId>
-            <artifactId>spark-core_2.10</artifactId>
+            <artifactId>spark-core_2.13</artifactId>
+            <version>4.1.1</version>
         </dependency>
         <!--
           Avro MapRed：Avro的MapReduce兼容组件
