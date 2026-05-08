@@ -145,8 +145,8 @@ public class PrimitiveOperationsTest implements Serializable {
         // 指定分区数
         c = b.groupByKey(2);
         String dumpc = dump(c);
-        assertTrue(dumpc, "{(5,[apple]),(6,[banana,cherry])}".equals(dumpc) ||
-            "{(6,[banana,cherry]),(5,[apple])}".equals(dumpc));
+        assertTrue("{(5,[apple]),(6,[banana,cherry])}".equals(dumpc) ||
+            "{(6,[banana,cherry]),(5,[apple])}".equals(dumpc), dumpc);
 
         c = b.groupByKey(); // 值迭代器只能使用一次
 

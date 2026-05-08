@@ -46,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class PageRankTest implements Serializable {
 
     /** 临时目录规则 */
-    public transient Path tmpDir;
+    public transient TemporaryPath tmpDir;
 
     /**
      * PageRank数据结构

@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -146,14 +147,14 @@ public class SourcesAndTargetsTest implements Serializable {
     /**
      * 测试Writable类型写入Avro文件会失败
      */
-    @Test(expected = CrunchRuntimeException.class)
+    @Test
     public void testWriteWritablesToAvroFileFails() throws IOException {
         String inputPath = tmpDir.copyResourceFileName("ints.txt");
         String outputPath = tmpDir.getFileName("out");
         Pipeline pipeline = new MRPipeline(getClass());
         PCollection<String> lines = pipeline.read(From.textFile(inputPath));
         lines.write(To.avroFile(outputPath));
-        pipeline.done();
+        assertThrows(CrunchRuntimeException.class, () -> pipeline.done());
     }
 
     /**
