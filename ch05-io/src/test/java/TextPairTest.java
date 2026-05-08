@@ -2,12 +2,12 @@
 // cc TextPairTest 测试 TextPair 的序列化和比较功能
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThat;
 
 import java.io.IOException;
 
 import org.apache.hadoop.io.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * TextPairTest - TextPair 的单元测试类

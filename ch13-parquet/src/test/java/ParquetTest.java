@@ -5,7 +5,7 @@ import org.apache.avro.generic.GenericRecord;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import parquet.avro.AvroParquetReader;
 import parquet.avro.AvroParquetWriter;
 import parquet.avro.AvroReadSupport;
@@ -21,9 +21,9 @@ import parquet.schema.MessageType;
 import parquet.schema.MessageTypeParser;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThat;
 
 /**
  * Parquet 文件读写测试类。

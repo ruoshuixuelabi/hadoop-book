@@ -2,11 +2,11 @@
 // cc ArrayWritableTest 测试 ArrayWritable 和 TextArrayWritable 的功能
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThat;
 
 import java.io.IOException;
 import org.apache.hadoop.io.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * ArrayWritableTest - ArrayWritable 相关功能的单元测试

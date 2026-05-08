@@ -18,13 +18,13 @@ package v4;
  * @see NcdcRecordParser
  */
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThat;
 import java.io.IOException;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.Counters;
 import org.apache.hadoop.mrunit.mapreduce.MapDriver;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * MaxTemperatureMapper单元测试类（v4版本）

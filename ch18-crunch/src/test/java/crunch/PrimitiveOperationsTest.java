@@ -18,16 +18,15 @@ import org.apache.crunch.fn.Aggregators;
 import org.apache.crunch.impl.mem.MemPipeline;
 import org.apache.crunch.impl.mr.MRPipeline;
 import org.apache.crunch.test.TemporaryPath;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static crunch.PCollections.dump;
 import static org.apache.crunch.types.writable.Writables.doubles;
 import static org.apache.crunch.types.writable.Writables.ints;
 import static org.apache.crunch.types.writable.Writables.strings;
 import static org.apache.crunch.types.writable.Writables.tableOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * 原始操作测试
@@ -46,8 +45,7 @@ import static org.junit.Assert.assertTrue;
 public class PrimitiveOperationsTest implements Serializable {
 
     /** 临时目录规则 */
-    @Rule
-    public transient TemporaryPath tmpDir = new TemporaryPath();
+    public transient TemporaryPath tmpDir;
 
     /**
      * 测试PCollection并集

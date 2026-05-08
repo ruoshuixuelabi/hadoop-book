@@ -2,12 +2,12 @@
 // cc StringTextComparisonTest 演示 String 和 Text 类的区别
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThat;
 
 import java.io.*;
 
 import org.apache.hadoop.io.Text;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 // vv StringTextComparisonTest
 /**

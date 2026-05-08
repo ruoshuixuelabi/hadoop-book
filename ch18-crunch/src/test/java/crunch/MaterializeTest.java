@@ -10,11 +10,10 @@ import org.apache.crunch.Pipeline;
 import org.apache.crunch.PipelineResult;
 import org.apache.crunch.impl.mr.MRPipeline;
 import org.apache.crunch.test.TemporaryPath;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.crunch.types.writable.Writables.strings;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * 物化测试
@@ -28,8 +27,7 @@ import static org.junit.Assert.assertEquals;
 public class MaterializeTest {
 
     /** 临时目录规则 */
-    @Rule
-    public transient TemporaryPath tmpDir = new TemporaryPath();
+    public transient TemporaryPath tmpDir;
 
     /**
      * 测试materialize()触发管道执行

@@ -20,11 +20,10 @@ import org.apache.crunch.test.TemporaryPath;
 import org.apache.crunch.types.PType;
 import org.apache.crunch.types.PTypeFamily;
 import org.apache.crunch.types.avro.Avros;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.crunch.types.writable.Writables.strings;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * 对象复用测试
@@ -74,9 +73,7 @@ public class ObjectReuseTest implements Serializable {
         }
     }
 
-    /** 临时目录规则 */
-    @Rule
-    public transient TemporaryPath tmpDir = new TemporaryPath();
+    public transient TemporaryPath tmpDir;
 
     /**
      * 测试去重功能

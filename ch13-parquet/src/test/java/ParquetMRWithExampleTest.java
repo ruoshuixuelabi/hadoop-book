@@ -6,18 +6,17 @@ import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.util.Tool;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import parquet.example.data.Group;
 import parquet.hadoop.ParquetReader;
 import parquet.hadoop.example.GroupReadSupport;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThat;
 
 /**
  * Parquet MapReduce 作业测试类 (使用 Example API)。
@@ -31,8 +30,8 @@ import static org.junit.Assert.assertThat;
  * <p>验证数据在转换过程中正确保持。
  */
 public class ParquetMRWithExampleTest {
-    @Rule
-    public transient TemporaryFolder tmpDir = new TemporaryFolder();
+    @TempDir
+    public transient Path tmpDir;
 
     /**
      * 测试文本到 Parquet 再到文本的完整转换流程。
@@ -54,17 +53,17 @@ public class ParquetMRWithExampleTest {
         Configuration conf = new Configuration();
 
         // 创建输入文件
-        File inputFile = tmpDir.newFile("input");
+        Path inputFile = tmpDir.resolve("input").toFile().toPath();
         Files.copy(Resources.newInputStreamSupplier(Resources.getResource("fruit.txt")),
-            inputFile);
-        File parquetOutputFolder = tmpDir.newFolder("output-parquet");
-        parquetOutputFolder.delete();
-        File textOutputFolder = tmpDir.newFolder("output-text");
-        textOutputFolder.delete();
+            inputFile.toFile());
+        Path parquetOutputFolder = tmpDir.resolve("output-parquet").toFile().toPath();
+        parquetOutputFolder.toFile().delete();
+        Path textOutputFolder = tmpDir.resolve("output-text").toFile().toPath();
+        textOutputFolder.toFile().delete();
 
-        Path input = new Path(inputFile.toURI());
-        Path parquetOutput = new Path(parquetOutputFolder.toURI());
-        Path textOutput = new Path(textOutputFolder.toURI());
+        Path input = inputFile;
+        Path parquetOutput = parquetOutputFolder;
+        Path textOutput = textOutputFolder;
 
         // 步骤 1: 文本 -> Parquet
         int rc = runTool(new TextToParquetWithExample(), conf, input.toString(), parquetOutput.toString());

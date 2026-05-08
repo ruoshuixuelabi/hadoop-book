@@ -1,11 +1,11 @@
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThat;
 
 import java.io.*;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.lib.KeyFieldBasedComparator;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * KeyFieldBasedComparator测试类.

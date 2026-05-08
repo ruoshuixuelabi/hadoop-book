@@ -1,11 +1,11 @@
 // == VIntWritableTest
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThat;
 
 import java.io.IOException;
 import org.apache.hadoop.io.VIntWritable;
 import org.apache.hadoop.util.StringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * VIntWritableTest - VIntWritable 的单元测试

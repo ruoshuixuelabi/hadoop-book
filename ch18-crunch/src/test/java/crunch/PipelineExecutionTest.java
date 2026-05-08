@@ -25,18 +25,16 @@ import org.apache.crunch.fn.IdentityFn;
 import org.apache.crunch.impl.mr.MRPipeline;
 import org.apache.crunch.io.To;
 import org.apache.crunch.test.TemporaryPath;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.crunch.types.writable.Writables.ints;
 import static org.apache.crunch.types.writable.Writables.longs;
 import static org.apache.crunch.types.writable.Writables.strings;
 import static org.apache.crunch.types.writable.Writables.tableOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * PipelineExecution测试类.
@@ -62,12 +60,7 @@ import static org.junit.Assert.assertTrue;
 public class PipelineExecutionTest implements Serializable {
 
   // 使用TemporaryPath规则提供临时目录,测试结束后自动清理
-  @Rule
-  public transient TemporaryPath tmpDir = new TemporaryPath();
-
-  // TestName规则用于获取当前测试方法名称,用于生成唯一的输出文件名
-  @Rule
-  public transient TestName name = new TestName();
+  public transient TemporaryPath tmpDir;
 
   /**
    * 测试异步执行模式.
@@ -218,12 +211,12 @@ public class PipelineExecutionTest implements Serializable {
    * <p>此测试演示迭代式管道的实现模式:循环检查PObject的值,
    * 当满足条件时继续执行下一轮计算.
    *
-   * <p>注意:此测试被@Ignore标记,可能因为迭代时间不确定或资源消耗过大.
+   * <p>注意:此测试被@Disabled标记,可能因为迭代时间不确定或资源消耗过大.
    *
    * @throws IOException 如果发生IO错误
    */
   @Test
-  @Ignore
+  @Disabled
   public void testIterativeAlgorithm() throws IOException {
     String inputPath = tmpDir.copyResourceFileName("set1.txt");
     Pipeline pipeline = new MRPipeline(getClass());
@@ -523,7 +516,7 @@ public class PipelineExecutionTest implements Serializable {
    * @return 目标目录下的DOT文件
    */
   private File dotFile() {
-    return new File("target/" + name.getMethodName() + ".dot");
+    return new File("target/test.dot");
   }
 
 }

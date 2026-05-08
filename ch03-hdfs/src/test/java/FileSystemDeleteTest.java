@@ -1,5 +1,5 @@
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 
@@ -7,8 +7,8 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * HDFS文件删除操作测试类。
@@ -42,7 +42,7 @@ public class FileSystemDeleteTest {
    *
    * @throws Exception 如果准备失败
    */
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     // 获取默认的FileSystem实例（通常是HDFS）
     fs = FileSystem.get(new Configuration());

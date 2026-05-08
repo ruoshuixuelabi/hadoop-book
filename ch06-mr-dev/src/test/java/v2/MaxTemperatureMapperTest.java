@@ -28,7 +28,7 @@ package v2;
 import java.io.IOException;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mrunit.mapreduce.MapDriver;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * MaxTemperatureMapper单元测试类

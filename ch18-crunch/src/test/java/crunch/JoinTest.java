@@ -7,15 +7,15 @@ import org.apache.crunch.Pair;
 import org.apache.crunch.impl.mem.MemPipeline;
 import org.apache.crunch.lib.Cogroup;
 import org.apache.crunch.lib.Join;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static crunch.PCollections.dump;
 import static crunch.PCollections.invert;
 import static org.apache.crunch.types.writable.Writables.ints;
 import static org.apache.crunch.types.writable.Writables.strings;
 import static org.apache.crunch.types.writable.Writables.tableOf;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Join操作测试
@@ -43,7 +43,7 @@ public class JoinTest {
      * a: {2->Tie, 4->Coat, 3->Hat, 1->Scarf}
      * b: {2->Joe, 4->Hank, 0->Ali, 3->Eve, 2->Hank}
      */
-    @Before
+    @BeforeEach
     public void setup() {
         // 创建表a: 数字 -> 物品
         a = MemPipeline.typedTableOf(tableOf(ints(), strings()),

@@ -1,11 +1,11 @@
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThat;
 
 import java.io.*;
 import java.util.Scanner;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.io.IOUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * FileDecompressorTest - FileDecompressor 的单元测试

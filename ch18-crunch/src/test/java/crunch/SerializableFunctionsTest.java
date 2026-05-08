@@ -5,11 +5,10 @@ import org.apache.crunch.PCollection;
 import org.apache.crunch.Pipeline;
 import org.apache.crunch.impl.mr.MRPipeline;
 import org.apache.crunch.test.TemporaryPath;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.crunch.types.avro.Avros.strings;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * 序列化函数测试
@@ -21,8 +20,7 @@ import static org.junit.Assert.assertEquals;
 public class SerializableFunctionsTest {
 
     /** 临时目录规则 */
-    @Rule
-    public transient TemporaryPath tmpDir = new TemporaryPath();
+    public transient TemporaryPath tmpDir;
 
     /**
      * 测试initialize方法被调用

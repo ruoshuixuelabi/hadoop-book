@@ -1,10 +1,10 @@
 // == MapWritableTest
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThat;
 
 import java.io.IOException;
 import org.apache.hadoop.io.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * MapWritableTest - MapWritable 的单元测试

@@ -4,13 +4,13 @@ import java.io.IOException;
 import org.apache.crunch.PTable;
 import org.apache.crunch.impl.mem.MemPipeline;
 import org.apache.crunch.lib.Sort;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static crunch.PCollections.dump;
 import static org.apache.crunch.types.writable.Writables.ints;
 import static org.apache.crunch.types.writable.Writables.tableOf;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * 排序测试
@@ -28,7 +28,7 @@ public class SortTest {
      *
      * 创建表: {(2,3),(1,2),(2,4)}
      */
-    @Before
+    @BeforeEach
     public void setup() {
         a = MemPipeline.typedTableOf(tableOf(ints(), ints()),
             2, 3, 1, 2, 2, 4);

@@ -4,8 +4,7 @@ import org.apache.crunch.PCollection;
 import org.apache.crunch.Pipeline;
 import org.apache.crunch.impl.mr.MRPipeline;
 import org.apache.crunch.test.TemporaryPath;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * 管道调试测试
@@ -17,8 +16,7 @@ import org.junit.Test;
 public class PipelineDebugTest {
 
     /** 临时目录规则 */
-    @Rule
-    public transient TemporaryPath tmpDir = new TemporaryPath();
+    public transient TemporaryPath tmpDir;
 
     /**
      * 测试调试功能

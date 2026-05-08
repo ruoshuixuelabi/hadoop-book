@@ -8,12 +8,12 @@
 // == IntWritableTest-BytesComparison
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThat;
 
 import java.io.IOException;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.util.StringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * IntWritableTest - IntWritable 的单元测试

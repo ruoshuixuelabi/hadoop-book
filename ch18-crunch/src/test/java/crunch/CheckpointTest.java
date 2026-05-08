@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FileUtils;
 import org.apache.crunch.DoFn;
 import org.apache.crunch.Emitter;
 import org.apache.crunch.FilterFn;
@@ -24,16 +23,13 @@ import org.apache.crunch.fn.IdentityFn;
 import org.apache.crunch.impl.mr.MRPipeline;
 import org.apache.crunch.io.To;
 import org.apache.crunch.test.TemporaryPath;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.crunch.types.writable.Writables.ints;
 import static org.apache.crunch.types.writable.Writables.longs;
 import static org.apache.crunch.types.writable.Writables.strings;
 import static org.apache.crunch.types.writable.Writables.tableOf;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * 检查点测试
@@ -47,12 +43,7 @@ import static org.junit.Assert.assertEquals;
 public class CheckpointTest implements Serializable {
 
     /** 临时目录规则 */
-    @Rule
-    public transient TemporaryPath tmpDir = new TemporaryPath();
-
-    /** 测试方法名称规则 */
-    @Rule
-    public transient TestName name = new TestName();
+    public transient TemporaryPath tmpDir;
 
     /**
      * 测试检查点功能

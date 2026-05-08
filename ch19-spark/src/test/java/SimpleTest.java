@@ -27,9 +27,8 @@ import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import scala.Tuple2;
 
 import static org.junit.Assert.assertEquals;
@@ -47,8 +46,7 @@ public class SimpleTest implements Serializable { // 需要序列化，因为Spa
      * 临时文件夹规则<br>
      * 测试结束后自动清理创建的临时文件<br>
      */
-    @Rule
-    public transient TemporaryFolder tmpDir = new TemporaryFolder();
+    public transient Path tmpDir;
 
     /**
      * 测试Spark基本功能<br>
@@ -66,7 +64,7 @@ public class SimpleTest implements Serializable { // 需要序列化，因为Spa
     @Test
     public void test() throws IOException {
         // 创建临时输入文件
-        File inputFile = tmpDir.newFile("input");
+        File inputFile = tmpDir.toFile().toPath().resolve("input").toFile();
 
         // 从classpath复制fruit.txt到临时文件
         // Resources.getResource从classpath查找资源文件

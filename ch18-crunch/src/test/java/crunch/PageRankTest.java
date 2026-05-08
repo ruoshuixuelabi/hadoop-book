@@ -20,13 +20,13 @@ import org.apache.crunch.lib.Aggregate;
 import org.apache.crunch.test.TemporaryPath;
 import org.apache.crunch.types.avro.Avros;
 import org.apache.hadoop.conf.Configuration;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import static org.apache.crunch.types.avro.Avros.floats;
 import static org.apache.crunch.types.avro.Avros.strings;
 import static org.apache.crunch.types.avro.Avros.tableOf;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * PageRank算法测试
@@ -46,8 +46,7 @@ import static org.junit.Assert.assertEquals;
 public class PageRankTest implements Serializable {
 
     /** 临时目录规则 */
-    @Rule
-    public transient TemporaryPath tmpDir = new TemporaryPath();
+    public transient Path tmpDir;
 
     /**
      * PageRank数据结构

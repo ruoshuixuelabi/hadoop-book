@@ -1,5 +1,5 @@
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.net.URI;
@@ -7,7 +7,9 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.util.ReflectionUtils;
-import org.junit.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * MapFileSeekTest - MapFile 随机访问的单元测试
@@ -47,7 +49,7 @@ public class MapFileSeekTest {
      *
      * @throws IOException 如果发生 I/O 错误
      */
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         // 先创建 MapFile (使用 MapFileWriteDemo)
         MapFileWriteDemo.main(new String[] { MAP_URI });
@@ -71,7 +73,7 @@ public class MapFileSeekTest {
      *
      * @throws IOException 如果删除失败
      */
-    @After
+    @AfterEach
     public void tearDown() throws IOException {
         // 删除测试文件
         fs.delete(new Path(MAP_URI), true);

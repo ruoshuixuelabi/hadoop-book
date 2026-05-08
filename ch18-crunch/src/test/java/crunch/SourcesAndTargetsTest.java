@@ -21,12 +21,11 @@ import org.apache.crunch.types.avro.Avros;
 import org.apache.crunch.types.writable.Writables;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * 数据源和目标测试
@@ -42,8 +41,7 @@ import static org.junit.Assert.assertTrue;
 public class SourcesAndTargetsTest implements Serializable {
 
     /** 临时目录规则 */
-    @Rule
-    public transient TemporaryPath tmpDir = new TemporaryPath();
+    public transient TemporaryPath tmpDir;
 
     /**
      * 测试readTextFile
@@ -93,7 +91,7 @@ public class SourcesAndTargetsTest implements Serializable {
      * @ignore 因为Crunch错误地假设key是NullWritable
      */
     @Test
-    @Ignore("fails since Crunch (incorrectly) assumes key is NullWritable")
+    @Disabled("fails since Crunch (incorrectly) assumes key is NullWritable")
     public void testReadValuesFromSequenceFile() throws IOException {
         String inputPath = tmpDir.copyResourceFileName("numbers.seq");
         Pipeline pipeline = new MRPipeline(getClass());

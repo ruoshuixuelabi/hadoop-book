@@ -1,12 +1,12 @@
 // == BytesWritableTest
 // == BytesWritableTest-Capacity
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThat;
 
 import java.io.IOException;
 import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.util.StringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * BytesWritableTest - BytesWritable 的单元测试
