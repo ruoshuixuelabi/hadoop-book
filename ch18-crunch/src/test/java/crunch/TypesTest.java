@@ -42,8 +42,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
  */
 public class TypesTest implements Serializable {
 
-    /** 临时目录规则 */
-    @Rule
+    /**
+     * 临时目录规则
+     */
     public transient TemporaryPath tmpDir = new TemporaryPath();
 
     /**
