@@ -12,11 +12,11 @@ import parquet.example.data.Group;
 import parquet.hadoop.ParquetReader;
 import parquet.hadoop.example.GroupReadSupport;
 
+import static org.hamcrest.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThat;
 
 /**
  * Parquet MapReduce 作业测试类 (使用 Example API)。

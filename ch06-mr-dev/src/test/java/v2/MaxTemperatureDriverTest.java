@@ -27,9 +27,9 @@ package v2;
  * @see MaxTemperatureMapper
  * @see MaxTemperatureReducer
  */
+import static org.hamcrest.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.jupiter.api.Assertions.assertThat;
 
 import java.io.BufferedReader;
 import java.io.IOException;

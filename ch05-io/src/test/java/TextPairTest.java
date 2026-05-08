@@ -1,8 +1,8 @@
 // == TextPairTest
 // cc TextPairTest 测试 TextPair 的序列化和比较功能
 
+import static org.hamcrest.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.jupiter.api.Assertions.assertThat;
 
 import java.io.IOException;
 

@@ -1,8 +1,8 @@
 // cc StringTextComparisonTest Tests showing the differences between the String and Text classes
 // cc StringTextComparisonTest 演示 String 和 Text 类的区别
 
+import static org.hamcrest.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.jupiter.api.Assertions.assertThat;
 
 import java.io.*;
 

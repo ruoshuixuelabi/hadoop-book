@@ -10,8 +10,8 @@
 // == AvroDataFileShortIterator
 // == AvroSchemaResolution
 // == AvroSchemaResolutionWithDataFile
+import static org.hamcrest.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.jupiter.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayOutputStream;

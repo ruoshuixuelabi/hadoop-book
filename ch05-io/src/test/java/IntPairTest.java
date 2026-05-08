@@ -1,8 +1,8 @@
 // == IntPairTest
 // cc IntPairTest 测试 IntPair 的序列化和比较功能
 
+import static org.hamcrest.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.jupiter.api.Assertions.assertThat;
 
 import java.io.IOException;
 

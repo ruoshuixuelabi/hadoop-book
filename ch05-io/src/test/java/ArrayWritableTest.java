@@ -1,8 +1,8 @@
 // == ArrayWritableTest
 // cc ArrayWritableTest 测试 ArrayWritable 和 TextArrayWritable 的功能
 
+import static org.hamcrest.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.jupiter.api.Assertions.assertThat;
 
 import java.io.IOException;
 import org.apache.hadoop.io.*;

@@ -1,8 +1,8 @@
 // == SequenceFileSeekAndSyncTest
 // == SequenceFileSeekAndSyncTest-SeekNonRecordBoundary
 // == SequenceFileSeekAndSyncTest-SyncNonRecordBoundary
+import static org.hamcrest.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.jupiter.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.net.URI;

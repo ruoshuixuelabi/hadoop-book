@@ -20,10 +20,10 @@ import parquet.hadoop.example.GroupWriteSupport;
 import parquet.schema.MessageType;
 import parquet.schema.MessageTypeParser;
 
+import static org.hamcrest.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThat;
 
 /**
  * Parquet 文件读写测试类。
