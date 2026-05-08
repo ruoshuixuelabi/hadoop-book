@@ -33,8 +33,9 @@
   <dependencies>
     <!-- JUnit测试框架：用于编写和运行单元测试 -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <!--
@@ -64,13 +65,5 @@
       <artifactId>guava</artifactId>
     </dependency>
 
-    <!--
-      JUnit Addons：JUnit扩展库
-      提供了额外的测试工具和断言
-    -->
-    <dependency>
-      <groupId>junit-addons</groupId>
-      <artifactId>junit-addons</artifactId>
-    </dependency>
-  </dependencies>
+      </dependencies>
 </project>

@@ -39,8 +39,9 @@
         </dependency>
         <!-- JUnit 测试框架 -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
         </dependency>
         <!--
             Google Guava 工具库
