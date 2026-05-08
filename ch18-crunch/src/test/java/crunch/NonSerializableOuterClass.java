@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.apache.crunch.types.writable.Writables.strings;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * 非序列化外部类测试
@@ -36,7 +37,7 @@ public class NonSerializableOuterClass {
      * 匿名DoFn引用了外部类,但外部类未实现Serializable
      * 应该抛出CrunchRuntimeException
      */
-    @Test(expected = CrunchRuntimeException.class)
+    @Test
     public void runPipeline() throws IOException {
         List<String> expectedContent = Lists.newArrayList("b", "c", "a", "e");
         String inputPath = tmpDir.copyResourceFileName("set1.txt");
@@ -51,7 +52,7 @@ public class NonSerializableOuterClass {
             }
         }, strings());
         assertEquals(expectedContent, Lists.newArrayList(lower.materialize()));
-        pipeline.done();
+        assertThrows(CrunchRuntimeException.class, () -> pipeline.done());
     }
 
 }

@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import static crunch.PCollections.dump;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Crunch类型系统测试
@@ -173,7 +174,7 @@ public class TypesTest implements Serializable {
     /**
      * 测试Writable类型写入Avro文件会失败
      */
-    @Test(expected = CrunchRuntimeException.class)
+    @Test
     public void testWriteWritableToAvroFileFails() throws Exception {
         String inputPath = tmpDir.copyResourceFileName("ints.txt");
         String outputPath = tmpDir.getFileName("out");
@@ -181,7 +182,7 @@ public class TypesTest implements Serializable {
         PCollection<String> a = pipeline.read(From.textFile(inputPath));
         // Writable类型无法序列化为Avro,会抛出异常
         a.write(To.avroFile(outputPath));
-        pipeline.done();
+        assertThrows(CrunchRuntimeException.class, () -> pipeline.done());
     }
 
     /**
