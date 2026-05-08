@@ -17,7 +17,9 @@ import org.apache.spark.Partitioner
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.spark.rdd.RDD
-import org.scalatest.{BeforeAndAfterEach, FunSuite}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers._
 
 import scala.collection.mutable.HashSet
 import scala.reflect.ClassTag
@@ -25,7 +27,7 @@ import scala.reflect.ClassTag
 /**
  * Transformation与Action测试类<br>
  */
-class TransformationsAndActionsTest extends FunSuite with BeforeAndAfterEach {
+class TransformationsAndActionsTest extends AnyFunSuite with BeforeAndAfterEach {
 
   // SparkContext变量
   var sc: SparkContext = _
@@ -33,7 +35,7 @@ class TransformationsAndActionsTest extends FunSuite with BeforeAndAfterEach {
   /**
    * 每个测试用例执行前的初始化方法<br>
    */
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     // 创建local模式的SparkContext
     sc = new SparkContext("local", "test")
   }
@@ -41,7 +43,7 @@ class TransformationsAndActionsTest extends FunSuite with BeforeAndAfterEach {
   /**
    * 每个测试用例执行后的清理方法<br>
    */
-  override def afterEach() {
+  override def afterEach(): Unit = {
     // 停止SparkContext释放资源
     sc.stop()
   }

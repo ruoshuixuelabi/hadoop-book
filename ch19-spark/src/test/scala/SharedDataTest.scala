@@ -6,19 +6,21 @@
  * 功能说明：<br>
  * 测试Spark的两种共享变量机制：<br>
  * 1. Broadcast（广播变量）：高效分发只读数据到所有节点<br>
- * 2. Accumulator（累加器）：跨节点聚合计算结果的机制<br>
+ * 2. LongAccumulator（长整型累加器）：跨节点聚合计算结果的机制<br>
  * 同时验证不使用共享变量时的行为以及Naive累加器的局限性。<br>
  */
 import org.apache.spark.SparkContext._
 import org.apache.spark.broadcast.Broadcast
-import org.apache.spark.{Accumulator, SparkContext}
-import org.scalatest.{BeforeAndAfterEach, FunSuite}
+import org.apache.spark.util.LongAccumulator
+import org.apache.spark.SparkContext
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
 
 /**
  * 共享变量测试类<br>
  * 测试Spark分布式环境下的数据共享机制<br>
  */
-class SharedDataTest extends FunSuite with BeforeAndAfterEach {
+class SharedDataTest extends AnyFunSuite with BeforeAndAfterEach {
 
   // SparkContext变量
   var sc: SparkContext = _
@@ -26,7 +28,7 @@ class SharedDataTest extends FunSuite with BeforeAndAfterEach {
   /**
    * 每个测试用例执行前的初始化方法<br>
    */
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     // 创建local模式的SparkContext
     sc = new SparkContext("local", "test")
   }
@@ -34,7 +36,7 @@ class SharedDataTest extends FunSuite with BeforeAndAfterEach {
   /**
    * 每个测试用例执行后的清理方法<br>
    */
-  override def afterEach() {
+  override def afterEach(): Unit = {
     // 停止SparkContext释放资源
     sc.stop()
   }
@@ -97,19 +99,20 @@ class SharedDataTest extends FunSuite with BeforeAndAfterEach {
   }
 
   /**
-   * 测试：Spark Accumulator（累加器）<br>
-   * 使用Spark提供的Accumulator实现跨节点安全聚合<br>
+   * 测试：Spark LongAccumulator（累加器）<br>
+   * 使用Spark提供的LongAccumulator实现跨节点安全聚合<br>
+   * 注意：Spark 4.x 中 Accumulator 已被废弃，推荐使用 LongAccumulator<br>
    */
   test("accumulator") {
-    // 使用SparkContext.accumulator创建累加器，初始值为0
-    // Accumulator是Spark提供的特殊共享变量，支持跨节点安全累加
-    val count: Accumulator[Int] = sc.accumulator(0)
+    // 使用SparkContext.longAccumulator创建长整型累加器，初始值为0
+    // LongAccumulator是Spark 4.x推荐的累加器类型，支持跨节点安全累加
+    val count: LongAccumulator = sc.longAccumulator("counter")
 
     // 并行化数组，在map闭包中使用累加器
-    // 每个节点执行map时都会调用count += 1
+    // 每个节点执行map时都会调用count.add(1)
     // Spark保证累加操作只会被执行一次（即使task重试）
     val result = sc.parallelize(Array(1, 2, 3))
-      .map(i => { count += 1; i })  // 累加操作会被安全地聚合
+      .map(i => { count.add(1); i })  // 累加操作会被安全地聚合
       .reduce((x, y) => x + y)
 
     // 断言：count.value可以获取累加后的值（3，因为有3个元素）

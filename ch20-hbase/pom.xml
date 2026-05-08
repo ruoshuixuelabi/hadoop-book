@@ -64,6 +64,17 @@
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-server</artifactId>
     </dependency>
+
+    <!--
+      HBase MapReduce：HBase MapReduce集成类
+      包含 TableOutputFormat、TableMapReduceUtil、TableMapper 等
+      用于将 HBase 与 MapReduce 集成
+    -->
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-mapreduce</artifactId>
+      <version>2.6.5</version>
+    </dependency>
   </dependencies>
 
   <!-- ==================== 构建插件配置 ==================== -->
@@ -96,17 +107,10 @@
 
       <!--
         Maven Compiler Plugin：Java编译器配置
-        排除New*.java文件，这些是新版本API的示例
-        在某些环境下可能不兼容
       -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>New*.java</exclude>
-          </excludes>
-        </configuration>
       </plugin>
     </plugins>
   </build>

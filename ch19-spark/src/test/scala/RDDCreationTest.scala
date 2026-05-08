@@ -15,7 +15,9 @@ import org.apache.hadoop.mapreduce.Job
 import org.apache.spark.SparkContext._
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
-import org.scalatest.{BeforeAndAfterEach, FunSuite}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers._
 import specific.WeatherRecord
 /**
  * 文件：RDDCreationTest.scala<br>
@@ -29,7 +31,7 @@ import specific.WeatherRecord
  * RDD创建测试类<br>
  * 使用ScalaTest框架，测试各种RDD创建方式<br>
  */
-class RDDCreationTest extends FunSuite with BeforeAndAfterEach {
+class RDDCreationTest extends AnyFunSuite with BeforeAndAfterEach {
 
   // SparkContext变量
   var sc: SparkContext = _
@@ -38,7 +40,7 @@ class RDDCreationTest extends FunSuite with BeforeAndAfterEach {
    * 每个测试用例执行前的初始化方法<br>
    * 配置Kryo序列化器和自定义注册器<br>
    */
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     // 创建Spark配置
     val conf = new SparkConf()
     // 设置使用KryoSerializer替代JavaSerializer
@@ -52,7 +54,7 @@ class RDDCreationTest extends FunSuite with BeforeAndAfterEach {
   /**
    * 每个测试用例执行后的清理方法<br>
    */
-  override def afterEach() {
+  override def afterEach(): Unit = {
     // 停止SparkContext释放资源
     sc.stop()
   }

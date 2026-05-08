@@ -33,12 +33,12 @@
         <!--
           Spark Core：Spark核心组件
           提供了RDD、SparkContext、SparkConf等核心API
-          Scala版本指定为2.10，与Spark 1.x兼容
+          Scala版本指定为2.13，与Spark 4.x兼容
         -->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.spark</groupId>-->
-<!--            <artifactId>spark-core_2.10</artifactId>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.apache.spark</groupId>-->
+        <!--            <artifactId>spark-core_2.10</artifactId>-->
+        <!--        </dependency>-->
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-core_2.13</artifactId>
@@ -52,18 +52,8 @@
         <dependency>
             <groupId>org.apache.avro</groupId>
             <artifactId>avro-mapred</artifactId>
-            <version>1.7.6</version>
+            <version>1.12.1</version>
         </dependency>
-        <!--
-          Guava：Google核心工具库
-          注意：Spark使用较新版本的Guava，此处指定14.0.1以避免版本冲突
-          TODO：当升级到Spark 1.2.0时可以移除此版本声明，因为Spark会shade Guava
-        -->
-        <!--        <dependency>-->
-        <!--            <groupId>com.google.guava</groupId>-->
-        <!--            <artifactId>guava</artifactId>-->
-        <!--            <version>14.0.1</version>-->
-        <!--        </dependency>-->
         <!-- JUnit测试框架：用于编写和运行单元测试 -->
         <dependency>
             <groupId>junit</groupId>
@@ -76,7 +66,41 @@
         -->
         <dependency>
             <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_2.10</artifactId>
+            <artifactId>scalatest_2.13</artifactId>
+            <version>3.2.20</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- scalatest-funsuite: 提供 AnyFunSuite -->
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest-funsuite_2.13</artifactId>
+            <version>3.2.20</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- scalatest-core: 提供 BeforeAndAfterEach -->
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest-core_2.13</artifactId>
+            <version>3.2.20</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- scalatest-matchers-core: 提供 === 断言语法 -->
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest-matchers-core_2.13</artifactId>
+            <version>3.2.20</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- SLF4J: 日志门面，Spark/Hadoop 需要 -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.9</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -98,7 +122,7 @@
             <plugin>
                 <groupId>org.apache.avro</groupId>
                 <artifactId>avro-maven-plugin</artifactId>
-                <version>1.7.6</version>
+                <version>1.12.1</version>
                 <executions>
                     <execution>
                         <id>schemas</id>

@@ -47,8 +47,9 @@ object MaxTemperatureWithPlacement {
         inputPath)))
 
     // 使用计算出的最优位置创建SparkContext
-    // 这样Spark会将第一个阶段的任务优先调度到包含数据的节点
-    val sc = new SparkContext(conf, preferredLocations)
+    // 注意：Spark 4.x 中 computePreferredLocations 的返回类型已变化
+    // preferredLocations 在 Spark 4.x 中可能需要通过其他方式使用
+    val sc = new SparkContext(conf)
 
     // 从输入路径读取文本文件，每行作为一个元素创建RDD
     sc.textFile(args(0))

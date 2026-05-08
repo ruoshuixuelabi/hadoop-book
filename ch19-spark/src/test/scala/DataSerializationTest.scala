@@ -12,14 +12,16 @@ import example.IntWrapper;
 import org.apache.avro.Schema
 import org.apache.avro.generic.{GenericData, GenericRecord}
 import org.apache.spark.{SparkConf, SparkContext, SparkException}
-import org.scalatest.{BeforeAndAfterEach, FunSuite}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers._
 
 /**
  * 数据序列化测试类<br>
- * 使用ScalaTest框架，继承FunSuite特质提供测试用例编写能力，<br>
+ * 使用ScalaTest框架，继承AnyFunSuite特质提供测试用例编写能力，<br>
  * 混入BeforeAndAfterEach在每个测试前后执行生命周期方法<br>
  */
-class DataSerializationTest extends FunSuite with BeforeAndAfterEach {
+class DataSerializationTest extends AnyFunSuite with BeforeAndAfterEach {
 
   /**
    * Kryo序列化器配置<br>
@@ -35,14 +37,14 @@ class DataSerializationTest extends FunSuite with BeforeAndAfterEach {
    * 每个测试用例执行前的初始化方法<br>
    * 当前实现为空，等待后续扩展<br>
    */
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
   }
 
   /**
    * 每个测试用例执行后的清理方法<br>
    * 停止SparkContext释放资源，避免上下文泄露<br>
    */
-  override def afterEach() {
+  override def afterEach(): Unit = {
     // 停止SparkContext，释放连接和资源
     sc.stop()
   }
@@ -87,13 +89,14 @@ class DataSerializationTest extends FunSuite with BeforeAndAfterEach {
 
     // 使用intercept捕获预期的SparkException
     // NonSerializableInt未实现Serializable接口，JavaSerializer无法处理
-    intercept[SparkException] {
+    try {
       sc.parallelize(Array(1, 2, 3))
-        // map操作将每个Int包装成NonSerializableInt
         .map(new NonSerializableInt(_))
-        // reduce尝试跨节点传递NonSerializableInt，此时会失败
         .reduce((x, y) => x + y)
         .toInt()
+      assert(false, "Expected SparkException was not thrown")
+    } catch {
+      case _: SparkException => // Expected
     }
   }
 
@@ -124,11 +127,14 @@ class DataSerializationTest extends FunSuite with BeforeAndAfterEach {
 
     // 使用intercept捕获预期的SparkException
     // GenericRecord是Avro的通用记录类型，未实现Serializable
-    intercept[SparkException] {
-      sc.parallelize(Array(toGenericRecord(1), toGenericRecord(2), toGenericRecord(3)))
-        // 从GenericRecord中提取value字段（Int类型）
+    try {
+      val records = Array(toGenericRecord(1), toGenericRecord(2), toGenericRecord(3))
+      sc.parallelize(records)
         .map(_.get("value").asInstanceOf[Int])
         .reduce((x, y) => x + y)
+      assert(false, "Expected SparkException was not thrown")
+    } catch {
+      case _: SparkException => // Expected
     }
   }
 
@@ -143,7 +149,8 @@ class DataSerializationTest extends FunSuite with BeforeAndAfterEach {
     val schema = Schema.create(Schema.Type.INT)
 
     // 并行化GenericRecord数组，提取value并求和
-    val result = sc.parallelize(Array(toGenericRecord(1), toGenericRecord(2), toGenericRecord(3)))
+    val records: Array[GenericRecord] = Array(toGenericRecord(1), toGenericRecord(2), toGenericRecord(3))
+    val result = sc.parallelize(records)
       .map(_.get("value").asInstanceOf[Int])
       .reduce((x, y) => x + y)
 
@@ -159,10 +166,14 @@ class DataSerializationTest extends FunSuite with BeforeAndAfterEach {
 
     // 使用intercept捕获预期的SparkException
     // IntWrapper是Avro生成的SpecificRecord，虽然有getValue方法但仍无法被JavaSerializer处理
-    intercept[SparkException] {
-      sc.parallelize(Array(new IntWrapper(1), new IntWrapper(2), new IntWrapper(3)))
+    try {
+      val wrappers: Array[IntWrapper] = Array(new IntWrapper(1), new IntWrapper(2), new IntWrapper(3))
+      sc.parallelize(wrappers)
         .map(_.getValue())
         .reduce((x, y) => x + y)
+      assert(false, "Expected SparkException was not thrown")
+    } catch {
+      case _: SparkException => // Expected
     }
   }
 
@@ -174,7 +185,8 @@ class DataSerializationTest extends FunSuite with BeforeAndAfterEach {
     sc = new SparkContext("local", "test", conf)
 
     // 并行化IntWrapper数组，调用getValue()提取值并求和
-    val result = sc.parallelize(Array(new IntWrapper(1), new IntWrapper(2), new IntWrapper(3)))
+    val wrappers: Array[IntWrapper] = Array(new IntWrapper(1), new IntWrapper(2), new IntWrapper(3))
+    val result = sc.parallelize(wrappers)
       .map(_.getValue())
       .reduce((x, y) => x + y)
 
@@ -188,18 +200,15 @@ class DataSerializationTest extends FunSuite with BeforeAndAfterEach {
    * @return 包含value字段的GenericRecord实例<br>
    */
   def toGenericRecord(i: Int): GenericRecord = {
-    // 解析Avro schema定义字符串，描述一个名为IntWrapper的record类型
-    // 包含一个名为value的int类型字段
-    val avroSchema = new Schema.Parser().parse("{\n  \"type\": \"record\"," +
-      "\n  \"name\": \"IntWrapper\"," +
-      "\n  \"fields\": [\n    {\"name\": \"value\", \"type\": \"int\"}\n  ]\n}")
+    // 定义Avro schema
+    val avroSchema = Schema.createRecord("IntWrapper", null, null, false)
+    avroSchema.addProp("type", "record")
+    val field = new org.apache.avro.Schema.Field("value", Schema.create(Schema.Type.INT), null, null)
+    avroSchema.setFields(java.util.Collections.singletonList(field))
 
-    // 创建GenericData.Record实例，使用解析的schema
+    // 创建GenericData.Record实例
     val datum = new GenericData.Record(avroSchema)
-    // 设置value字段的值
     datum.put("value", i)
-
-    // 返回填充好的GenericRecord
     datum
   }
 }

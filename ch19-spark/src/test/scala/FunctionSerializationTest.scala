@@ -9,13 +9,15 @@
  * 理解函数的序列化特性对于编写正确的Spark分布式程序至关重要。<br>
  */
 import org.apache.spark.{SparkContext, SparkException}
-import org.scalatest.{BeforeAndAfterEach, FunSuite}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers._
 
 /**
  * 函数序列化测试类<br>
  * 使用ScalaTest框架验证函数在Spark分布式环境中的序列化行为<br>
  */
-class FunctionSerializationTest extends FunSuite with BeforeAndAfterEach {
+class FunctionSerializationTest extends AnyFunSuite with BeforeAndAfterEach {
 
   // SparkContext变量，用于在测试中与Spark交互
   var sc: SparkContext = _
@@ -24,7 +26,7 @@ class FunctionSerializationTest extends FunSuite with BeforeAndAfterEach {
    * 每个测试用例执行前的初始化方法<br>
    * 创建local模式的SparkContext用于测试<br>
    */
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     // 创建local模式的SparkContext，模拟单机环境进行测试
     sc = new SparkContext("local", "test")
   }
@@ -33,7 +35,7 @@ class FunctionSerializationTest extends FunSuite with BeforeAndAfterEach {
    * 每个测试用例执行后的清理方法<br>
    * 停止SparkContext释放资源<br>
    */
-  override def afterEach() {
+  override def afterEach(): Unit = {
     // 停止SparkContext
     sc.stop()
   }

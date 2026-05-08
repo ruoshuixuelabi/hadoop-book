@@ -13,7 +13,9 @@ import java.io.File
 import com.google.common.io.{Resources, Files}
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
-import org.scalatest.{BeforeAndAfterEach, FunSuite}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers._
 
 import scala.collection.Map
 
@@ -21,7 +23,7 @@ import scala.collection.Map
  * 词频统计直方图测试类<br>
  * 测试使用Spark进行分布式词频统计和频率分布分析<br>
  */
-class WordCountHistogramTest extends FunSuite with BeforeAndAfterEach {
+class WordCountHistogramTest extends AnyFunSuite with BeforeAndAfterEach {
 
   // SparkContext变量
   var sc: SparkContext = _
@@ -29,7 +31,7 @@ class WordCountHistogramTest extends FunSuite with BeforeAndAfterEach {
   /**
    * 每个测试用例执行前的初始化方法<br>
    */
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     // 创建local模式的SparkContext
     sc = new SparkContext("local", "test")
   }
@@ -37,7 +39,7 @@ class WordCountHistogramTest extends FunSuite with BeforeAndAfterEach {
   /**
    * 每个测试用例执行后的清理方法<br>
    */
-  override def afterEach() {
+  override def afterEach(): Unit = {
     // 停止SparkContext释放资源
     sc.stop()
   }
@@ -70,6 +72,7 @@ class WordCountHistogramTest extends FunSuite with BeforeAndAfterEach {
       .map(_.swap)
       // countByKey是action，统计每个次数（key）有多少个单词（value的个数）
       // 返回Map[次数, 该次数对应的单词数量]
+      .countByKey()
 
     // 断言：直方图包含2种不同的出现次数（1次和2次）
     assert(hist.size === 2)
