@@ -1,17 +1,27 @@
+-- types.hive: 演示Hive的复杂数据类型(ARRAY, MAP, STRUCT, UNIONTYPE)
+-- 打印分隔行
 ! echo; # == complex_types;
 
+-- 步骤1: 创建包含复杂类型字段的表
 DROP TABLE IF EXISTS complex;
-
 CREATE TABLE complex (
-  c1 ARRAY<INT>,
-  c2 MAP<STRING, INT>,
-  c3 STRUCT<a:STRING, b:INT, c:DOUBLE>,
-  c4 UNIONTYPE<STRING, INT>
+  c1 ARRAY<INT>,           -- 整型数组
+  c2 MAP<STRING, INT>,     -- 键值对映射
+  c3 STRUCT<a:STRING, b:INT, c:DOUBLE>,  -- 结构体,包含三个命名字段
+  c4 UNIONTYPE<STRING, INT>  -- 联合类型,可存储字符串或整数
 );
 
+-- 步骤2: 加载复杂类型数据
 LOAD DATA LOCAL INPATH 'input/hive/types/complex.txt'
 OVERWRITE INTO TABLE complex;
 
+-- 打印分隔行,查看复杂类型的使用方式
 ! echo; # vv complex_types;
+
+-- 步骤3: 查询复杂类型数据
+-- c1[0]: 访问数组的第一个元素
+-- c2['b']: 访问MAP中键为'b'的值
+-- c3.c: 访问STRUCT中字段c的值
+-- c4: 直接访问UNIONTYPE的值
 SELECT c1[0], c2['b'], c3.c, c4 FROM complex;
 ! echo; # ^^ complex_types;

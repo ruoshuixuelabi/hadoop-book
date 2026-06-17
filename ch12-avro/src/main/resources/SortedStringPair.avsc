@@ -1,9 +1,9 @@
 {
   "type": "record",
   "name": "StringPair",
-  "doc": "A pair of strings, sorted by right field descending.",
+  "doc": "一对字符串，按 right 字段降序排序。left 字段排序时被忽略。",
   "fields": [
-    {"name": "left", "type": "string", "order": "ignore"},
-    {"name": "right", "type": "string", "order": "descending"}
+    {"name": "left", "type": "string", "order": "ignore", "doc": "左侧字符串，排序时忽略"},
+    {"name": "right", "type": "string", "order": "descending", "doc": "右侧字符串，降序排序"}
   ]
 }

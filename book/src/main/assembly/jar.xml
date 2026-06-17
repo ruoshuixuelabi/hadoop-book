@@ -1,26 +1,58 @@
+<!--
+  Maven Assembly Descriptor - JAR打包描述符
+
+  此描述符用于将项目编译后的类和依赖项打包成一个可执行的JAR文件。
+  主要功能：
+  1. 将项目 artifact（jar包）及其依赖项解压后打包到根目录
+  2. 将 target/classes 目录下的编译类文件添加到JAR根目录
+  3. 只包含 com.hadoopbook 命名空间下的依赖项，避免引入Hadoop本身
+-->
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+  <!-- 打包标识符，最终JAR文件名为: artifactId-version.jar（无-id后缀） -->
   <id>jar</id>
+
+  <!-- 输出格式：打包成单个JAR文件 -->
   <formats>
     <format>jar</format>
   </formats>
+
+  <!-- 不包含基础目录（即不包含项目根目录本身） -->
   <includeBaseDirectory>false</includeBaseDirectory>
+
+  <!-- 依赖项配置：将运行时依赖项解压后打包到JAR根目录 -->
   <dependencySets>
     <dependencySet>
+      <!-- 输出到根目录 / -->
       <outputDirectory>/</outputDirectory>
+
+      <!-- 使用项目自身的artifact（JAR包） -->
       <useProjectArtifact>true</useProjectArtifact>
+
+      <!-- 解压依赖项到JAR内部，而非作为引用JAR -->
       <unpack>true</unpack>
+
+      <!-- 仅包含运行时依赖项 -->
       <scope>runtime</scope>
+
+      <!-- 不使用传递依赖项，只处理直接声明的依赖 -->
       <useTransitiveDependencies>false</useTransitiveDependencies>
+
+      <!-- 仅包含com.hadoopbook命名空间的依赖项，避免引入Hadoop库 -->
       <includes>
         <include>com.hadoopbook:*</include>
       </includes>
     </dependencySet>
   </dependencySets>
+
+  <!-- 文件集配置：添加编译后的类文件 -->
   <fileSets>
     <fileSet>
+      <!-- 从编译输出目录获取类文件 -->
       <directory>target/classes</directory>
+
+      <!-- 输出到JAR根目录 -->
       <outputDirectory>/</outputDirectory>
     </fileSet>
   </fileSets>

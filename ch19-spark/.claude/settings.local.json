@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:repo1.maven.org)",
+      "Bash(curl -s \"https://repo1.maven.org/maven2/org/scalatest/scalatest_2.13/\")",
+      "Bash(curl -s \"https://repo1.maven.org/maven2/org/scalatest/scalatest_2.13/maven-metadata.xml\")",
+      "Bash(curl -sI \"https://repo1.maven.org/maven2/org/scalatest/scalatest_2.13/3.2.20/scalatest_2.13-3.2.20.jar\")",
+      "Bash(mvn dependency:resolve -DincludeArtifactIds=scalatest_2.13)",
+      "Bash(mvn compile *)",
+      "Bash(JAVA_HOME=\"E:/Program Files/Java/jdk-25.0.1\" mvn compile -q)",
+      "Bash(JAVA_HOME=\"E:/Program Files/Java/jdk-25.0.1\" mvn dependency:build-classpath -q)",
+      "Bash(JAVA_HOME=\"E:/Program Files/Java/jdk-25.0.1\" mvn dependency:tree -q)",
+      "Bash(JAVA_HOME=\"E:/Program Files/Java/jdk-25.0.1\" mvn dependency:tree)",
+      "Bash(JAVA_HOME=\"E:/Program Files/Java/jdk-25.0.1\" mvn test-compile)",
+      "Bash(curl -s \"https://repo1.maven.org/maven2/org/scalatest/scalatest-funsuite_2.13/3.2.20/\")",
+      "Bash(curl -s \"https://repo1.maven.org/maven2/org/scalatest/scalatest_2.13/3.2.20/\")",
+      "Bash(curl -s \"https://repo1.maven.org/maven2/org/scalatest/scalatest_2.13/3.2.20/scalatest_2.13-3.2.20.pom\")",
+      "Bash(JAVA_HOME=\"E:/Program Files/Java/jdk-25.0.1\" mvn dependency:build-classpath -DincludeArtifactIds=scalatest_2.13)",
+      "Bash(grep -v \"^\\\\\\\\[\")",
+      "Bash(unzip -l \"e:/repository/org/scalatest/scalatest_2.13/3.2.20/scalatest_2.13-3.2.20.jar\")",
+      "Read(//e/repository/org/scalatest/scalatest_2.13/3.2.20/**)",
+      "Bash(jar tf *)",
+      "Bash(JAVA_HOME=\"E:/Program Files/Java/jdk-25.0.1\" mvn test)",
+      "Bash(mvn install *)",
+      "Bash(JAVA_HOME=\"E:/Program Files/Java/jdk-25.0.1\" mvn install -DskipTests -pl !ch15-sqoop,!ch16-pig,!ch17-hive,!ch21-zk,!ch18-crunch -q)",
+      "Bash(JAVA_HOME=\"E:/Program Files/Java/jdk-25.0.1\" mvn compile -DskipTests -q)",
+      "Bash(JAVA_HOME=\"E:/Program Files/Java/jdk-25.0.1\" mvn install -DskipTests -q)",
+      "Bash(JAVA_HOME=\"E:/Program Files/Java/jdk-25.0.1\" mvn compile -DskipTests)",
+      "Bash(JAVA_HOME=\"E:/Program Files/Java/jdk-25.0.1\" mvn install -N -DskipTests -q)",
+      "Bash(JAVA_HOME=\"E:/Program Files/Java/jdk-25.0.1\" mvn test -q)",
+      "Bash(JAVA_HOME=\"E:/Program Files/Java/jdk-25.0.1\" mvn dependency:tree -pl ch20-hbase)",
+      "Bash(JAVA_HOME=\"E:/Program Files/Java/jdk-25.0.1\" mvn dependency:tree -pl ch20-hbase -DincludeScope=compile)",
+      "Bash(JAVA_HOME=\"E:/Program Files/Java/jdk-25.0.1\" mvn help:effective-pom -Doutput=/tmp/effective-pom.xml)",
+      "Bash(JAVA_HOME=\"E:/Program Files/Java/jdk-25.0.1\" mvn dependency:list)"
+    ]
+  }
+}

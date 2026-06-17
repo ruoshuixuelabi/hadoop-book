@@ -1,48 +1,57 @@
+-- buckets.hive: 演示Hive的分桶表操作
+-- 打印各个查询的起始标记
 ! echo; # == select_users;
 ! echo; # == sample_1_in_4;
 ! echo; # == sample_1_in_2;
 
+-- 步骤1: 创建users表
 DROP TABLE IF EXISTS users;
-
 CREATE TABLE users (id INT, name STRING);
 
+-- 步骤2: 加载用户数据
 LOAD DATA LOCAL INPATH 'input/hive/tables/users.txt'
 OVERWRITE INTO TABLE users;
 
+-- 步骤3: 查看HDFS上的表数据文件
 dfs -cat /user/hive/warehouse/users/users.txt;
 
+-- 步骤4: 删除并创建分桶表(按id分桶,不排序)
 DROP TABLE IF EXISTS bucketed_users;
-
 CREATE TABLE bucketed_users (id INT, name STRING)
 CLUSTERED BY (id) INTO 4 BUCKETS;
 
+-- 步骤5: 删除并创建分桶表(按id分桶且排序)
 DROP TABLE bucketed_users;
-
 CREATE TABLE bucketed_users (id INT, name STRING)
 CLUSTERED BY (id) SORTED BY (id) INTO 4 BUCKETS;
 
+-- 打印分隔行,查看原始用户数据
 ! echo; # vv select_users;
 SELECT * FROM users;
 ! echo; # ^^ select_users;
 
+-- 步骤6: 启用分桶强制,向分桶表插入数据
 SET hive.enforce.bucketing=true;
-
 INSERT OVERWRITE TABLE bucketed_users
 SELECT * FROM users;
 
+-- 步骤7: 查看分桶后的数据文件
 dfs -ls /user/hive/warehouse/bucketed_users;
-
 dfs -cat /user/hive/warehouse/bucketed_users/000000_0;
 
+-- 步骤8: 从指定桶中采样查询
 ! echo; # vv sample_1_in_4;
+-- 从4个桶中的第1个桶采样(id值在该桶范围内)
 SELECT * FROM bucketed_users
 TABLESAMPLE(BUCKET 1 OUT OF 4 ON id);
 ! echo; # ^^ sample_1_in_4;
 
 ! echo; # vv sample_1_in_2;
+-- 从2个桶中的第1个桶采样(将4桶合并为2个大桶)
 SELECT * FROM bucketed_users
 TABLESAMPLE(BUCKET 1 OUT OF 2 ON id);
 ! echo; # ^^ sample_1_in_2;
 
+-- 步骤9: 随机采样,不依赖分桶字段
 SELECT * FROM users
 TABLESAMPLE(BUCKET 1 OUT OF 4 ON rand());

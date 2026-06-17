@@ -1,17 +1,29 @@
+-- max_temp.hive: 计算每年的最高温度
+-- 打印分隔行
 ! echo; # == max_temp_select;
 
+-- 步骤1: 如果已存在则删除records表
 DROP TABLE IF EXISTS records;
 
+-- 步骤2: 创建records表,存储年份、温度和质量码
+-- 表格式: 制表符分隔的文本数据
 CREATE TABLE records (year STRING, temperature INT, quality INT)
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY '\t';
 
+-- 步骤3: 从本地文件加载样本数据到records表
 LOAD DATA LOCAL INPATH 'input/ncdc/micro-tab/sample.txt'
 OVERWRITE INTO TABLE records;
 
+-- 打印分隔行
 ! echo; # vv max_temp_select;
+
+-- 步骤4: 查询每年最高温度
+-- 条件: 温度不等于9999(无效值), 质量码为良好值(0,1,4,5,9)
 SELECT year, MAX(temperature)
 FROM records
 WHERE temperature != 9999 AND quality IN (0, 1, 4, 5, 9)
 GROUP BY year;
+
+-- 打印分隔行
 ! echo; # ^^ max_temp_select;

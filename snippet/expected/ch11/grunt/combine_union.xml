@@ -1,3 +1,4 @@
+<!-- Pig Grunt 集成测试：UNION 操作，将两个关系 A 和 B 合并为一个关系 C -->
 <screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">DUMP A;</userinput>
 (2,3)
 (1,2)

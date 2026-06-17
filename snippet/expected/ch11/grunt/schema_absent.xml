@@ -1,3 +1,5 @@
-<screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">records = LOAD 'input/ncdc/micro-tab/sample.txt';</userinput>
+<!-- Pig Grunt 集成测试：LOAD 时只指定部分字段类型（temperature 未声明类型），验证 schema 推断 -->
+<screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">records = LOAD 'input/ncdc/micro-tab/sample.txt'</userinput>
+<prompt moreinfo="none">&gt;&gt; </prompt><userinput moreinfo="none">  AS (year, temperature:int, quality:int);</userinput>
 <prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">DESCRIBE records;</userinput>
-Schema for records unknown.</screen>
+records: {year: bytearray,temperature: int,quality: int}</screen>

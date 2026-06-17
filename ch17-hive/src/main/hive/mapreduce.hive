@@ -1,24 +1,37 @@
+-- mapreduce.hive: 演示Hive中如何使用自定义Map/Reduce脚本
+-- 打印分隔行
 ! echo; # == mapreduce_is_good_quality;
 
+-- 步骤1: 创建records2表(包含气象站、年份、温度和质量码)
 DROP TABLE IF EXISTS records2;
-
 CREATE TABLE records2 (station STRING, year STRING, temperature INT, quality INT)
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY '\t';
 
+-- 步骤2: 加载样本数据
 LOAD DATA LOCAL INPATH 'input/ncdc/micro-tab/sample2.txt'
 OVERWRITE INTO TABLE records2;
 
+-- 打印分隔行
 ! echo; # vv mapreduce_is_good_quality;
+
+-- 步骤3: 添加Python过滤脚本到分布式缓存
 ADD FILE /Users/tom/book-workspace/hadoop-book/ch17-hive/src/main/python/is_good_quality.py;
+
+-- 步骤4: 使用TRANSFORM+USING执行Map阶段 - 过滤质量不合格的记录
+-- TRANSFORM将输入行的指定字段传递给脚本,脚本输出处理后的字段
 FROM records2
 SELECT TRANSFORM(year, temperature, quality)
 USING 'is_good_quality.py'
 AS year, temperature;
 ! echo; # ^^ mapreduce_is_good_quality;
 
+-- 步骤5: 添加Python归约脚本到分布式缓存
 ADD FILE ch17-hive/src/main/python/max_temperature_reduce.py;
 
+-- 步骤6: 使用MAP/REDUCE语法执行完整的MapReduce作业
+-- 第一步: MAP阶段过滤数据
+-- 第二步: REDUCE阶段计算最高温度
 FROM (
   FROM records2
   MAP year, temperature, quality
@@ -28,6 +41,7 @@ REDUCE year, temperature
 USING 'max_temperature_reduce.py'
 AS year, temperature;
 
+-- 步骤7: 使用TRANSFORM替代MAP/REDUCE实现相同功能(更简洁的语法)
 FROM (
   FROM records2
   SELECT TRANSFORM(year, temperature, quality)

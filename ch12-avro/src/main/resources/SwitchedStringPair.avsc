@@ -1,7 +1,7 @@
 {
   "type": "record",
   "name": "StringPair",
-  "doc": "A pair of strings, sorted by right then left.",
+  "doc": "一对字符串，字段顺序与 StringPair 相反（right 在前，left 在后）。用于测试字段顺序不同的 schema 解析。",
   "fields": [
     {"name": "right", "type": "string"},
     {"name": "left", "type": "string"}

@@ -1,12 +1,38 @@
 <?xml version="1.0"?>
-<!-- yarn-site.xml -->
+<!--
+  Hadoop伪分布式模式 - YARN配置(yarn-site.xml)
+
+  此文件配置YARN资源管理器相关参数。
+
+  YARN架构：
+  - ResourceManager: 负责集群资源分配和调度
+  - NodeManager: 负责单个节点资源管理和容器执行
+  - ApplicationMaster: 每个应用一个，管理应用生命周期
+  - Container: 资源分配单位，包含CPU和内存
+
+  伪分布式环境：所有组件运行在单台机器上
+-->
 <configuration>
+
+  <!--
+    ResourceManager主机名配置
+    yarn.resourcemanager.hostname: 指定ResourceManager所在主机
+    伪分布式环境下设为localhost，所有YARN组件通信在本地进行
+  -->
   <property>
     <name>yarn.resourcemanager.hostname</name>
     <value>localhost</value>
   </property>
+
+  <!--
+    NodeManager辅助服务配置
+    yarn.nodemanager.aux-services: 配置NodeManager启动的辅助服务
+    mapreduce_shuffle是运行MapReduce作业必需的Shuffle服务
+    YARN通过此服务将Map输出数据传输给Reduce任务
+  -->
   <property>
     <name>yarn.nodemanager.aux-services</name>
     <value>mapreduce_shuffle</value>
   </property>
+
 </configuration>

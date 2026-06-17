@@ -1,5 +1,6 @@
 {
   "type": "fixed",
   "name": "Md5Hash",
-  "size": 16
+  "size": 16,
+  "doc": "固定长度二进制类型，16 字节，用于存储 MD5 哈希值。"
 }

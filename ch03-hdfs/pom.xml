@@ -1,30 +1,69 @@
+<!--
+  Maven POM - 第3章：Hadoop分布式文件系统（HDFS）
+
+  本模块是《Hadoop权威指南》第3章的示例代码，
+  演示HDFS API的基本操作，包括：
+  - 文件系统客户端API使用
+  - 文件读写操作
+  - 文件元数据操作
+  - 目录操作
+
+  本模块特点：
+  - 包含HDFS客户端开发和测试所需的依赖
+  - 使用Hamcrest进行断言匹配
+  - 使用SLF4J作为日志框架
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
+  <!-- 继承hadoop-meta父POM，获取统一的依赖版本管理 -->
   <parent>
     <groupId>com.hadoopbook</groupId>
     <artifactId>hadoop-meta</artifactId>
     <version>4.0</version>
     <relativePath>../hadoop-meta/pom.xml</relativePath>
   </parent>
+
   <groupId>com.hadoopbook</groupId>
   <artifactId>ch03-hdfs</artifactId>
   <packaging>jar</packaging>
   <version>4.0</version>
+
+  <!-- 章节名称：Hadoop分布式文件系统 -->
   <name>Chapter 3: The Hadoop Distributed Filesystem</name>
+
+  <!-- ==================== 依赖项配置 ==================== -->
   <dependencies>
+    <!-- JUnit测试框架：用于编写和运行单元测试 -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
     </dependency>
+
+    <!--
+      Hamcrest匹配库：提供更直观的断言语法
+      用于复杂对象的匹配验证，如文件内容、集合等
+    -->
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-all</artifactId>
     </dependency>
+
+    <!--
+      SLF4J API：简单日志门面接口
+      提供了日志操作的抽象接口，允许运行时绑定到具体的日志实现
+    -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
+
+    <!--
+      SLF4J Log4j12绑定：将SLF4J API绑定到Log4j 1.2实现
+      使应用程序可以使用Log4j作为日志输出引擎
+    -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>

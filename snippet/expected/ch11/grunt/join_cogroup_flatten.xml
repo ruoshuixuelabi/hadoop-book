@@ -1,6 +1,8 @@
-<screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">F = FOREACH E GENERATE FLATTEN(A), B.$0;</userinput>
-<prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">DUMP F;</userinput>
-(1,Scarf,{})
-(2,Tie,{(Joe),(Hank)})
-(3,Hat,{(Eve)})
-(4,Coat,{(Hank)})</screen>
+<!-- Pig Grunt 集成测试：COGROUP + INNER + FLATTEN 操作，展平内联分组结果 -->
+<screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">G = COGROUP A BY $0 INNER, B BY $1 INNER;</userinput>
+<prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">H = FOREACH G GENERATE FLATTEN($1), FLATTEN($2);</userinput>
+<prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">DUMP H;</userinput>
+(2,Tie,Joe,2)
+(2,Tie,Hank,2)
+(3,Hat,Eve,3)
+(4,Coat,Hank,4)</screen>

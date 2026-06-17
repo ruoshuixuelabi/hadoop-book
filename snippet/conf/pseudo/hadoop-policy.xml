@@ -1,14 +1,13 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 <!--
- 
- Licensed to the Apache Software Foundation (ASF) under one
- or more contributor license agreements.  See the NOTICE file
- distributed with this work for additional information
- regarding copyright ownership.  The ASF licenses this file
- to you under the Apache License, Version 2.0 (the
- "License"); you may not use this file except in compliance
- with the License.  You may obtain a copy of the License at
+  Licensed under the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
 
      http://www.apache.org/licenses/LICENSE-2.0
 
@@ -19,10 +18,33 @@
  limitations under the License.
 
 -->
+<!--
+  Hadoop安全策略配置文件(hadoop-policy.xml)
+
+  此文件定义Hadoop各协议的安全访问控制列表(ACL)。
+  通过配置ACL，可以控制哪些用户和组有权访问特定的Hadoop服务协议。
+
+  ACL格式说明：
+  - 逗号分隔的用户和组列表
+  - 用户和组之间用空格分隔
+  - 例如："alice,bob users,wheel"
+  - "*" 表示允许所有用户访问
+
+  协议分类：
+  - HDFS协议：客户端与HDFS交互的协议
+  - YARN协议：资源管理与应用程序交互的协议
+  - 管理协议：集群管理操作协议
+-->
 
 <!-- Put site-specific property overrides in this file. -->
 
 <configuration>
+
+  <!--
+    客户端协议ACL
+    ClientProtocol：用户代码通过DistributedFileSystem使用的协议
+    控制客户端对HDFS的访问权限
+  -->
   <property>
     <name>security.client.protocol.acl</name>
     <value>*</value>
@@ -33,6 +55,11 @@
     A special value of "*" means all users are allowed.</description>
   </property>
 
+  <!--
+    客户端数据节点协议ACL
+    ClientDatanodeProtocol：客户端到数据节点的协议，用于块恢复
+    控制客户端与DataNode直接通信的权限
+  -->
   <property>
     <name>security.client.datanode.protocol.acl</name>
     <value>*</value>
@@ -43,6 +70,11 @@
     A special value of "*" means all users are allowed.</description>
   </property>
 
+  <!--
+    数据节点协议ACL
+    DatanodeProtocol：DataNode与NameNode之间的通信协议
+    控制DataNode节点注册、心跳和块报告的权限
+  -->
   <property>
     <name>security.datanode.protocol.acl</name>
     <value>*</value>
@@ -53,6 +85,11 @@
     A special value of "*" means all users are allowed.</description>
   </property>
 
+  <!--
+    数据节点间协议ACL
+    InterDatanodeProtocol：DataNode之间的协议，用于更新代际时间戳
+    控制DataNode之间直接通信的权限
+  -->
   <property>
     <name>security.inter.datanode.protocol.acl</name>
     <value>*</value>
@@ -63,6 +100,11 @@
     A special value of "*" means all users are allowed.</description>
   </property>
 
+  <!--
+    NameNode协议ACL
+    NamenodeProtocol：SecondaryNameNode与NameNode之间的通信协议
+    控制辅助NameNode与主NameNode通信的权限
+  -->
   <property>
     <name>security.namenode.protocol.acl</name>
     <value>*</value>
@@ -73,7 +115,12 @@
     A special value of "*" means all users are allowed.</description>
   </property>
 
- <property>
+  <!--
+    管理员操作协议ACL
+    AdminOperationsProtocol：用于管理命令的协议
+    控制集群管理操作的权限
+  -->
+  <property>
     <name>security.admin.operations.protocol.acl</name>
     <value>*</value>
     <description>ACL for AdminOperationsProtocol. Used for admin commands.
@@ -82,6 +129,11 @@
     A special value of "*" means all users are allowed.</description>
   </property>
 
+  <!--
+    用户映射刷新协议ACL
+    RefreshUserMappingsProtocol：用于刷新用户映射的协议
+    控制刷新用户和组映射关系的权限
+  -->
   <property>
     <name>security.refresh.user.mappings.protocol.acl</name>
     <value>*</value>
@@ -92,6 +144,11 @@
     users are allowed.</description>
   </property>
 
+  <!--
+    策略刷新协议ACL
+    RefreshAuthorizationPolicyProtocol：用于刷新安全策略的协议
+    dfsadmin和mradmin命令使用此协议刷新安全策略
+  -->
   <property>
     <name>security.refresh.policy.protocol.acl</name>
     <value>*</value>
@@ -102,6 +159,11 @@
     A special value of "*" means all users are allowed.</description>
   </property>
 
+  <!--
+    HA服务协议ACL
+    HAService protocol：HA管理协议，用于HAAdmin管理NameNode主备状态
+    控制高可用NameNode状态切换的权限
+  -->
   <property>
     <name>security.ha.service.protocol.acl</name>
     <value>*</value>
@@ -109,6 +171,11 @@
       active and stand-by states of namenode.</description>
   </property>
 
+  <!--
+    ZK故障转移控制器ACL
+    ZKFailoverController：访问ZooKeeper故障转移控制器的权限
+    控制ZKFC与ZooKeeper通信的权限
+  -->
   <property>
     <name>security.zkfc.protocol.acl</name>
     <value>*</value>
@@ -116,6 +183,11 @@
     </description>
   </property>
 
+  <!--
+    QuorumJournal协议ACL
+    QJournalProtocol：NameNode与JournalNode之间的协议
+    使用QuorumJournalManager管理edit logs时使用
+  -->
   <property>
     <name>security.qjournal.service.protocol.acl</name>
     <value>*</value>
@@ -123,18 +195,28 @@
     JNs when using the QuorumJournalManager for edit logs.</description>
   </property>
 
+  <!--
+    MR History Server客户端协议ACL
+    HSClientProtocol：作业客户端与MR History Server通信的协议
+    用于查询作业历史状态等信息
+  -->
   <property>
     <name>security.mrhs.client.protocol.acl</name>
     <value>*</value>
     <description>ACL for HSClientProtocol, used by job clients to
-    communciate with the MR History Server job status etc. 
+    communciate with the MR History Server job status etc.
     The ACL is a comma-separated list of user and group names. The user and
     group list is separated by a blank. For e.g. "alice,bob users,wheel".
     A special value of "*" means all users are allowed.</description>
   </property>
 
-  <!-- YARN Protocols -->
+  <!-- YARN协议配置 -->
 
+  <!--
+    资源跟踪器协议ACL
+    ResourceTrackerProtocol：ResourceManager与NodeManager之间的通信协议
+    控制节点心跳和资源报告的权限
+  -->
   <property>
     <name>security.resourcetracker.protocol.acl</name>
     <value>*</value>
@@ -145,55 +227,85 @@
     A special value of "*" means all users are allowed.</description>
   </property>
 
+  <!--
+    ResourceManager管理协议ACL
+    ResourceManagerAdministrationProtocol：用于管理命令的协议
+    控制YARN集群管理的权限
+  -->
   <property>
     <name>security.resourcemanager-administration.protocol.acl</name>
     <value>*</value>
-    <description>ACL for ResourceManagerAdministrationProtocol, for admin commands. 
+    <description>ACL for ResourceManagerAdministrationProtocol, for admin commands.
     The ACL is a comma-separated list of user and group names. The user and
     group list is separated by a blank. For e.g. "alice,bob users,wheel".
     A special value of "*" means all users are allowed.</description>
   </property>
 
+  <!--
+    应用程序客户端协议ACL
+    ApplicationClientProtocol：ResourceManager与应用程序提交客户端之间的协议
+    控制作业提交的权限
+  -->
   <property>
     <name>security.applicationclient.protocol.acl</name>
     <value>*</value>
-    <description>ACL for ApplicationClientProtocol, used by the ResourceManager 
+    <description>ACL for ApplicationClientProtocol, used by the ResourceManager
     and applications submission clients to communicate with each other.
     The ACL is a comma-separated list of user and group names. The user and
     group list is separated by a blank. For e.g. "alice,bob users,wheel".
     A special value of "*" means all users are allowed.</description>
   </property>
 
+  <!--
+    ApplicationMaster协议ACL
+    ApplicationMasterProtocol：ResourceManager与ApplicationMaster之间的协议
+    控制ApplicationMaster注册和资源请求的权限
+  -->
   <property>
     <name>security.applicationmaster.protocol.acl</name>
     <value>*</value>
-    <description>ACL for ApplicationMasterProtocol, used by the ResourceManager 
+    <description>ACL for ApplicationMasterProtocol, used by the ResourceManager
     and ApplicationMasters to communicate with each other.
     The ACL is a comma-separated list of user and group names. The user and
     group list is separated by a blank. For e.g. "alice,bob users,wheel".
     A special value of "*" means all users are allowed.</description>
   </property>
 
+  <!--
+    容器管理协议ACL
+    ContainerManagementProtocol：NodeManager与ApplicationMaster之间的协议
+    控制容器启动、停止和状态更新的权限
+  -->
   <property>
     <name>security.containermanagement.protocol.acl</name>
     <value>*</value>
-    <description>ACL for ContainerManagementProtocol protocol, used by the NodeManager 
+    <description>ACL for ContainerManagementProtocol protocol, used by the NodeManager
     and ApplicationMasters to communicate with each other.
     The ACL is a comma-separated list of user and group names. The user and
     group list is separated by a blank. For e.g. "alice,bob users,wheel".
     A special value of "*" means all users are allowed.</description>
   </property>
 
+  <!--
+    资源本地化协议ACL
+    ResourceLocalizerProtocol：NodeManager与ResourceLocalizer之间的协议
+    控制资源本地化的权限
+  -->
   <property>
     <name>security.resourcelocalizer.protocol.acl</name>
     <value>*</value>
-    <description>ACL for ResourceLocalizer protocol, used by the NodeManager 
+    <description>ACL for ResourceLocalizer protocol, used by the NodeManager
     and ResourceLocalizer to communicate with each other.
     The ACL is a comma-separated list of user and group names. The user and
     group list is separated by a blank. For e.g. "alice,bob users,wheel".
     A special value of "*" means all users are allowed.</description>
   </property>
 
+  <!--
+    作业任务协议ACL
+    TaskUmbilicalProtocol：Map和Reduce任务与父TaskTracker通信的协议
+    控制任务心跳和状态更新的权限
+  -->
   <property>
     <name>security.job.task.protocol.acl</name>
     <value>*</value>
@@ -204,11 +316,16 @@
     A special value of "*" means all users are allowed.</description>
   </property>
 
+  <!--
+    作业客户端协议ACL
+    MRClientProtocol：作业客户端与MR ApplicationMaster通信的协议
+    用于查询作业状态、获取进度等
+  -->
   <property>
     <name>security.job.client.protocol.acl</name>
     <value>*</value>
     <description>ACL for MRClientProtocol, used by job clients to
-    communciate with the MR ApplicationMaster to query job status etc. 
+    communciate with the MR ApplicationMaster to query job status etc.
     The ACL is a comma-separated list of user and group names. The user and
     group list is separated by a blank. For e.g. "alice,bob users,wheel".
     A special value of "*" means all users are allowed.</description>

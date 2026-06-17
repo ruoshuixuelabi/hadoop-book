@@ -10,54 +10,75 @@ import org.apache.crunch.Pipeline;
 import org.apache.crunch.PipelineResult;
 import org.apache.crunch.impl.mr.MRPipeline;
 import org.apache.crunch.test.TemporaryPath;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.crunch.types.writable.Writables.strings;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * 物化测试
+ *
+ * 演示Crunch的物化功能:
+ * - PCollection.materialize(): 将分布式集合物化为本地迭代器
+ * - PObject: 单值对象,可以立即获取结果
+ *
+ * 这些操作会触发管道的实际执行。
+ */
 public class MaterializeTest {
 
-  @Rule
-  public transient TemporaryPath tmpDir = new TemporaryPath();
+    /** 临时目录规则 */
+    public transient TemporaryPath tmpDir;
 
-  @Test
-  public void testMaterializeCallsRunImplicitly() throws IOException {
-    List<String> expectedContent = Lists.newArrayList("b", "c", "a", "e");
-    String inputPath = tmpDir.copyResourceFileName("set1.txt");
+    /**
+     * 测试materialize()触发管道执行
+     *
+     * materialize()会触发管道的惰性计算
+     */
+    @Test
+    public void testMaterializeCallsRunImplicitly() throws IOException {
+        List<String> expectedContent = Lists.newArrayList("b", "c", "a", "e");
+        String inputPath = tmpDir.copyResourceFileName("set1.txt");
 
-    Pipeline pipeline = new MRPipeline(getClass());
-    PCollection<String> lines = pipeline.readTextFile(inputPath);
-    PCollection<String> lower = lines.parallelDo(new ToLowerFn(), strings());
+        Pipeline pipeline = new MRPipeline(getClass());
+        PCollection<String> lines = pipeline.readTextFile(inputPath);
+        PCollection<String> lower = lines.parallelDo(new ToLowerFn(), strings());
 
-    Iterable<String> materialized = lower.materialize();
-    for (String s : materialized) { // pipeline is run
-      System.out.println(s);
+        // 物化会触发管道执行
+        Iterable<String> materialized = lower.materialize();
+        for (String s : materialized) { // 管道运行
+            System.out.println(s);
+        }
+        assertEquals(expectedContent, Lists.newArrayList(materialized));
+
+        PipelineResult result = pipeline.done();
+        // materialize触发运行,但没有新的stage
+        assertEquals(0, result.getStageResults().size());
     }
-    assertEquals(expectedContent, Lists.newArrayList(materialized));
 
-    PipelineResult result = pipeline.done();
-    assertEquals(0, result.getStageResults().size());
-  }
+    /**
+     * 测试PObject触发管道执行
+     *
+     * PObject.getValue()会触发管道执行
+     */
+    @Test
+    public void testPObjectCallsRunImplicitly() throws IOException {
+        List<String> expectedContent = Lists.newArrayList("b", "c", "a", "e");
+        String inputPath = tmpDir.copyResourceFileName("set1.txt");
 
-  @Test
-  public void testPObjectCallsRunImplicitly() throws IOException {
-    List<String> expectedContent = Lists.newArrayList("b", "c", "a", "e");
-    String inputPath = tmpDir.copyResourceFileName("set1.txt");
+        Pipeline pipeline = new MRPipeline(getClass());
+        PCollection<String> lines = pipeline.readTextFile(inputPath);
+        PCollection<String> lower = lines.parallelDo(new ToLowerFn(), strings());
 
-    Pipeline pipeline = new MRPipeline(getClass());
-    PCollection<String> lines = pipeline.readTextFile(inputPath);
-    PCollection<String> lower = lines.parallelDo(new ToLowerFn(), strings());
+        // asCollection返回PObject
+        PObject<Collection<String>> po = lower.asCollection();
+        for (String s : po.getValue()) { // 管道运行
+            System.out.println(s);
+        }
+        assertEquals(expectedContent, po.getValue());
 
-    PObject<Collection<String>> po = lower.asCollection();
-    for (String s : po.getValue()) { // pipeline is run
-      System.out.println(s);
+        System.out.println("About to call done()");
+        PipelineResult result = pipeline.done();
+        assertEquals(0, result.getStageResults().size());
     }
-    assertEquals(expectedContent, po.getValue());
-
-    System.out.println("About to call done()");
-    PipelineResult result = pipeline.done();
-    assertEquals(0, result.getStageResults().size());
-  }
 
 }

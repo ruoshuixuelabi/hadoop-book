@@ -1,4 +1,5 @@
 {
   "type": "array",
-  "items": "long"
+  "items": "long",
+  "doc": "长整型数组类型，用于存储多个长整数值。"
 }

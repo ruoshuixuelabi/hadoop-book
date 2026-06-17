@@ -1,8 +1,24 @@
 <?xml version="1.0"?>
-<!-- mapred-site.xml -->
+<!--
+  Hadoop伪分布式模式 - MapReduce配置(mapred-site.xml)
+
+  此文件配置MapReduce作业执行相关参数。
+
+  配置说明：
+  - 使用YARN作为MapReduce运行时框架
+  - JobHistory Server用于记录历史作业信息
+  - 伪分布式环境下YARN管理单节点资源
+-->
 <configuration>
+
+  <!--
+    MapReduce执行框架
+    mapreduce.framework.name: 指定使用yarn作为执行框架
+    YARN（Yet Another Resource Negotiator）是Hadoop 2.x引入的资源管理系统
+  -->
   <property>
     <name>mapreduce.framework.name</name>
     <value>yarn</value>
   </property>
+
 </configuration>
