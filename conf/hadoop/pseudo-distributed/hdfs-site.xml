@@ -1,25 +1,8 @@
 <?xml version="1.0"?>
-<!--
-  Hadoop伪分布式模式 - HDFS配置(hdfs-site.xml)
-
-  此文件配置HDFS相关参数，控制数据块复制、副本数量等。
-
-  伪分布式环境下：
-  - 只有单个DataNode运行
-  - 副本数设置为1，数据存储在本地
-  - 适合开发测试，避免网络开销
--->
+<!-- hdfs-site.xml -->
 <configuration>
-
-  <!--
-    HDFS数据块副本数量
-    dfs.replication: 设置文件块副本数为1
-    伪分布式环境下通常设为1，因为只有单个DataNode
-    生产环境通常设为3以保证数据高可用
-  -->
   <property>
     <name>dfs.replication</name>
     <value>1</value>
   </property>
-
 </configuration>

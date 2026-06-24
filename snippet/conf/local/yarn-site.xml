@@ -1,17 +1,8 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 
-<!--
-  Hadoop本地模式 - YARN配置(yarn-site.xml)
+<!-- Put site-specific property overrides in this file. -->
 
-  此文件用于配置YARN资源管理器相关参数。
-  本地模式通常不需要YARN，因为MapReduce以local模式运行。
-
-  常见配置项：
-  - yarn.resourcemanager.hostname: ResourceManager主机名
-  - yarn.nodemanager.aux-services: NodeManager辅助服务
-  - yarn.nodemanager.resource.memory-mb: NodeManager总内存
--->
 <configuration>
 
 </configuration>

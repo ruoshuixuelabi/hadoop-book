@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -12,19 +11,6 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
--->
-<!--
-  HttpFS服务器配置文件(httpfs-site.xml)
-
-  HttpFS是Hadoop的HTTP网关服务，允许通过HTTP REST API访问HDFS。
-  它提供了WebHDFS的所有功能，适用于不能直接访问HDFS的客户端。
-
-  主要用途：
-  - 跨防火墙访问HDFS
-  - 提供基于HTTP的HDFS操作接口
-  - 支持WebHDFS客户端
-
-  默认端口：14000
 -->
 <configuration>
 

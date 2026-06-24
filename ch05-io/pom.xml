@@ -1,67 +1,30 @@
-<!--
-  Maven POM - 第5章：Hadoop I/O
-
-  本模块是《Hadoop权威指南》第5章的示例代码，
-  演示Hadoop输入输出格式的高级特性，包括：
-  - Writable接口和WritableComparable接口
-  - SequenceFile（序列文件）格式
-  - MapFile（映射文件）格式
-  - DataSerializable和GenericWritable
-  - 压缩编解码器
-  - 基于文件的数据结构
-
-  本模块特点：
-  - 依赖ch02-mr-intro模块
-  - 提供多种I/O格式的测试用例
-  - 使用Hamcrest进行复杂断言
--->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
-  <!-- 继承hadoop-meta父POM，获取统一的依赖版本管理 -->
   <parent>
     <groupId>com.hadoopbook</groupId>
     <artifactId>hadoop-meta</artifactId>
     <version>4.0</version>
     <relativePath>../hadoop-meta/pom.xml</relativePath>
   </parent>
-
   <groupId>com.hadoopbook</groupId>
   <artifactId>ch05-io</artifactId>
   <packaging>jar</packaging>
   <version>4.0</version>
-
-  <!-- 章节名称：Hadoop I/O -->
   <name>Chapter 5: Hadoop I/O</name>
-
-  <!-- ==================== 依赖项配置 ==================== -->
   <dependencies>
-    <!--
-      ch02-mr-intro模块：提供基础的MapReduce实现
-      本模块的Writable实现需要基于基础MapReduce示例
-    -->
     <dependency>
       <groupId>com.hadoopbook</groupId>
       <artifactId>ch02-mr-intro</artifactId>
       <version>4.0</version>
     </dependency>
-
-    <!-- JUnit测试框架：用于编写和运行单元测试 -->
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <scope>test</scope>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
     </dependency>
-
-    <!--
-      Hamcrest匹配库：提供更直观的断言语法
-      用于复杂数据结构的匹配验证
-    -->
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-all</artifactId>
     </dependency>
-
   </dependencies>
 </project>

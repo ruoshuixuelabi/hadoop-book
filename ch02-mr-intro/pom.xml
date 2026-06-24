@@ -1,35 +1,21 @@
-<!--
-  Maven POM - 第2章：MapReduce简介
-  本模块是《Hadoop权威指南》第2章的示例代码，
-  介绍MapReduce编程模型的基本概念和WordCount示例。
-  作为入门章节，此模块仅包含最基础的MapReduce实现。
-  本模块特点：
-  - 依赖最少，仅包含junit用于测试
-  - 作为其他高级模块的基础依赖
--->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <!-- 继承hadoop-meta父POM，获取统一的依赖版本管理 -->
-    <parent>
-        <groupId>com.hadoopbook</groupId>
-        <artifactId>hadoop-meta</artifactId>
-        <version>4.0</version>
-        <relativePath>../hadoop-meta/pom.xml</relativePath>
-    </parent>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
     <groupId>com.hadoopbook</groupId>
-    <artifactId>ch02-mr-intro</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>hadoop-meta</artifactId>
     <version>4.0</version>
-    <!-- 章节名称：MapReduce简介 -->
-    <name>Chapter 2: MapReduce</name>
-    <!-- ==================== 依赖项配置 ==================== -->
-    <dependencies>
-        <!-- JUnit测试框架：用于编写和运行单元测试 -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+    <relativePath>../hadoop-meta/pom.xml</relativePath>
+  </parent>
+  <groupId>com.hadoopbook</groupId>
+  <artifactId>ch02-mr-intro</artifactId>
+  <packaging>jar</packaging>
+  <version>4.0</version>
+  <name>Chapter 2: MapReduce</name>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+  </dependencies>
 </project>

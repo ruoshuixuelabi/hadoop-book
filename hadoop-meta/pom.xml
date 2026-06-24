@@ -1,81 +1,33 @@
-<!--
-  Hadoop Meta 模块 POM
-  ====================
-  本模块是 Hadoop 依赖管理的中心，所有章节模块都继承此 POM。
-
-  主要功能:
-  1. 定义所有模块共用的核心 Hadoop 依赖
-  2. 提供测试用的 MiniCluster 和 MRUnit 支持
-  3. 简化子模块的 POM 配置（只需声明依赖，不用指定版本）
-
-  使用方式:
-  子模块的 pom.xml 中设置 <parent> 为 hadoop-meta，
-  然后直接使用 hadoop-client 等依赖（版本从父 POM 继承）
--->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <!-- POM 模型版本 -->
   <modelVersion>4.0.0</modelVersion>
-
-  <!-- 继承父 POM（book 模块的版本管理） -->
   <parent>
     <groupId>com.hadoopbook</groupId>
     <artifactId>book</artifactId>
     <version>4.0</version>
-    <!-- 相对于当前目录的父 POM 路径 -->
     <relativePath>../book/pom.xml</relativePath>
   </parent>
-
-  <!-- 项目坐标 -->
   <groupId>com.hadoopbook</groupId>
   <artifactId>hadoop-meta</artifactId>
-  <!-- 打包类型为 pom，表示这是依赖管理模块 -->
   <packaging>pom</packaging>
   <version>4.0</version>
   <name>Hadoop dependencies</name>
 
-  <!--
-    构建配置
-    ========
-    这里配置 Maven 编译插件的默认行为
-  -->
   <build>
     <plugins>
-      <!-- Maven 编译插件，继承自父 POM 的配置 -->
       <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.15.0</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
-
-  <!--
-    依赖声明
-    ========
-    这里定义的依赖会被子模块自动继承
-  -->
   <dependencies>
-    <!--
-      Hadoop 客户端
-      ============
-      用途: 提供 HDFS 和 MapReduce 的客户端 API
-      内容: 包含 HdfsClient、JobClient、FileSystem 等核心类
-      说明: 这是所有示例模块的核心依赖
-    -->
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-client</artifactId>
       <version>${hadoop.version}</version>
     </dependency>
 
-    <!--
-      Hadoop MiniCluster
-      ===================
-      用途: 用于单元测试的嵌入式 Hadoop 集群
-      场景: 在测试中启动完整的 HDFS 和 YARN 环境
-      scope=test: 仅在测试时使用，不打包到最终产物
-    -->
     <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-minicluster</artifactId>
@@ -83,14 +35,6 @@
       <scope>test</scope>
     </dependency>
 
-    <!--
-      MRUnit
-      ======
-      用途: Hadoop MapReduce 单元测试框架
-      特点: 简化 Mapper 和 Reducer 的测试，提供流畅的 API
-      classifier=hadoop2: 表示适配 Hadoop 2.x/3.x API
-      scope=test: 仅在测试时使用
-    -->
     <dependency>
       <groupId>org.apache.mrunit</groupId>
       <artifactId>mrunit</artifactId>

@@ -1,78 +1,29 @@
-<!--
-  Wikipedia XML 转储样本文件 (MediaWiki XML Export Format)
-  =========================================================
-
-  此文件采用 MediaWiki 的 XML 导出格式,用于存储 Wikipedia 文章的历史版本数据。
-  这是 Wikipedia 向公众提供的公开数据格式,可从 https:// dumps.wikimedia.org/ 下载完整转储。
-
-  主要结构:
-  - <mediawiki>: 根元素,包含整个转储文件
-  - <page>: 每一篇 Wikipedia 文章为一个 page 节点
-  - <revision>: 每篇文章的每个历史版本为一个 revision 节点
--->
-<mediawiki xml:lang="en">
-  <!--
-    <page>: 页面元素
-    代表一篇 Wikipedia 文章或讨论页
-    包含: 标题(title)、访问限制(restrictions)、历史版本(revision)
-  -->
-  <page>
-    <title>Page title</title>
-    <!--
-      <restrictions>: 页面访问限制
-      格式: edit=级别:move=级别
-      常见级别: sysop(仅管理员)、autoconfirmed(已确认用户)、空值(无限制)
-    -->
-    <restrictions>edit=sysop:move=sysop</restrictions>
-
-    <!--
-      <revision>: 版本/修订记录
-      每一次页面编辑产生一个新的 revision
-      包含: 时间戳、贡献者、注释、文本内容、是否小编辑
-    -->
-    <revision>
-      <!-- <timestamp>: 修订时间,ISO 8601 格式 (YYYY-MM-DDThh:mm:ssZ) -->
-      <timestamp>2001-01-15T13:15:00Z</timestamp>
-
-      <!--
-        <contributor>: 贡献者/编辑者
-        两种形式:
-        - <username>: 已登录用户,包含用户名
-        - <ip>: 未登录用户或匿名用户,显示 IP 地址
-      -->
-      <contributor><username>Foobar</username></contributor>
-
-      <!-- <comment>: 编辑摘要,说明本次修改的内容或原因 -->
-      <comment>I have just one thing to say!</comment>
-
-      <!-- <text>: 页面内容,使用 MediaWiki 标记语言 (如 [[链接]]、'''粗体''' 等) -->
-      <text>A bunch of [[text]] here.</text>
-
-      <!-- <minor />: 小编辑标记,表示本次修改是轻微的(如拼写修正、格式调整) -->
-      <minor />
-    </revision>
-
-    <!-- 示例: 页面的早期版本 -->
-    <revision>
-      <timestamp>2001-01-15T13:10:27Z</timestamp>
-      <!-- 匿名用户编辑,使用 IP 地址标识 -->
-      <contributor><ip>10.0.0.2</ip></contributor>
-      <comment>new!</comment>
-      <text>An earlier [[revision]].</text>
-    </revision>
-  </page>
-
-  <!--
-    <page>: 讨论页示例
-    标题以 "Talk:" 开头表示这是对应条目的讨论页
-  -->
-  <page>
-    <title>Talk:Page title</title>
-    <revision>
-      <timestamp>2001-01-15T14:03:00Z</timestamp>
-      <contributor><ip>10.0.0.2</ip></contributor>
-      <comment>hey</comment>
-      <text>WHYD YOU LOCK PAGE??!!! i was editing that jerk</text>
-    </revision>
-  </page>
-</mediawiki>
+  <mediawiki xml:lang="en">
+    <page>
+      <title>Page title</title>
+      <restrictions>edit=sysop:move=sysop</restrictions>
+      <revision>
+        <timestamp>2001-01-15T13:15:00Z</timestamp>
+        <contributor><username>Foobar</username></contributor>
+        <comment>I have just one thing to say!</comment>
+        <text>A bunch of [[text]] here.</text>
+        <minor />
+      </revision>
+      <revision>
+        <timestamp>2001-01-15T13:10:27Z</timestamp>
+        <contributor><ip>10.0.0.2</ip></contributor>
+        <comment>new!</comment>
+        <text>An earlier [[revision]].</text>
+      </revision>
+    </page>
+    
+    <page>
+      <title>Talk:Page title</title>
+      <revision>
+        <timestamp>2001-01-15T14:03:00Z</timestamp>
+        <contributor><ip>10.0.0.2</ip></contributor>
+        <comment>hey</comment>
+        <text>WHYD YOU LOCK PAGE??!!! i was editing that jerk</text>
+      </revision>
+    </page>
+  </mediawiki>

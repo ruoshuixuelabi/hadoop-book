@@ -1,5 +1,3 @@
--- joins.hive: 演示Hive的各种JOIN类型
--- 打印各个查询的起始标记
 ! echo; # == select_sales_and_things;
 ! echo; # == inner_join;
 ! echo; # == left_outer_join;
@@ -8,61 +6,49 @@
 ! echo; # == semi_join;
 ! echo; # == map_join;
 
--- 步骤1: 创建sales表(销售表: 名称和ID)
 DROP TABLE IF EXISTS sales;
 CREATE TABLE sales (name STRING, id INT)
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
 
--- 步骤2: 创建things表(物品表: ID和名称)
 DROP TABLE IF EXISTS things;
 CREATE TABLE things (id INT, name STRING)
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
 
--- 步骤3: 加载销售数据
 LOAD DATA LOCAL INPATH 'input/hive/joins/sales.txt'
 OVERWRITE INTO TABLE sales;
 
--- 步骤4: 加载物品数据
 LOAD DATA LOCAL INPATH 'input/hive/joins/things.txt'
 OVERWRITE INTO TABLE things;
 
--- 打印分隔行,查看原始数据
 ! echo; # vv select_sales_and_things;
 SELECT * FROM sales;
 SELECT * FROM things;
 ! echo; # ^^ select_sales_and_things;
 
--- 步骤5: 内连接(INNER JOIN) - 只保留两边都匹配的记录
 ! echo; # vv inner_join;
 SELECT sales.*, things.*
 FROM sales JOIN things ON (sales.id = things.id);
 ! echo; # ^^ inner_join;
 
--- 步骤6: 左外连接(LEFT OUTER JOIN) - 保留左边所有记录
 ! echo; # vv left_outer_join;
 SELECT sales.*, things.*
 FROM sales LEFT OUTER JOIN things ON (sales.id = things.id);
 ! echo; # ^^ left_outer_join;
 
--- 步骤7: 右外连接(RIGHT OUTER JOIN) - 保留右边所有记录
 ! echo; # vv right_outer_join;
 SELECT sales.*, things.*
 FROM sales RIGHT OUTER JOIN things ON (sales.id = things.id);
 ! echo; # ^^ right_outer_join;
 
--- 步骤8: 全外连接(FULL OUTER JOIN) - 保留两边所有记录
 ! echo; # vv full_outer_join;
 SELECT sales.*, things.*
 FROM sales FULL OUTER JOIN things ON (sales.id = things.id);
 ! echo; # ^^ full_outer_join;
 
--- 步骤9: 半连接(SEMI JOIN) - 只返回左边表中在右边表有匹配的记录
 ! echo; # vv semi_join;
 SELECT *
 FROM things LEFT SEMI JOIN sales ON (sales.id = things.id);
 ! echo; # ^^ semi_join;
 
--- 步骤10: -map连接(MAP JOIN) - 将小表加载到内存,避免shuffle
--- 使用hint提示优化器使用map join
 SELECT /*+ MAPJOIN(things) */ sales.*, things.*
 FROM sales JOIN things ON (sales.id = things.id);

@@ -1,49 +1,20 @@
-<!--
-  Maven Assembly Descriptor - Oozie工作流应用打包描述符
-
-  此描述符用于将MapReduce工作流应用打包成Oozie可识别的目录结构。
-  Oozie是一个Hadoop工作流调度系统，此打包配置用于第6章的Max Temperature示例。
-
-  打包结果结构：
-  oozie-workflow-application/
-  ├── max-temp-workflow/           # 工作流配置和资源目录
-  │   ├── workflow.xml            # Oozie工作流定义
-  │   └── lib/                    # 依赖JAR包目录
-  │       └── hadoop-examples.jar # 聚合的示例JAR
--->
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
-
-  <!-- 打包标识符，输出目录名为oozie-workflow-application -->
   <id>oozie-workflow-application</id>
-
-  <!-- 输出格式：dir（目录结构），而非压缩文件 -->
   <formats>
     <format>dir</format>
   </formats>
-
-  <!-- 不包含基础目录 -->
   <includeBaseDirectory>false</includeBaseDirectory>
-
-  <!-- 文件集配置：包含工作流资源文件 -->
   <fileSets>
     <fileSet>
-      <!-- 从ch06-mr-dev模块的资源目录获取工作流文件 -->
       <directory>../ch06-mr-dev/src/main/resources/max-temp-workflow</directory>
-
-      <!-- 输出到max-temp-workflow目录 -->
       <outputDirectory>max-temp-workflow</outputDirectory>
     </fileSet>
   </fileSets>
-
-  <!-- 单独文件配置：包含需要打包的依赖JAR -->
   <files>
     <file>
-      <!-- 引用hadoop-examples聚合JAR（由hadoop-examples模块生成） -->
       <source>../hadoop-examples.jar</source>
-
-      <!-- 输出到工作流的lib目录，供Oozie在运行时加载 -->
       <outputDirectory>max-temp-workflow/lib</outputDirectory>
     </file>
   </files>

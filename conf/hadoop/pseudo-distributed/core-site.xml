@@ -1,26 +1,8 @@
 <?xml version="1.0"?>
-<!--
-  Hadoop伪分布式模式 - 核心配置(core-site.xml)
-
-  此文件配置Hadoop核心参数，用于伪分布式集群环境。
-  伪分布式模式：所有Hadoop守护进程运行在单台机器上，但各自以独立Java进程运行。
-  这模拟了真正分布式集群的行为，适合开发测试和功能验证。
-
-  主要配置内容：
-  - HDFS文件系统地址
-  - Hadoop临时目录
-  - Web UI端口等
--->
+<!-- core-site.xml -->
 <configuration>
-
-  <!--
-    HDFS默认文件系统地址
-    fs.defaultFS: 指定默认文件系统为HDFS，NameNode运行在localhost
-    所有HDFS操作通过此地址进行，如读写文件、创建目录等
-  -->
   <property>
     <name>fs.defaultFS</name>
     <value>hdfs://localhost/</value>
   </property>
-
 </configuration>

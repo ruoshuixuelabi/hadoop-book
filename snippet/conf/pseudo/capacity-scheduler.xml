@@ -1,65 +1,31 @@
 <?xml version="1.0"?>
-<!--
-  Hadoop伪分布式模式 - 容量调度器配置(capacity-scheduler.xml)
-
-  此文件配置YARN容量调度器的队列结构和资源分配策略。
-  容量调度器支持多租户集群，每个组织/团队拥有专属队列。
-
-  队列结构：
-  - root (根队列)
-    - prod (生产队列，40%容量)
-    - dev (开发队列，60%容量)
-      - eng (工程子队列)
-      - science (科学子队列)
-
-  适用场景：
-  - 多团队共享集群资源
-  - 需要保证关键作业的响应时间
-  - 资源分配需要灵活控制
--->
 <configuration>
-
-  <!--
-    定义根队列的直接子队列
-    逗号分隔的队列名称列表
-  -->
   <property>
     <name>yarn.scheduler.capacity.root.queues</name>
     <value>prod,dev</value>
   </property>
-
-  <!--
-    dev队列的子队列定义
-    eng和science两个子队列共享dev的资源
-  -->
   <property>
     <name>yarn.scheduler.capacity.root.dev.queues</name>
     <value>eng,science</value>
   </property>
-
-  <!--
-    生产队列(prod)的目标容量
-    40%表示prod队列可使用集群40%的资源
-  -->
   <property>
     <name>yarn.scheduler.capacity.root.prod.capacity</name>
     <value>40</value>
   </property>
-
-  <!--
-    开发队列(dev)的目标容量
-    60%表示dev队列可使用集群60%的资源
-  -->
   <property>
     <name>yarn.scheduler.capacity.root.dev.capacity</name>
     <value>60</value>
   </property>
-
-  <!--
-    开发队列(dev)的最大容量
-    75%限制dev队列即使在集群空闲时也不能超过75%
-    保证生产队列始终能获得至少25%的资源
-  -->
   <property>
     <name>yarn.scheduler.capacity.root.dev.maximum-capacity</name>
-    <value>75
+    <value>75</value>
+  </property>
+  <property>
+    <name>yarn.scheduler.capacity.root.dev.eng.capacity</name>
+    <value>50</value>
+  </property>
+  <property>
+    <name>yarn.scheduler.capacity.root.dev.science.capacity</name>
+    <value>50</value>
+  </property>
+</configuration>

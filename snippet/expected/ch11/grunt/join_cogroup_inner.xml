@@ -1,4 +1,3 @@
-<!-- Pig Grunt 集成测试：COGROUP with INNER 关键字，只保留有匹配键的组 -->
 <screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">E = COGROUP A BY $0 INNER, B BY $1;</userinput>
 <prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">DUMP E;</userinput>
 (1,{(1,Scarf)},{})

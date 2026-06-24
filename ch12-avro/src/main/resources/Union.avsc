@@ -1,12 +1,5 @@
-{
-  "type": "record",
-  "name": "UnionRecord",
-  "doc": "联合类型示例 schema，演示如何使用 union 类型。",
-  "fields": [
-    {
-      "name": "value",
-      "type": ["null", "string", {"type": "map", "values": "string"}],
-      "doc": "联合类型字段，可为 null、字符串或字符串映射表"
-    }
-  ]
-}
+[
+  "null",
+  "string",
+  {"type": "map", "values": "string"}
+]

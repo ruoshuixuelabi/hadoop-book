@@ -1,73 +1,21 @@
 <?xml version="1.0"?>
-<!--
-  Hadoop公平调度器配置(fair-scheduler.xml)
-
-  公平调度器（Fair Scheduler）是YARN的另一种调度策略。
-  与容量调度器不同，公平调度器会平均分配资源给所有运行中的作业。
-
-  公平调度器特点：
-  - 资源公平共享：所有作业平分集群资源
-  - 按权重分配：可根据权重比例分配资源
-  - 延迟调度：优先调度数据本地任务
-  - 抢占式调度：可配置允许抢占其他队列资源
-
-  队列结构：
-  - prod (生产队列，权重40，采用FIFO策略)
-  - dev (开发队列，权重60)
-    - eng (工程子队列)
-    - science (科学子队列)
-
-  队列放置策略：
-  1. specified: 使用应用程序指定的队列
-  2. primaryGroup: 按用户主组分配（如失败则不创建）
-  3. default: 默认分配到dev.eng队列
--->
 <allocations>
-
-  <!--
-    默认队列调度策略
-    fair: 公平调度（默认），所有队列平均分配资源
-    fifo: 先进先出调度，队列内按提交顺序执行
-  -->
   <defaultQueueSchedulingPolicy>fair</defaultQueueSchedulingPolicy>
 
-  <!--
-    生产队列(prod)配置
-    权重40，占总资源的40%
-    使用FIFO调度策略，适合批处理生产作业
-    生产作业通常需要确定性的执行顺序
-  -->
   <queue name="prod">
     <weight>40</weight>
     <schedulingPolicy>fifo</schedulingPolicy>
   </queue>
 
-  <!--
-    开发队列(dev)配置
-    权重60，占总资源的60%
-    包含eng和science两个子队列
-    开发队列使用默认的公平调度策略
-  -->
   <queue name="dev">
     <weight>60</weight>
     <queue name="eng" />
     <queue name="science" />
   </queue>
 
-  <!--
-    队列放置策略
-    定义应用程序如何分配到对应队列的规则
-    规则按顺序执行，第一个匹配的规则生效
-
-    规则说明：
-    - specified: 如果应用程序指定了队列，则使用指定的队列
-    - primaryGroup: 按用户主Unix组分配，create="false"表示组不存在时不创建新队列
-    - default: 如果以上规则都不匹配，则默认放入dev.eng队列
-  -->
   <queuePlacementPolicy>
     <rule name="specified" create="false" />
     <rule name="primaryGroup" create="false" />
     <rule name="default" queue="dev.eng" />
   </queuePlacementPolicy>
-
 </allocations>

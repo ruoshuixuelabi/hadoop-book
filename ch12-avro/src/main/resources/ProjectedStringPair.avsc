@@ -1,8 +1,8 @@
 {
   "type": "record",
   "name": "StringPair",
-  "doc": "StringPair 的投影 schema，只包含 right 字段。用于读取时只提取需要的字段。",
+  "doc": "The right field of a pair of strings.",
   "fields": [
-    {"name": "right", "type": "string", "doc": "右侧字符串"}
+    {"name": "right", "type": "string"}
   ]
 }

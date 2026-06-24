@@ -1,16 +1,9 @@
-<!-- Pig Grunt 集成测试：LOAD 使用自定义 LoadFunc (Trim) 去除字段前后空格 -->
-<screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">DUMP A;</userinput>
-( pomegranate)
-(banana  )
-(apple)
-(  lychee )
-<prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">DESCRIBE A;</userinput>
-A: {fruit: chararray}
-<prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">B = FOREACH A GENERATE com.hadoopbook.pig.Trim(fruit);</userinput>
-<prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">DUMP B;</userinput>
-(pomegranate)
-(banana)
-(apple)
-(lychee)
-<prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">DESCRIBE B;</userinput>
-B: {chararray}</screen>
+<screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">records = LOAD 'input/ncdc/micro/sample.txt'</userinput>
+<prompt moreinfo="none">&gt;&gt; </prompt><userinput moreinfo="none">  USING com.hadoopbook.pig.CutLoadFunc('16-19,88-92,93-93')</userinput>
+<prompt moreinfo="none">&gt;&gt; </prompt><userinput moreinfo="none">  AS (year:int, temperature:int, quality:int);</userinput>
+<prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">DUMP records;</userinput>
+(1950,0,1)
+(1950,22,1)
+(1950,-11,1)
+(1949,111,1)
+(1949,78,1)</screen>

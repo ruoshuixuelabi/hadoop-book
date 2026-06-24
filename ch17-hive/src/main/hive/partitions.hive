@@ -1,15 +1,10 @@
--- partitions.hive: 演示Hive的分区表操作
--- 打印分隔行
 ! echo; # == partitions;
 
--- 步骤1: 创建分区表logs,按日期(dt)和国家(country)分区
--- 分区列在表中表现为虚拟列,实际数据存储在独立的目录下
 DROP TABLE IF EXISTS logs;
+
 CREATE TABLE logs (ts BIGINT, line STRING)
 PARTITIONED BY (dt STRING, country STRING);
 
--- 步骤2: 加载数据并指定分区值
--- 每个加载语句创建或追加到一个特定的分区
 LOAD DATA LOCAL INPATH 'input/hive/partitions/file1'
 INTO TABLE logs
 PARTITION (dt='2001-01-01', country='GB');
@@ -34,14 +29,10 @@ LOAD DATA LOCAL INPATH 'input/hive/partitions/file6'
 INTO TABLE logs
 PARTITION (dt='2001-01-02', country='US');
 
--- 打印分隔行,查看分区信息
 ! echo; # vv partitions;
-
--- 步骤3: 查看表的所有分区
 SHOW PARTITIONS logs;
 ! echo; # ^^ partitions;
 
--- 步骤4: 按国家过滤查询(利用分区裁剪,只扫描GB分区)
 SELECT ts, dt, line
 FROM logs
 WHERE country='GB';

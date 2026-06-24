@@ -1,4 +1,3 @@
-<!-- Pig Grunt 集成测试：普通 JOIN 操作，按 $0 和 $1 键连接 A 和 B -->
 <screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">C = JOIN A BY $0, B BY $1;</userinput>
 <prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">DUMP C;</userinput>
 (2,Tie,Joe,2)

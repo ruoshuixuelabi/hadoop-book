@@ -1,64 +1,12 @@
-<!--
-  Wikipedia XML 转储样本文件 (完整版)
-  ===================================
-
-  此文件采用 MediaWiki XML Export 0.3 格式,是 Wikipedia 公开数据转储的标准格式。
-  可从 https://dumps.wikimedia.org/ 下载完整的 Wikipedia 转储文件。
-
-  此文件与 example.xml 的区别:
-  - 使用正式的命名空间声明 (xmlns)
-  - 包含 <siteinfo> 元数据区块
-  - 每个页面和版本都有唯一 ID
-  - 贡献者信息更完整 (包含用户 ID)
--->
-<mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd"
-           version="0.3"
-           xml:lang="en">
-
-  <!--
-    <siteinfo>: 站点信息元数据
-    描述导出此数据时的 Wikipedia 站点配置信息
-  -->
+<mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSc
+hema-instance" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.or
+g/xml/export-0.3.xsd" version="0.3" xml:lang="en">
   <siteinfo>
-    <!-- <sitename>: 站点名称 -->
     <sitename>Wikipedia</sitename>
-
-    <!-- <base>: 网站首页 URL -->
     <base>http://en.wikipedia.org/wiki/Main_Page</base>
-
-    <!-- <generator>: 导出时使用的 MediaWiki 版本 -->
     <generator>MediaWiki 1.14alpha</generator>
-
-    <!-- <case>: 标题大小写处理方式 (first-letter=首字母大写) -->
     <case>first-letter</case>
-
-    <!--
-      <namespaces>: 命名空间定义
-      命名空间用于区分不同类型的页面,如文章、用户页、讨论页等
-      key="-2": Media (媒体文件)
-      key="-1": Special (特殊页面)
-      key="0": 主命名空间 (文章)
-      key="1": Talk (讨论)
-      key="2": User (用户)
-      key="3": User talk (用户讨论)
-      key="4": Wikipedia (项目页面)
-      key="5": Wikipedia talk (项目讨论)
-      key="6": Image (图像)
-      key="7": Image talk (图像讨论)
-      key="8": MediaWiki (系统消息)
-      key="9": MediaWiki talk (系统消息讨论)
-      key="10": Template (模板)
-      key="11": Template talk (模板讨论)
-      key="12": Help (帮助)
-      key="13": Help talk (帮助讨论)
-      key="14": Category (分类)
-      key="15": Category talk (分类讨论)
-      key="100": Portal (主题页面)
-      key="101": Portal talk (主题讨论)
-    -->
-    <namespaces>
+      <namespaces>
       <namespace key="-2">Media</namespace>
       <namespace key="-1">Special</namespace>
       <namespace key="0" />
@@ -81,58 +29,22 @@
       <namespace key="101">Portal talk</namespace>
     </namespaces>
   </siteinfo>
-
-  <!--
-    ========================================
-    页面条目示例
-    ========================================
-    每个 <page> 代表一篇 Wikipedia 文章
-    包含: 标题(title)、页面ID(id)、当前版本(revision)
-  -->
   <page>
-    <!-- <title>: 文章标题 (这里是重定向页面) -->
     <title>AmericanSamoa</title>
-
-    <!-- <id>: 页面唯一标识符,用于 Wikipedia 内部引用 -->
     <id>6</id>
-
-    <!--
-      <revision>: 版本记录
-      包含: 版本ID、时间戳、贡献者、是否小编辑、编辑摘要、页面内容
-    -->
     <revision>
-      <!-- <id>: 此版本的唯一标识符 -->
       <id>133452270</id>
-
-      <!-- <timestamp>: 编辑时间,ISO 8601 格式 -->
       <timestamp>2007-05-25T17:12:06Z</timestamp>
-
-      <!--
-        <contributor>: 贡献者信息
-        包含 <username> (用户名) 和 <id> (用户ID)
-      -->
       <contributor>
         <username>Gurch</username>
         <id>241822</id>
       </contributor>
-
-      <!-- <minor />: 小编辑标记 -->
       <minor />
-
-      <!-- <comment>: 编辑摘要,描述本次修改 -->
-      <comment>Revert edit(s) by [[Special:Contributions/Ngaiklin|Ngaiklin]] to last version by [[Special:Contributions/Docu|Docu]]</comment>
-
-      <!--
-        <text>: 页面内容
-        #REDIRECT 表示这是重定向页面
-        {{R from CamelCase}} 是重定向模板,表示从驼峰命名重定向
-        xml:space="preserve" 保留空白字符
-      -->
+      <comment>Revert edit(s) by [[Special:Contributions/Ngaiklin|Ngaiklin]] to last version by [[S
+pecial:Contributions/Docu|Docu]]</comment>
       <text xml:space="preserve">#REDIRECT [[American Samoa]]{{R from CamelCase}}</text>
     </revision>
   </page>
-
-  <!-- 更多重定向页面示例 -->
   <page>
     <title>AppliedEthics</title>
     <id>8</id>
@@ -144,11 +56,11 @@
         <id>241822</id>
       </contributor>
       <minor />
-      <comment>Revert edit(s) by [[Special:Contributions/Ngaiklin|Ngaiklin]] to last version by [[Special:Contributions/Rory096|Rory096]]</comment>
+      <comment>Revert edit(s) by [[Special:Contributions/Ngaiklin|Ngaiklin]] to last version by [[S
+pecial:Contributions/Rory096|Rory096]]</comment>
       <text xml:space="preserve">#REDIRECT [[Applied ethics]] {{R from CamelCase}}</text>
     </revision>
   </page>
-
   <page>
     <title>AccessibleComputing</title>
     <id>10</id>
@@ -160,15 +72,39 @@
         <id>241822</id>
       </contributor>
       <minor />
-      <comment>Revert edit(s) by [[Special:Contributions/Ngaiklin|Ngaiklin]] to last version by [[Special:Contributions/Rory096|Rory096]]</comment>
+      <comment>Revert edit(s) by [[Special:Contributions/Ngaiklin|Ngaiklin]] to last version by [[S
+pecial:Contributions/Rory096|Rory096]]</comment>
       <text xml:space="preserve">#REDIRECT [[Computer accessibility]] {{R from CamelCase}}</text>
     </revision>
   </page>
-
-  <!--
-    示例: 使用机器人账号自动编辑的重定向页面
-    <username>RussBot</username> 表示这是自动化程序进行的修改
-  -->
+  <page>
+    <title>AfghanistanHistory</title>
+    <id>13</id>
+    <revision>
+      <id>74466652</id>
+      <timestamp>2006-09-08T04:15:52Z</timestamp>
+      <contributor>
+        <username>Rory096</username>
+        <id>750223</id>
+      </contributor>
+      <comment>cat rd</comment>
+      <text xml:space="preserve">#REDIRECT [[History of Afghanistan]] {{R from CamelCase}}</text>
+    </revision>
+  </page>
+  <page>
+    <title>AfghanistanGeography</title>
+    <id>14</id>
+    <revision>
+      <id>74466619</id>
+      <timestamp>2006-09-08T04:15:36Z</timestamp>
+      <contributor>
+        <username>Rory096</username>
+        <id>750223</id>
+      </contributor>
+      <comment>cat rd</comment>
+      <text xml:space="preserve">#REDIRECT [[Geography of Afghanistan]] {{R from CamelCase}}</text>
+    </revision>
+  </page>
   <page>
     <title>AfghanistanPeople</title>
     <id>15</id>
@@ -184,38 +120,6 @@
       <text xml:space="preserve">#REDIRECT [[Demography of Afghanistan]] {{R from CamelCase}}</text>
     </revision>
   </page>
-
-  <!-- 示例: 带有简单编辑摘要的页面 -->
-  <page>
-    <title>AfghanistanHistory</title>
-    <id>13</id>
-    <revision>
-      <id>74466652</id>
-      <timestamp>2006-09-08T04:15:52Z</timestamp>
-      <contributor>
-        <username>Rory096</username>
-        <id>750223</id>
-      </contributor>
-      <comment>cat rd</comment>
-      <text xml:space="preserve">#REDIRECT [[History of Afghanistan]] {{R from CamelCase}}</text>
-    </revision>
-  </page>
-
-  <page>
-    <title>AfghanistanGeography</title>
-    <id>14</id>
-    <revision>
-      <id>74466619</id>
-      <timestamp>2006-09-08T04:15:36Z</timestamp>
-      <contributor>
-        <username>Rory096</username>
-        <id>750223</id>
-      </contributor>
-      <comment>cat rd</comment>
-      <text xml:space="preserve">#REDIRECT [[Geography of Afghanistan]] {{R from CamelCase}}</text>
-    </revision>
-  </page>
-
   <page>
     <title>AfghanistanEconomy</title>
     <id>17</id>
@@ -230,7 +134,6 @@
       <text xml:space="preserve">#REDIRECT [[Economy of Afghanistan]] {{R from CamelCase}}</text>
     </revision>
   </page>
-
   <page>
     <title>AfghanistanCommunications</title>
     <id>18</id>
@@ -245,7 +148,6 @@
       <text xml:space="preserve">#REDIRECT [[Communications in Afghanistan]] {{R from CamelCase}}</text>
     </revision>
   </page>
-
   <page>
     <title>AfghanistanTransportations</title>
     <id>19</id>
@@ -260,7 +162,6 @@
       <text xml:space="preserve">#REDIRECT [[Transport in Afghanistan]] {{R from CamelCase}}</text>
     </revision>
   </page>
-
   <page>
     <title>AfghanistanMilitary</title>
     <id>20</id>
@@ -275,7 +176,6 @@
       <text xml:space="preserve">#REDIRECT [[Military of Afghanistan]] {{R from CamelCase}}</text>
     </revision>
   </page>
-
   <page>
     <title>AfghanistanTransnationalIssues</title>
     <id>21</id>
@@ -288,10 +188,10 @@
       </contributor>
       <minor />
       <comment>{{R from CamelCase}}</comment>
-      <text xml:space="preserve">#REDIRECT [[Foreign relations of Afghanistan]] {{R from CamelCase}}</text>
+      <text xml:space="preserve">#REDIRECT [[Foreign relations of Afghanistan]] {{R from CamelCase}
+}</text>
     </revision>
   </page>
-
   <page>
     <title>AssistiveTechnology</title>
     <id>23</id>
@@ -306,7 +206,6 @@
       <text xml:space="preserve">#REDIRECT [[Assistive_technology]] {{R from CamelCase}}</text>
     </revision>
   </page>
-
   <page>
     <title>AmoeboidTaxa</title>
     <id>24</id>

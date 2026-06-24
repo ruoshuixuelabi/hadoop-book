@@ -1,109 +1,60 @@
-<!--
-  Maven POM - Hadoop Examples聚合模块
-
-  本模块是一个聚合模块（pom打包类型），用于将多个章节的示例代码
-  打包成一个统一的hadoop-examples.jar，方便部署和运行。
-
-  本模块特点：
-  - 打包类型为pom，作为聚合点不包含源代码
-  - 依赖多个子模块（common、ch02、ch03、ch05、ch06、ch08、ch09）
-  - 生成两个输出物：
-    1. hadoop-examples.jar - 聚合的示例JAR
-    2. oozie-workflow-application/ - Oozie工作流应用目录
--->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
-  <!-- 继承book父POM，使用book级别的依赖管理 -->
   <parent>
     <groupId>com.hadoopbook</groupId>
     <artifactId>book</artifactId>
     <version>4.0</version>
     <relativePath>../book/pom.xml</relativePath>
   </parent>
-
   <groupId>com.hadoopbook</groupId>
   <artifactId>hadoop-examples</artifactId>
   <packaging>pom</packaging>
   <version>4.0</version>
-
-  <!-- 模块名称：Hadoop Examples JAR -->
   <name>Hadoop Examples JAR</name>
-
-  <!-- ==================== 依赖项配置 ==================== -->
-  <!--
-    声明对所有示例模块的依赖，这些依赖会被打包到最终的JAR中
-    注意：此处依赖的scope默认为compile，会包含在运行时类路径中
-  -->
+  <!-- Packages all the Hadoop examples into a single JAR -->
   <dependencies>
-    <!-- common模块：包含共享的工具类 -->
     <dependency>
       <groupId>com.hadoopbook</groupId>
       <artifactId>common</artifactId>
       <version>4.0</version>
     </dependency>
-
-    <!-- ch02-mr-intro：MapReduce基础示例 -->
     <dependency>
       <groupId>com.hadoopbook</groupId>
       <artifactId>ch02-mr-intro</artifactId>
       <version>4.0</version>
     </dependency>
-
-    <!-- ch03-hdfs：HDFS操作示例 -->
     <dependency>
       <groupId>com.hadoopbook</groupId>
       <artifactId>ch03-hdfs</artifactId>
       <version>4.0</version>
     </dependency>
-
-    <!-- ch05-io：Hadoop I/O格式示例 -->
     <dependency>
       <groupId>com.hadoopbook</groupId>
       <artifactId>ch05-io</artifactId>
       <version>4.0</version>
     </dependency>
-
-    <!-- ch06-mr-dev：MapReduce开发示例 -->
     <dependency>
       <groupId>com.hadoopbook</groupId>
       <artifactId>ch06-mr-dev</artifactId>
       <version>4.0</version>
     </dependency>
-
-    <!-- ch08-mr-types：MapReduce类型与格式示例 -->
     <dependency>
       <groupId>com.hadoopbook</groupId>
       <artifactId>ch08-mr-types</artifactId>
       <version>4.0</version>
     </dependency>
-
-    <!-- ch09-mr-features：MapReduce特性示例 -->
     <dependency>
       <groupId>com.hadoopbook</groupId>
       <artifactId>ch09-mr-features</artifactId>
       <version>4.0</version>
     </dependency>
   </dependencies>
-
-  <!-- ==================== 构建插件配置 ==================== -->
   <build>
     <plugins>
-      <!--
-        Maven Assembly Plugin：打包插件，用于生成最终的分发包
-
-        此模块执行两个assembly打包任务：
-        1. make-assembly：生成hadoop-examples.jar
-        2. oozie-workflow-application：生成Oozie工作流应用目录
-      -->
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <executions>
-          <!--
-            执行ID 1：生成hadoop-examples.jar
-            使用jar.xml描述符，将所有依赖的类文件打包成一个JAR
-          -->
           <execution>
             <id>make-assembly</id>
             <phase>package</phase>
@@ -119,12 +70,6 @@
               <appendAssemblyId>false</appendAssemblyId>
             </configuration>
           </execution>
-
-          <!--
-            执行ID 2：生成Oozie工作流应用目录
-            使用oozie-workflow-application.xml描述符
-            输出到父目录（../..），文件名为根目录名称
-          -->
           <execution>
             <id>oozie-workflow-application</id>
             <phase>package</phase>

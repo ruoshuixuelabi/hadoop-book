@@ -1,91 +1,53 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <!-- 父项目：继承 hadoop-meta 的依赖管理和插件配置 -->
-    <parent>
-        <groupId>com.hadoopbook</groupId>
-        <artifactId>hadoop-meta</artifactId>
-        <version>4.0</version>
-        <relativePath>../hadoop-meta/pom.xml</relativePath>
-    </parent>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
     <groupId>com.hadoopbook</groupId>
-    <artifactId>ch13-parquet</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>hadoop-meta</artifactId>
     <version>4.0</version>
-    <name>Chapter 13: Parquet</name>
-    <!--
-        Parquet 模块依赖配置
-        Parquet 是一个列式存储格式，专为 Hadoop 设计。
-        主要特点：
-        - 列式存储：相同类型的数据连续存放，压缩效率高
-        - 支持嵌套结构的列式表示
-        - 与多种数据处理框架集成（Avro、Thrift、Protocol Buffers）
-        - 支持 schema 投影和谓词下推
-        - 高效的列裁剪和惰性解压
-    -->
-    <dependencies>
-        <!--
-            Parquet Avro 集成库
-            重要依赖，用于：
-            - 使用 Avro Schema 定义 Parquet 文件结构
-            - AvroParquetWriter / AvroParquetReader 读写 Parquet 文件
-            - 支持 Avro 数据的 Parquet 列式存储
-            这个库封装了 Parquet 的底层细节，提供便捷的 Avro API
-        -->
-        <dependency>
-            <!-- Twitter 的 parquet-avro 已合并到 Apache Parquet 项目 -->
-            <groupId>org.apache.parquet</groupId>
-            <artifactId>parquet-avro</artifactId>
-        </dependency>
-        <!-- JUnit 测试框架 -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!--
-            Google Guava 工具库
-            Parquet 的一些工具类依赖 Guava：
-            - Files.copy() 文件操作
-            - Resources.getResource() 资源加载
-            - CharStreams 等流处理工具
-        -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-    </dependencies>
-    <build>
-        <plugins>
-            <!--
-                Maven Assembly 插件
-                用于打包作业 JAR 文件
-                配置说明：
-                - finalName: 输出的 JAR 文件名
-                - outputDirectory: 输出目录（项目根目录的 target 目录）
-                - appendAssemblyId: false 表示不添加 assembly id 后缀
-                - unpack: true 表示将依赖解压到 JAR 内部（fat jar）
-            -->
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>job</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>src/main/assembly/job.xml</descriptor>
-                            </descriptors>
-                            <finalName>parquet-examples</finalName>
-                            <outputDirectory>${project.build.directory}/../..</outputDirectory>
-                            <appendAssemblyId>false</appendAssemblyId>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+    <relativePath>../hadoop-meta/pom.xml</relativePath>
+  </parent>
+  <groupId>com.hadoopbook</groupId>
+  <artifactId>ch13-parquet</artifactId>
+  <packaging>jar</packaging>
+  <version>4.0</version>
+  <name>Chapter 13: Parquet</name>
+  <dependencies>
+    <dependency>
+      <groupId>com.twitter</groupId>
+      <artifactId>parquet-avro</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>job</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>src/main/assembly/job.xml</descriptor>
+              </descriptors>
+              <finalName>parquet-examples</finalName>
+              <outputDirectory>${project.build.directory}/../..</outputDirectory>
+              <appendAssemblyId>false</appendAssemblyId>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

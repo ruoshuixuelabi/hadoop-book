@@ -1,4 +1,4 @@
-<!-- Pig Grunt 集成测试：LOAD 时只指定字段名不指定类型，验证 schema 为 unknown -->
-<screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">records = LOAD 'input/ncdc/micro-tab/sample.txt';</userinput>
+<screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">records = LOAD 'input/ncdc/micro-tab/sample.txt'</userinput>
+<prompt moreinfo="none">&gt;&gt; </prompt><userinput moreinfo="none">  AS (year, temperature, quality);</userinput>
 <prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">DESCRIBE records;</userinput>
-Schema for records unknown.</screen>
+records: {year: bytearray,temperature: bytearray,quality: bytearray}</screen>

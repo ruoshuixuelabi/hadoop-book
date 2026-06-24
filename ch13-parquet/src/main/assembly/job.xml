@@ -1,51 +1,32 @@
-<!--
-  Parquet 模块的 Assembly 描述符文件
-
-  用于打包可执行的 MapReduce JAR 文件，
-  包含所有运行时依赖。
-
-  配置说明：
-  - id: job 表示这个 assembly 的标识
-  - format: jar 打包为 JAR 文件
-  - includeBaseDirectory: false 不包含项目根目录
-  - dependencySet: 运行时依赖配置
-    - unpack: true 将依赖解压到 JAR 内部（支持可执行）
-    - useTransitiveFiltering: true 传递过滤依赖
-    - exclude: 排除 Hadoop 自身的 JAR（避免与集群冲突）
-  - fileSet: 包含编译后的类文件
--->
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
-    <id>job</id>
-    <formats>
-        <format>jar</format>
-    </formats>
-    <includeBaseDirectory>false</includeBaseDirectory>
-    <dependencySets>
-        <dependencySet>
-            <useTransitiveFiltering>true</useTransitiveFiltering>
-            <unpack>true</unpack>
-            <unpackOptions>
-                <excludes>
-                    <!-- 排除 LICENSE 文件避免与同名目录冲突 -->
-                    <exclude>META-INF/LICENSE</exclude>
-                </excludes>
-            </unpackOptions>
-            <scope>runtime</scope>
-            <outputDirectory>/</outputDirectory>
-            <useProjectArtifact>false</useProjectArtifact>
-            <!-- 排除 Hadoop 依赖，由集群提供 -->
-            <excludes>
-                <exclude>org.apache.hadoop:*</exclude>
-            </excludes>
-        </dependencySet>
-    </dependencySets>
-    <!-- 包含编译后的类文件 -->
-    <fileSets>
-        <fileSet>
-            <directory>target/classes</directory>
-            <outputDirectory>/</outputDirectory>
-        </fileSet>
-    </fileSets>
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+  <id>job</id>
+  <formats>
+    <format>jar</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <dependencySets>
+    <dependencySet>
+      <useTransitiveFiltering>true</useTransitiveFiltering>
+      <unpack>true</unpack>
+      <unpackOptions>
+        <excludes>
+          <exclude>META-INF/LICENSE</exclude> <!-- Exclude to avoid clash with directory of the same name -->
+        </excludes>
+      </unpackOptions>
+      <scope>runtime</scope>
+      <outputDirectory>/</outputDirectory>
+      <useProjectArtifact>false</useProjectArtifact>
+      <excludes>
+        <exclude>org.apache.hadoop:*</exclude>
+      </excludes>
+    </dependencySet>
+  </dependencySets>
+  <fileSets>
+    <fileSet>
+      <directory>target/classes</directory>
+      <outputDirectory>/</outputDirectory>
+    </fileSet>
+  </fileSets>
 </assembly>

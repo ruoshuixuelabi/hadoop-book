@@ -1,55 +1,44 @@
--- udfs.hive: 演示Hive的内置函数、自定义函数(UDF)和聚合函数(UDAF)
--- 打印各个查询的起始标记
 ! echo; # == select_arrays;
 ! echo; # == select_explode_arrays;
 ! echo; # == select_strip;
 ! echo; # == select_case_insensitive_strip;
 ! echo; # == select_maximum;
 
--- 步骤1: 创建包含数组字段的表
 DROP TABLE IF EXISTS arrays;
+
 CREATE TABLE arrays (x ARRAY<STRING>)
 ROW FORMAT DELIMITED
-  FIELDS TERMINATED BY '\001'      -- 字段分隔符
-  COLLECTION ITEMS TERMINATED BY '\002';  -- 数组元素分隔符
-
+  FIELDS TERMINATED BY '\001'
+  COLLECTION ITEMS TERMINATED BY '\002';
+  
 LOAD DATA LOCAL INPATH 'input/hive/udfs/arrays.txt'
 OVERWRITE INTO TABLE arrays;
-
--- 打印分隔行,查看数组数据
+  
 ! echo; # vv select_arrays;
 SELECT * FROM arrays;
 ! echo; # ^^ select_arrays;
 
--- 步骤2: 使用explode函数展开数组,每行一个元素
 ! echo; # vv select_explode_arrays;
 SELECT explode(x) AS y FROM arrays;
 ! echo; # ^^ select_explode_arrays;
 
--- 步骤3: 创建临时表用于测试字符串函数
 DROP TABLE IF EXISTS dummy;
 CREATE TABLE dummy (value STRING);
 LOAD DATA LOCAL INPATH 'input/hive/dummy.txt'
 OVERWRITE INTO TABLE dummy;
 
--- 步骤4: 添加Hive JAR并创建临时自定义函数strip
 ADD JAR hive-examples.jar;
 CREATE TEMPORARY FUNCTION strip AS 'com.hadoopbook.hive.Strip';
 
--- 打印分隔行,测试strip函数
 ! echo; # vv select_strip;
--- strip函数: 去除字符串两端空白
 SELECT strip('  bee  ') FROM dummy;
--- strip函数重载版本: 去除字符串两端指定字符
 SELECT strip('banana', 'ab') FROM dummy;
 ! echo; # ^^ select_strip;
 
--- 打印分隔行,测试strip函数不区分大小写
 ! echo; # vv select_case_insensitive_strip;
 SELECT STRIP('  bee  ') FROM dummy;
 ! echo; # ^^ select_case_insensitive_strip;
 
--- 步骤5: 创建records表用于测试聚合函数
 DROP TABLE IF EXISTS records;
 CREATE TABLE records (year STRING, temperature INT, quality INT)
 ROW FORMAT DELIMITED
@@ -57,7 +46,6 @@ ROW FORMAT DELIMITED
 LOAD DATA LOCAL INPATH 'input/ncdc/micro-tab/sample.txt'
 OVERWRITE INTO TABLE records;
 
--- 步骤6: 创建并使用自定义聚合函数maximum
 ! echo; # vv select_maximum;
 CREATE TEMPORARY FUNCTION maximum AS 'com.hadoopbook.hive.Maximum';
 SELECT maximum(temperature) FROM records;

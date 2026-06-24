@@ -1,18 +1,8 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 
-<!--
-  Hadoop本地模式 - HDFS配置(hdfs-site.xml)
+<!-- Put site-specific property overrides in this file. -->
 
-  此文件用于配置HDFS相关参数。
-  本地模式配置通常为空，因为不涉及HDFS操作。
-
-  常见配置项：
-  - dfs.replication: 数据块副本数量
-  - dfs.namenode.name.dir: NameNode元数据存储目录
-  - dfs.datanode.data.dir: DataNode数据存储目录
-  - dfs.permissions.enabled: 是否启用HDFS权限检查
--->
 <configuration>
 
 </configuration>

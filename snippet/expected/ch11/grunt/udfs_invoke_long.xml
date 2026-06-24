@@ -1,3 +1,2 @@
-<!-- Pig Grunt 集成测试：FILTER 使用完整类名调用 UDF (IsGoodQuality) -->
 <screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">filtered_records = FILTER records BY temperature != 9999 AND</userinput>
 <prompt moreinfo="none">&gt;&gt; </prompt><userinput moreinfo="none">  com.hadoopbook.pig.IsGoodQuality(quality);</userinput></screen>

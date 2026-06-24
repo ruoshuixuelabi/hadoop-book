@@ -1,4 +1,3 @@
-<!-- Pig Grunt 集成测试：FOREACH 投影后 DESCRIBE，验证投影字段类型为 bytearray -->
 <screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">projected_records = FOREACH records GENERATE $0, $1, $2;</userinput>
 <prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">DUMP projected_records;</userinput>
 (1950,0,1)

@@ -1,28 +1,8 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
-<!--
-  HDFS客户端配置文件(core-site.xml)
-
-  此文件配置Hadoop核心参数，主要用于HDFS客户端连接。
-
-  适用场景：
-  - 开发环境中HDFS客户端配置
-  - 连接到HDFS集群的必要配置
-  - 指定默认文件系统和临时目录等
-
-  核心配置项：
-  - fs.defaultFS: 默认文件系统地址
--->
 <configuration>
-
-  <!--
-    HDFS默认文件系统地址
-    fs.defaultFS: 指定默认文件系统为HDFS
-    客户端通过此地址连接NameNode进行文件操作
-  -->
   <property>
     <name>fs.defaultFS</name>
     <value>hdfs://localhost/</value>
   </property>
-
 </configuration>

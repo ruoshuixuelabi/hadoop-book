@@ -1,44 +1,6 @@
 <?xml version="1.0"?>
-<!--
-  core-site.xml - Hadoop 核心配置文件
-
-  本文件是 Hadoop 集群最基础的配置文件，包含所有组件共享的核心参数。
-  这些配置会影响整个 Hadoop 生态系统的行为。
-
-  主要配置内容：
-  - 文件系统默认配置（HDFS地址）
-  - Hadoop 临时目录位置
-  - 快照和回收站设置
-  - Web UI 相关配置
-
-  配置优先级：
-  - 此文件中的配置会被其他组件（YARN、HBase等）继承
-  - 特定组件的 site.xml 可以覆盖这些默认值
-
-  重要提示：
-  - fs.defaultFS 是最重要的配置项，必须正确设置
-  - 集群中所有节点应使用相同的 core-site.xml
--->
+<!-- core-site.xml -->
 <configuration>
-  <!--
-      fs.defaultFS - Hadoop 文件系统默认地址
-
-      配置说明：
-      - 指定 Hadoop 集群的默认文件系统地址
-      - 这个 URI 决定了客户端连接哪个 HDFS 集群
-      - 支持多种文件系统：hdfs、file、s3、swift 等
-
-      常见配置：
-      - HDFS集群：hdfs://namenode:9000/ 或 hdfs://namenode/
-      - 本地文件系统：file:///
-      - 高可用集群：hdfs://mycluster/（需要在 hdfs-site.xml 中配置 nameservice ID）
-
-      兼容性说明：
-      - 在 Hadoop 1.x 中对应的属性是 fs.default.name
-      - Hadoop 2.x 引入 fs.defaultFS 作为统一命名
-
-      默认值：如果不配置，默认为本地文件系统 file:///
-  -->
   <property>
     <name>fs.defaultFS</name>
     <value>hdfs://namenode/</value>

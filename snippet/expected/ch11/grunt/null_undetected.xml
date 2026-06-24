@@ -1,4 +1,3 @@
-<!-- Pig Grunt 集成测试：未检测到的空值（类型推断导致），temperature 字段未声明类型时会把非法值 'e' 当作数据 -->
 <screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">records = LOAD 'input/ncdc/micro-tab/sample_corrupt.txt'</userinput>
 <prompt moreinfo="none">&gt;&gt; </prompt><userinput moreinfo="none">  AS (year:chararray, temperature, quality:int);</userinput>
 <prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">DUMP records;</userinput>

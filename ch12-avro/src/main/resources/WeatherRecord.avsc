@@ -2,10 +2,10 @@
   "type": "record",
   "name": "WeatherRecord",
   "namespace": "specific",
-  "doc": "天气观测记录，包含年份、温度和气象站 ID。",
+  "doc": "A weather reading.",
   "fields": [
-    {"name": "year", "type": "int", "doc": "观测年份"},
-    {"name": "temperature", "type": "int", "doc": "温度（摄氏度）"},
-    {"name": "stationId", "type": "string", "doc": "气象站 ID"}
+    {"name": "year", "type": "int"},
+    {"name": "temperature", "type": "int"},
+    {"name": "stationId", "type": "string"}
   ]
 }

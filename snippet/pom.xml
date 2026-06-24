@@ -1,69 +1,37 @@
-<!--
-  Maven POM - Snippet测试模块
-
-  本模块用于测试书中出现的代码片段（snippets），
-  这些代码片段可能来自不同的章节，用于验证代码的正确性。
-
-  本模块特点：
-  - 独立的测试环境，不依赖其他业务模块
-  - 包含常用的测试工具依赖
-  - 主要用于代码验证和示例测试
--->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
-  <!-- 继承book父POM，使用book级别的依赖管理 -->
   <parent>
     <groupId>com.hadoopbook</groupId>
     <artifactId>book</artifactId>
     <version>4.0</version>
     <relativePath>../book/pom.xml</relativePath>
   </parent>
-
   <groupId>com.hadoopbook</groupId>
   <artifactId>snippet</artifactId>
   <packaging>jar</packaging>
   <version>4.0</version>
-
-  <!-- 模块名称：Snippet testing -->
   <name>Snippet testing</name>
-
-  <!-- ==================== 依赖项配置 ==================== -->
   <dependencies>
-    <!-- JUnit测试框架：用于编写和运行单元测试 -->
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <scope>test</scope>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
     </dependency>
-
-    <!--
-      Apache Commons Exec：执行外部进程的库
-      用于测试需要调用外部命令的场景（如Hadoop CLI）
-    -->
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-exec</artifactId>
     </dependency>
-
-    <!--
-      Apache Commons IO：IO工具库
-      提供了文件操作、文件过滤器等常用工具
-    -->
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
     </dependency>
-
-    <!--
-      Guava：Google核心工具库
-      提供了集合、缓存、并发等常用工具类
-    -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
     </dependency>
-
-      </dependencies>
+    <dependency>
+      <groupId>junit-addons</groupId>
+      <artifactId>junit-addons</artifactId>
+    </dependency>
+  </dependencies>
 </project>

@@ -1,72 +1,31 @@
-<!--
-  Maven Assembly Descriptor - Avro作业打包描述符
-
-  此描述符用于将Avro序列化相关的MapReduce作业打包成可部署的JAR包。
-
-  打包策略：
-  1. 打包格式为JAR文件
-  2. 排除Hadoop自身的依赖（org.apache.hadoop:*），因为这些依赖由Hadoop集群提供
-  3. 将传递依赖解压后打包，避免类路径冲突
-  4. 排除META-INF/LICENSE文件避免与同名目录冲突
-  5. 包含编译后的类文件到JAR根目录
--->
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
-	<!-- 打包标识符，输出文件名为artifactId-version-job.jar -->
 	<id>job</id>
-
-	<!-- 输出格式：打包成单个JAR文件 -->
 	<formats>
 		<format>jar</format>
 	</formats>
-
-	<!-- 不包含基础目录 -->
 	<includeBaseDirectory>false</includeBaseDirectory>
-
-	<!-- 依赖项配置 -->
 	<dependencySets>
 		<dependencySet>
-			<!-- 启用传递依赖过滤 -->
 		  <useTransitiveFiltering>true</useTransitiveFiltering>
-
-			<!-- 解压依赖项到JAR内部 -->
 			<unpack>true</unpack>
-
-			<!-- 解压选项配置 -->
 			<unpackOptions>
-				<!-- 排除META-INF/LICENSE文件，避免与目录冲突 -->
 			  <excludes>
-			    <exclude>META-INF/LICENSE</exclude>
+			    <exclude>META-INF/LICENSE</exclude> <!-- Exclude to avoid clash with directory of the same name -->
 			  </excludes>
 			</unpackOptions>
-
-			<!-- 仅包含运行时依赖项 -->
 			<scope>runtime</scope>
-
-			<!-- 输出到根目录 / -->
 			<outputDirectory>/</outputDirectory>
-
-			<!-- 不使用项目自身的artifact，由fileSets处理 -->
-		  <useProjectArtifact>false</useProjectArtifact>
-
-		  <!--
-		    排除Hadoop依赖：
-		    Hadoop集群环境已提供这些依赖，打包时排除以减小JAR体积
-		  -->
+			<useProjectArtifact>false</useProjectArtifact>
 		  <excludes>
 		  	<exclude>org.apache.hadoop:*</exclude>
 		  </excludes>
 		</dependencySet>
 	</dependencySets>
-
-	<!-- 文件集配置：添加编译后的类文件 -->
 	<fileSets>
 		<fileSet>
-			<!-- 从编译输出目录获取类文件 -->
 			<directory>target/classes</directory>
-
-			<!-- 输出到JAR根目录 -->
 			<outputDirectory>/</outputDirectory>
 		</fileSet>
 	</fileSets>

@@ -1,2 +1,1 @@
-<!-- Pig Grunt 集成测试：SET DEBUG ON 命令，开启调试模式 -->
 <screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">set debug on</userinput></screen>

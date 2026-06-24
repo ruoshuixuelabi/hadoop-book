@@ -1,2 +1,1 @@
-<!-- Pig Grunt 集成测试：REGISTER 命令注册包含 UDF 的 JAR 文件 -->
 <screen format="linespecific"><prompt moreinfo="none">grunt&gt; </prompt><userinput moreinfo="none">REGISTER pig-examples.jar;</userinput></screen>

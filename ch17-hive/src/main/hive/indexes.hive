@@ -1,22 +1,15 @@
--- indexes.hive: 演示Hive的索引功能
--- 步骤1: 创建扩展用户表,包含性别字段
 DROP TABLE IF EXISTS users_extended;
+
 CREATE TABLE users_extended (id INT, name STRING, gender STRING);
 
--- 步骤2: 加载扩展用户数据
 LOAD DATA LOCAL INPATH 'input/hive/tables/users_extended.txt'
 OVERWRITE INTO TABLE users_extended;
 
--- 步骤3: 删除已存在的索引(如果存在)
 DROP INDEX IF EXISTS users_index;
 
--- 步骤4: 在gender列上创建位图索引
 CREATE INDEX users_index
 ON TABLE users_extended (gender)
 AS 'BITMAP' WITH DEFERRED REBUILD;
-
--- 步骤5: 触发索引构建
 ALTER INDEX users_index ON users_extended REBUILD;
 
--- 步骤6: 使用索引列进行查询(会自动使用索引加速)
 SELECT * FROM users_extended WHERE gender = 'F';

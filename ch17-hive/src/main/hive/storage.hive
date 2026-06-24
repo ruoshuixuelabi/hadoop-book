@@ -1,59 +1,44 @@
--- storage.hive: 演示Hive的各种存储格式和表创建方式
--- 步骤1: 创建包含用户数据的表,使用默认的TextFile格式
 DROP TABLE IF EXISTS users;
+
 CREATE TABLE users (id INT, name STRING);
+
 LOAD DATA LOCAL INPATH 'input/hive/tables/users.txt'
 OVERWRITE INTO TABLE users;
 
--- 步骤2: 创建SequenceFile格式的表,并从users表插入数据
 DROP TABLE IF EXISTS users_seqfile;
 
--- 启用输出压缩
 SET hive.exec.compress.output=true;
 SET mapreduce.output.fileoutputformat.compress.codec=org.apache.hadoop.io.compress.DeflateCodec;
 SET mapreduce.output.fileoutputformat.compress.type=BLOCK;
-
--- 创建SequenceFile表,并通过AS SELECT从users表插入数据
 CREATE TABLE users_seqfile STORED AS SEQUENCEFILE
 AS
 SELECT id, name FROM users;
 
--- 查看SequenceFile表的数据
 SELECT * from users_seqfile;
 
--- 步骤3: 创建Avro格式的表(适用于RPC和跨语言数据交换)
 DROP TABLE IF EXISTS users_avro;
 
 SET hive.exec.compress.output=true;
--- SET avro.output.codec=snappy;  -- 可选的Snappy压缩
-
--- 创建Avro格式表,定义Schema
+-- SET avro.output.codec=snappy;
 CREATE TABLE users_avro (id INT, name STRING)
 STORED AS AVRO;
--- 从users表插入数据到Avro表
 INSERT OVERWRITE TABLE users_avro
 SELECT * FROM users;
 
--- 查看Avro表的数据
 SELECT * from users_avro;
 
--- 步骤4: 创建Parquet格式的表(列式存储,适合分析查询)
 DROP TABLE IF EXISTS users_parquet;
 
--- 直接创建Parquet表并从users表插入数据
 CREATE TABLE users_parquet STORED AS PARQUET
 AS
 SELECT * FROM users;
 
--- 查看Parquet表的数据
 SELECT * from users_parquet;
 
--- 步骤5: 创建ORC格式的表(优化行列式存储,提供高效的压缩和查询性能)
 DROP TABLE IF EXISTS users_orc;
 
 CREATE TABLE users_orc STORED AS ORCFILE
 AS
 SELECT * FROM users;
 
--- 查看ORC表的数据
 SELECT * from users_orc;

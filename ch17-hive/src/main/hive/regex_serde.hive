@@ -1,29 +1,16 @@
--- regex_serde.hive: 演示Hive使用正则表达式SerDe解析数据
--- 打印分隔行
 ! echo; # == select_stations;
 
--- 步骤1: 创建气象站表,使用RegexSerDe指定正则表达式解析固定宽度的数据
 DROP TABLE IF EXISTS stations;
 
--- 定义三个字段: USAF编码(6位数字), WBAN编码(5位数字), 站名(29字符)
 CREATE TABLE stations (usaf STRING, wban STRING, name STRING)
--- 使用Hive贡献的正则SerDe
 ROW FORMAT SERDE 'org.apache.hadoop.hive.contrib.serde2.RegexSerDe'
 WITH SERDEPROPERTIES (
-  -- 输入数据的正则表达式:
-  -- (\\d{6}): 第1个捕获组 - 6位数字(USAF编码)
-  -- (\\d{5}): 第2个捕获组 - 5位数字(WBAN编码)
-  -- (.{29}): 第3个捕获组 - 29个字符(站名)
-  -- .*: 剩余部分忽略
   "input.regex" = "(\\d{6}) (\\d{5}) (.{29}) .*"
 );
 
--- 步骤2: 加载固定宽度的气象站元数据
 LOAD DATA LOCAL INPATH "input/ncdc/metadata/stations-fixed-width.txt"
 INTO TABLE stations;
 
--- 打印分隔行,查看解析结果
 ! echo; # vv select_stations;
--- 限制返回4条记录
 SELECT * FROM stations LIMIT 4;
 ! echo; # ^^ select_stations;

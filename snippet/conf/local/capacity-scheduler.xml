@@ -11,24 +11,8 @@
   See the License for the specific language governing permissions and
   limitations under the License. See accompanying LICENSE file.
 -->
-<!--
-  Hadoop容量调度器配置文件(capacity-scheduler.xml)
-
-  此文件配置YARN容量调度器(CapacityScheduler)的队列和资源分配策略。
-  容量调度器允许多个组织共享集群资源，每个组织分配专属队列。
-
-  主要配置内容：
-  - 队列容量分配
-  - 用户资源限制
-  - 应用程序Master资源比例
-  - 队列访问控制列表(ACL)
--->
 <configuration>
 
-  <!--
-    集群最大应用程序数量限制
-    最大挂起和运行中的应用程序总数，防止资源耗尽
-  -->
   <property>
     <name>yarn.scheduler.capacity.maximum-applications</name>
     <value>10000</value>
@@ -37,43 +21,28 @@
     </description>
   </property>
 
-  <!--
-    ApplicationMaster资源比例上限
-    控制可用于运行ApplicationMaster的集群资源百分比
-    防止过多ApplicationMaster占用资源，影响实际计算任务
-  -->
   <property>
     <name>yarn.scheduler.capacity.maximum-am-resource-percent</name>
     <value>0.1</value>
     <description>
-      Maximum percent of resources in the cluster which can be used to run
+      Maximum percent of resources in the cluster which can be used to run 
       application masters i.e. controls number of concurrent running
       applications.
     </description>
   </property>
 
-  <!--
-    资源计算器实现类
-    用于调度器中资源比较的策略
-    - DefaultResourceCalculator：仅使用内存比较（默认）
-    - DominantResourceCalculator：使用主导资源比较，支持多维资源（内存、CPU等）
-  -->
   <property>
     <name>yarn.scheduler.capacity.resource-calculator</name>
     <value>org.apache.hadoop.yarn.util.resource.DefaultResourceCalculator</value>
     <description>
-      The ResourceCalculator implementation to be used to compare
+      The ResourceCalculator implementation to be used to compare 
       Resources in the scheduler.
       The default i.e. DefaultResourceCalculator only uses Memory while
-      DominantResourceCalculator uses dominant-resource to compare
+      DominantResourceCalculator uses dominant-resource to compare 
       multi-dimensional resources such as Memory, CPU etc.
     </description>
   </property>
 
-  <!--
-    根队列下的子队列列表
-    定义根队列的直接子队列名称
-  -->
   <property>
     <name>yarn.scheduler.capacity.root.queues</name>
     <value>default</value>
@@ -82,23 +51,12 @@
     </description>
   </property>
 
-  <!--
-    default队列的目标容量
-    集群资源分配给此队列的比例（百分比）
-    100表示100%的资源都可分配给该队列
-  -->
   <property>
     <name>yarn.scheduler.capacity.root.default.capacity</name>
     <value>100</value>
     <description>Default queue target capacity.</description>
   </property>
 
-  <!--
-    用户限制因子
-    单个用户可使用的队列资源倍数值
-    设为1表示用户最多使用队列100%的资源
-    可用于防止单一用户占用过多资源
-  -->
   <property>
     <name>yarn.scheduler.capacity.root.default.user-limit-factor</name>
     <value>1</value>
@@ -107,25 +65,14 @@
     </description>
   </property>
 
-  <!--
-    队列最大容量
-    限制队列可使用的最大资源比例
-    即使集群空闲，队列也不会超过此容量
-    用于保证其他队列的最小资源需求
-  -->
   <property>
     <name>yarn.scheduler.capacity.root.default.maximum-capacity</name>
     <value>100</value>
     <description>
-      The maximum capacity of the default queue.
+      The maximum capacity of the default queue. 
     </description>
   </property>
 
-  <!--
-    队列状态
-    RUNNING：接受新应用程序并运行
-    STOPPED：不再接受新应用程序，但现有应用继续运行
-  -->
   <property>
     <name>yarn.scheduler.capacity.root.default.state</name>
     <value>RUNNING</value>
@@ -134,12 +81,6 @@
     </description>
   </property>
 
-  <!--
-    队列提交应用程序的ACL
-    控制谁可以向此队列提交应用程序
-    "*" 表示所有用户都可以提交
-    格式："user1,user2 group1,group2"
-  -->
   <property>
     <name>yarn.scheduler.capacity.root.default.acl_submit_applications</name>
     <value>*</value>
@@ -148,11 +89,6 @@
     </description>
   </property>
 
-  <!--
-    队列管理ACL
-    控制谁可以管理（修改、杀死）此队列中的应用程序
-    "*" 表示所有用户都有管理权限
-  -->
   <property>
     <name>yarn.scheduler.capacity.root.default.acl_administer_queue</name>
     <value>*</value>
@@ -161,19 +97,13 @@
     </description>
   </property>
 
-  <!--
-    节点本地性延迟调度次数
-    在尝试调度机架本地容器之前的错过调度机会次数
-    通常设为集群节点数，默认约为一个机架的节点数（40）
-    用于平衡数据局部性和资源利用率
-  -->
   <property>
     <name>yarn.scheduler.capacity.node-locality-delay</name>
     <value>40</value>
     <description>
-      Number of missed scheduling opportunities after which the CapacityScheduler
-      attempts to schedule rack-local containers.
-      Typically this should be set to number of nodes in the cluster, By default is setting
+      Number of missed scheduling opportunities after which the CapacityScheduler 
+      attempts to schedule rack-local containers. 
+      Typically this should be set to number of nodes in the cluster, By default is setting 
       approximately number of nodes in one rack which is 40.
     </description>
   </property>

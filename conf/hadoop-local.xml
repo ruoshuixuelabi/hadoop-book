@@ -1,31 +1,14 @@
 <?xml version="1.0"?>
-<!--
-  Hadoop本地模式配置文件
-
-  此配置文件用于单机本地模式运行Hadoop。
-  在本地模式下，所有HDFS操作使用本地文件系统(file:///)，
-  MapReduce作业也在本地以单线程方式运行，适合开发调试。
--->
 <configuration>
 
-  <!--
-    文件系统默认路径配置
-    fs.defaultFS: 指定Hadoop默认文件系统为本地文件系统
-    本地模式使用file:///协议，数据存储在本地磁盘
-  -->
   <property>
     <name>fs.defaultFS</name>
     <value>file:///</value>
   </property>
-
-  <!--
-    MapReduce执行框架配置
-    mapreduce.framework.name: 指定MapReduce执行框架为local（本地模式）
-    本地模式下，MapReduce任务以单进程方式在本地执行
-  -->
+  
   <property>
     <name>mapreduce.framework.name</name>
     <value>local</value>
   </property>
-
+  
 </configuration>

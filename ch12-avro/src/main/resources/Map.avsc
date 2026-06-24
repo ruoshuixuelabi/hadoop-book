@@ -1,5 +1,4 @@
 {
   "type": "map",
-  "values": "string",
-  "doc": "字符串到字符串的映射类型 (key-value pairs)。"
+  "values": "string"
 }

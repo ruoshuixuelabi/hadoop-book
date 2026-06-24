@@ -1,7 +1,7 @@
 {
   "type": "record",
   "name": "StringPair",
-  "doc": "一对字符串，在 StringPair 基础上新增了 description 字段。",
+  "doc": "A pair of strings with an added field.",
   "fields": [
     {"name": "left", "type": "string"},
     {"name": "right", "type": "string"},

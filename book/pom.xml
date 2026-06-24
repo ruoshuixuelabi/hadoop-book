@@ -1,648 +1,326 @@
-<!--
-  Hadoop Book 父 POM
-  ================
-  本文件是所有模块的版本定义中心和依赖管理入口。
-  主要功能:
-  1. 集中定义所有 Hadoop 生态圈组件的版本号
-  2. 通过 dependencyManagement 统一管理依赖版本
-  3. 配置 Maven 编译插件和验证规则
-  版本历史:
-  - 当前使用 Hadoop 3.4.2 (相比原书 2.x 有重大更新)
-  - HBase 2.6.4, Hive 4.2.0, Pig 0.18.0
-  - Avro 1.12.1, Parquet 1.16.0 (数据序列化格式)
-  - Spark 1.1.0, Crunch 1.0.0 (计算框架)
-  - ZooKeeper 3.9.4, Sqoop 1.4.5 (分布式工具)
-  使用方式:
-  子模块通过继承 book/pom.xml (parent) 并引用 ${hadoop.version} 等属性来获取版本
--->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
-    <!-- POM 模型版本，固定为 4.0.0 -->
-    <modelVersion>4.0.0</modelVersion>
-    <!-- 项目坐标：作为父 POM 被子模块继承 -->
-    <groupId>com.hadoopbook</groupId>
-    <artifactId>book</artifactId>
-    <!-- 打包类型为 pom，表示这是依赖管理项目 -->
-    <packaging>pom</packaging>
-    <version>4.0</version>
-    <!-- 项目名称 -->
-    <name>Hadoop: The Definitive Guide, Project</name>
-    <url>https://hadoopbook.com</url>
-    <!--
-      属性定义区
-      =============
-      所有版本号在此集中定义，子模块通过 ${property.name} 引用
-      这样便于统一升级和维护版本一致性
-    -->
-    <properties>
-        <!-- 项目源文件编码 -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- 项目报告输出编码 -->
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <!-- ==================== 数据序列化格式 ==================== -->
-        <!--
-          Avro 版本
-          用途: Apache Avro 是一个数据序列化系统，支持跨语言高效序列化
-          特点: 自描述的二进制格式，支持模式演化（schema evolution）
-          备注: 从 1.7.7 升级到 1.12.1 以支持更多特性
-        -->
-        <!-- <avro.version>1.7.7</avro.version> -->
-        <avro.version>1.12.1</avro.version>
-        <!--
-          Parquet 版本
-          用途: Parquet 是一种列式存储格式，特别适合分析型查询
-          特点: 高压缩比，支持嵌套结构的列式存储，与 Avro 紧密集成
-          备注: 从 1.5.0 升级到 1.16.0
-        -->
-        <parquet.version>1.16.0</parquet.version>
-        <!-- <crunch.version>0.11.0-hadoop2</crunch.version> -->
-        <crunch.version>1.0.0</crunch.version>
-        <!-- ==================== 核心框架版本 ==================== -->
-        <!--
-          Hadoop 版本 (核心)
-          用途: Apache Hadoop 核心库，包含 HDFS 和 MapReduce
-          3.x 特性: 改进的 YARN， Erasure Coding，多 namenode 支持
-          备注: 从 2.5.1 升级到 3.5.0
-        -->
-        <!-- <hadoop.version>2.5.1</hadoop.version> -->
-        <hadoop.version>3.5.0</hadoop.version>
-        <!--
-          HBase 版本
-          用途: HBase 是一个面向列的 NoSQL 数据库，构建在 HDFS 之上
-          特点: 随机读写，适合低延迟查询场景
-          备注: 从 0.98.7-hadoop2 升级到 2.6.5 (HBase 2.x)
-        -->
-        <!-- <hbase.version>0.98.7-hadoop2</hbase.version> -->
-        <hbase.version>2.6.5</hbase.version>
-        <!--
-          Hive 版本
-          用途: Hive 是数据仓库工具，提供 SQL 风格的查询能力
-          特点: 将 SQL 转换为 MapReduce/Tez/Spark 任务执行
-          备注: 从 0.13.1 升级到 4.2.0 (支持 LLAP 实时查询)
-        -->
-        <!-- <hive.version>0.13.1</hive.version> -->
-        <hive.version>4.2.0</hive.version>
-        <!--
-          MRUnit 版本
-          用途: Hadoop MapReduce 单元测试框架
-          特点: 简化 Mapper 和 Reducer 的单元测试
-          注意：该依赖2014年就不再更新了
-        -->
-        <mrunit.version>1.1.0</mrunit.version>
-        <!-- ==================== 数据处理工具 ==================== -->
-        <!--
-          Pig 版本
-          用途: Pig Latin 是一个数据流语言，用于大规模数据处理
-          特点: 简化 MapReduce 编程，提供更高级别的数据操作原语
-          备注: 从 0.13.0 升级到 0.18.0
-        -->
-        <!-- <pig.version>0.13.0</pig.version> -->
-        <pig.version>0.18.0</pig.version>
-        <!--
-          Spark 版本
-          用途: Apache Spark 是通用的大规模数据处理引擎
-          特点: 内存计算，比 MapReduce 快很多，支持 DAG 执行
-          注意: 使用 Scala 2.10 版本兼容
-          备注: 原书使用 1.1.0   更新到4.1.1
-        -->
-<!--        <spark.version>1.1.0</spark.version>-->
-        <spark.version>4.1.1</spark.version>
-        <!--
-          Sqoop 版本
-          用途: Sqoop 是 Hadoop 与关系数据库之间的数据传输工具
-          特点: 支持从 DBMS 导入数据到 HDFS/Hive/HBase，反之亦然
-        -->
-        <sqoop.version>1.4.7</sqoop.version>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.hadoopbook</groupId>
+  <artifactId>book</artifactId>
+  <packaging>pom</packaging>
+  <version>4.0</version>
+  <name>Hadoop: The Definitive Guide, Project</name>
+  <url>http://hadoopbook.com</url>
+  
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    
+    <!-- Component versions are defined here -->
+    <avro.version>1.7.7</avro.version>
+    <crunch.version>0.11.0-hadoop2</crunch.version>
+    <hadoop.version>2.5.1</hadoop.version>
+    <hbase.version>0.98.7-hadoop2</hbase.version>
+    <hive.version>0.13.1</hive.version>
+    <mrunit.version>1.1.0</mrunit.version>
+    <parquet.version>1.5.0</parquet.version>
+    <pig.version>0.13.0</pig.version>
+    <spark.version>1.1.0</spark.version>
+    <sqoop.version>1.4.5</sqoop.version>
+    <zookeeper.version>3.4.6</zookeeper.version>
+  </properties>
+  
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro</artifactId>
+        <version>${avro.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-mapred</artifactId>
+        <classifier>hadoop2</classifier>
+        <version>${avro.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.twitter</groupId>
+        <artifactId>parquet-avro</artifactId>
+        <version>${parquet.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-core</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.hbase</groupId>
+        <artifactId>hbase-client</artifactId>
+        <version>${hbase.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.hbase</groupId>
+        <artifactId>hbase-server</artifactId>
+        <version>${hbase.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.hive</groupId>
+        <artifactId>hive-common</artifactId>
+        <version>${hive.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-core</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.hive</groupId>
+        <artifactId>hive-exec</artifactId>
+        <version>${hive.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-core</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.jdo</groupId>
+            <artifactId>jdo2-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.datanucleus</groupId>
+            <artifactId>datanucleus-connectionpool</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.datanucleus</groupId>
+            <artifactId>datanucleus-core</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.datanucleus</groupId>
+            <artifactId>datanucleus-enhancer</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.datanucleus</groupId>
+            <artifactId>datanucleus-rdbms</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.pig</groupId>
+        <artifactId>pig</artifactId>
+        <version>${pig.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.crunch</groupId>
+        <artifactId>crunch-core</artifactId>
+        <version>${crunch.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.spark</groupId>
+        <artifactId>spark-core_2.10</artifactId>
+        <version>${spark.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.zookeeper</groupId>
+        <artifactId>zookeeper</artifactId>
+        <version>${zookeeper.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.sqoop</groupId>
+        <artifactId>sqoop</artifactId>
+        <classifier>hadoop200</classifier>
+        <version>${sqoop.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.15</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.jms</groupId>
+            <artifactId>jms</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.sun.jdmk</groupId>
+            <artifactId>jmxtools</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.sun.jmx</groupId>
+            <artifactId>jmxri</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>1.7.5</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>1.7.5</version>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.11</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-all</artifactId>
+        <version>1.3</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>junit-addons</groupId>
+        <artifactId>junit-addons</artifactId>
+        <version>1.4</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.scalatest</groupId>
+        <artifactId>scalatest_2.10</artifactId>
+        <version>2.2.0</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-exec</artifactId>
+        <version>1.1</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.4</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>11.0.2</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
-        <!--
-          ZooKeeper 版本
-          用途: ZooKeeper 是一个分布式协调服务，用于维护配置信息和命名服务
-          特点: 提供分布式锁、Leader 选举等分布式协作机制
-          备注: 从 3.4.6 升级到 3.9.4 (安全性和稳定性改进)
-        -->
-        <!-- <zookeeper.version>3.4.6</zookeeper.version> -->
-        <zookeeper.version>3.9.4</zookeeper.version>
-    </properties>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+          <compilerArgs>
+            <arg>-Xlint:unchecked</arg>
+          </compilerArgs>
+          <showDeprecation>true</showDeprecation>
+          <showWarnings>true</showWarnings>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.3.1</version>
+        <executions>
+          <execution>
+            <id>enforce-versions</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>[3.0.0,)</version>
+                </requireMavenVersion>
+                <requireJavaVersion>
+                  <version>1.6</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>2.17</version>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <goals>
+              <goal>integration-test</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>verify</id>
+            <goals>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-surefire-plugin</artifactId>
+	    <version>2.17</version>
+	    <configuration>
+	      <argLine>-Xmx1024m</argLine>
+	    </configuration>
+      </plugin> 
+    </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.4</version>
+        </plugin>
+        <plugin>
+          <groupId>net.alchim31.maven</groupId>
+          <artifactId>scala-maven-plugin</artifactId>
+          <version>3.1.6</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>compile</goal>
+                <goal>testCompile</goal>
+              </goals>
+              <configuration>
+                <args>
+                  <arg>-deprecation</arg>
+                  <arg>-dependencyfile</arg>
+                  <arg>${project.build.directory}/.scala_dependencies</arg>
+                </args>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.avro</groupId>
+          <artifactId>avro-maven-plugin</artifactId>
+          <version>${avro.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.scalatest</groupId>
+          <artifactId>scalatest-maven-plugin</artifactId>
+          <version>1.0</version>
+          <configuration>
+            <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+            <junitxml>.</junitxml>
+            <filereports>ScalaTestSuite.txt</filereports>
+          </configuration>
+          <executions>
+            <execution>
+              <id>test</id>
+              <goals>
+                <goal>test</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 
-    <!--
-      依赖管理区
-      =============
-      dependencyManagement 确保所有子模块使用相同版本的依赖
-      子模块需要显式声明依赖但可以不指定版本（从父 POM 继承）
-    -->
-    <dependencyManagement>
-        <dependencies>
-            <!-- ========== Avro 相关依赖 ========== -->
-
-            <!--
-              Avro 核心库
-              包含 Avro 数据类型的定义和序列化/反序列化功能
-            -->
-            <dependency>
-                <groupId>org.apache.avro</groupId>
-                <artifactId>avro</artifactId>
-                <version>${avro.version}</version>
-            </dependency>
-
-            <!--
-              Avro MapReduce 集成
-              提供 Avro 数据与 Hadoop MapReduce 的集成支持
-            -->
-            <dependency>
-                <groupId>org.apache.avro</groupId>
-                <artifactId>avro-mapred</artifactId>
-                <!-- 注意: 1.6.0+ 版本后不再需要 hadoop2 classifier -->
-                <!-- <classifier>hadoop2</classifier> -->
-                <version>${avro.version}</version>
-            </dependency>
-
-            <!-- ========== Parquet 相关依赖 ========== -->
-
-            <!--
-              Parquet Avro 集成
-              用途: 使用 Avro 模式读写 Parquet 文件
-              注意: 从 1.6.0 开始，groupId 从 com.twitter 变为 org.apache.parquet
-              排除 hadoop-core: 避免与 hadoop-client 冲突
-            -->
-            <dependency>
-                <!-- 从1.6.0开始后依赖转移到了com.twitter » parquet-avro→org.apache.parquet » parquet-avro-->
-                <!--                <groupId>com.twitter</groupId>-->
-                <groupId>org.apache.parquet</groupId>
-                <artifactId>parquet-avro</artifactId>
-                <version>${parquet.version}</version>
-                <exclusions>
-                    <!-- 排除 hadoop-core 避免版本冲突，使用 hadoop-client 代替 -->
-                    <exclusion>
-                        <groupId>org.apache.hadoop</groupId>
-                        <artifactId>hadoop-core</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <!-- ========== HBase 相关依赖 ========== -->
-
-            <!--
-              HBase 客户端
-              用途: 用于 Java 程序连接 HBase 集群
-              包含: HBase 连接管理、表操作、增删改查 API
-            -->
-            <dependency>
-                <groupId>org.apache.hbase</groupId>
-                <artifactId>hbase-client</artifactId>
-                <version>${hbase.version}</version>
-            </dependency>
-
-            <!--
-              HBase 服务端
-              用途: HBase 服务器端组件，包含 RegionServer 等
-              注意: 仅在需要直接访问 HBase 内部实现时才需要
-            -->
-            <dependency>
-                <groupId>org.apache.hbase</groupId>
-                <artifactId>hbase-server</artifactId>
-                <version>${hbase.version}</version>
-            </dependency>
-
-            <!-- ========== Hive 相关依赖 ========== -->
-
-            <!--
-              Hive 公共组件
-              用途: Hive 的基础公共功能，被其他 Hive 模块依赖
-            -->
-            <dependency>
-                <groupId>org.apache.hive</groupId>
-                <artifactId>hive-common</artifactId>
-                <version>${hive.version}</version>
-                <exclusions>
-                    <!-- 排除冲突的 hadoop-core -->
-                    <exclusion>
-                        <groupId>org.apache.hadoop</groupId>
-                        <artifactId>hadoop-core</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <!--
-              Hive 执行引擎
-              用途: Hive 的核心执行引擎，负责将 HQL 转为执行计划
-              排除项说明:
-              - hadoop-core: 使用 hadoop-client 代替
-              - javax.jdo:jdo2-api: 版本冲突
-              - datanucleus 系列: Hive 4.x 使用自己的元数据管理
-            -->
-            <dependency>
-                <groupId>org.apache.hive</groupId>
-                <artifactId>hive-exec</artifactId>
-                <version>${hive.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.hadoop</groupId>
-                        <artifactId>hadoop-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.jdo</groupId>
-                        <artifactId>jdo2-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.datanucleus</groupId>
-                        <artifactId>datanucleus-connectionpool</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.datanucleus</groupId>
-                        <artifactId>datanucleus-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.datanucleus</groupId>
-                        <artifactId>datanucleus-enhancer</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.datanucleus</groupId>
-                        <artifactId>datanucleus-rdbms</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <!-- ========== Pig 相关依赖 ========== -->
-
-            <!--
-              Pig 核心库
-              用途: 包含 Pig Latin 脚本的执行环境
-              特点: 提供数据流编程能力，底层转化为 MapReduce/Tez/Spark
-            -->
-            <dependency>
-                <groupId>org.apache.pig</groupId>
-                <artifactId>pig</artifactId>
-                <version>${pig.version}</version>
-            </dependency>
-
-            <!-- ========== Crunch 相关依赖 ========== -->
-
-            <!--
-              Crunch 核心库
-              用途: Apache Crunch 提供类似 Pig 的管道式 API
-              特点: 基于 Java，支持复杂的 Multi-Dataset 操作
-              备注: 从 0.11.0-hadoop2 升级到 1.0.0
-            -->
-            <dependency>
-                <groupId>org.apache.crunch</groupId>
-                <artifactId>crunch-core</artifactId>
-                <version>${crunch.version}</version>
-            </dependency>
-
-            <!-- ========== Spark 相关依赖 ========== -->
-
-            <!--
-              Spark 核心
-              用途: Spark 运行时核心库，支持 RDD、DataFrame、DataSet API
-              注意: spark-core_2.10 表示编译时使用的 Scala 版本是 2.10
-              特点: 内存计算，支持 DAG 优化，比 MapReduce 快 10-100 倍
-            -->
-            <dependency>
-                <groupId>org.apache.spark</groupId>
-                <artifactId>spark-core_2.13</artifactId>
-                <version>${spark.version}</version>
-            </dependency>
-            <!--            <dependency>-->
-            <!--                <groupId>org.apache.spark</groupId>-->
-            <!--                <artifactId>spark-core_2.10</artifactId>-->
-            <!--                <version>${spark.version}</version>-->
-            <!--            </dependency>-->
-            <!-- ========== ZooKeeper 相关依赖 ========== -->
-            <!--
-              ZooKeeper 客户端
-              用途: 分布式协调服务客户端，用于构建分布式应用
-              功能: 分布式锁、Leader 选举、配置管理、服务发现
-            -->
-            <dependency>
-                <groupId>org.apache.zookeeper</groupId>
-                <artifactId>zookeeper</artifactId>
-                <version>${zookeeper.version}</version>
-            </dependency>
-
-            <!-- ========== Sqoop 相关依赖 ========== -->
-
-            <!--
-              Sqoop 核心
-              用途: Hadoop 与关系数据库之间的双向数据传输
-              classifier=hadoop200: 表示适配 Hadoop 2.x 版本
-            -->
-            <dependency>
-                <groupId>org.apache.sqoop</groupId>
-                <artifactId>sqoop</artifactId>
-                <!--                <classifier>hadoop200</classifier>-->
-                <version>${sqoop.version}</version>
-            </dependency>
-            <!-- ========== 日志框架 ========== -->
-            <!--
-              Log4j 1.2.x
-              用途: 古老的日志框架，Hadoop 生态圈广泛使用
-              排除项: 避免与 SLF4J 冲突的 JAR
-              注意: Log4j 1.x 已停止维护，生产环境建议升级
-            -->
-            <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>1.2.15</version>
-                <exclusions>
-                    <!-- 排除可能造成冲突的依赖 -->
-                    <exclusion>
-                        <groupId>javax.mail</groupId>
-                        <artifactId>mail</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.jms</groupId>
-                        <artifactId>jms</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.sun.jdmk</groupId>
-                        <artifactId>jmxtools</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.sun.jmx</groupId>
-                        <artifactId>jmxri</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <!--
-              SLF4J API
-              用途: 简单日志门面 (Simple Logging Facade for Java)
-              特点: 提供统一的日志 API，支持运行时绑定到具体实现
-            -->
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>1.7.5</version>
-            </dependency>
-            <!--
-              SLF4J Log4j12 绑定
-              用途: 将 SLF4J API 绑定到 Log4j 实现
-              注意: 必须与 log4j 版本配合使用
-            -->
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>1.7.5</version>
-            </dependency>
-            <!-- ========== 测试框架 ========== -->
-            <!--
-              JUnit Jupiter
-              用途: JUnit 5 测试框架，包含 engine、api、params
-              注意: 不使用 BOM，因为阿里云镜像可能未同步
-            -->
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter</artifactId>
-                <version>5.10.2</version>
-                <scope>test</scope>
-            </dependency>
-            <!--
-              Hamcrest 匹配器
-              用途: JUnit 5 的 assertThat 需要 Hamcrest 匹配器
-            -->
-            <dependency>
-                <groupId>org.hamcrest</groupId>
-                <artifactId>hamcrest-all</artifactId>
-                <version>1.3</version>
-                <scope>test</scope>
-            </dependency>
-            <!--
-              ScalaTest
-              用途: Scala 测试框架，也支持 Scala 和 Java 混合项目
-              注意: 2.10 表示编译时 Scala 版本
-            -->
-            <dependency>
-                <groupId>org.scalatest</groupId>
-                <artifactId>scalatest_2.13</artifactId>
-                <scope>test</scope>
-            </dependency>
-            <!-- ========== 通用工具 ========== -->
-            <!--
-              Apache Commons Exec
-              用途: 执行外部进程的标准 API
-              场景: 用于运行 Hadoop 命令行工具
-            -->
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-exec</artifactId>
-                <version>1.1</version>
-            </dependency>
-            <!--
-              Apache Commons IO
-              用途: IO 工具类库，扩展 Java 标准 IO 功能
-              提供: 文件操作、流处理、文件比较等工具
-            -->
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>2.4</version>
-            </dependency>
-            <!--
-              Google Guava
-              用途: Google 核心工具库
-              提供: 集合、缓存、并发、字符串处理等功能
-              Hadoop 内部广泛使用
-            -->
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>11.0.2</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-    <!--
-      构建配置区
-      =============
-      定义 Maven 编译和测试相关的默认配置
-    -->
-    <build>
-        <!-- 全局插件配置 -->
-        <plugins>
-            <!--
-              Maven 编译插件
-              配置: Java 21 源码编译，输出 class 21 字节码
-              额外参数:
-              - Xlint:unchecked: 显示未检查的转换警告
-              - showDeprecation: 显示已过时的 API 警告
-              - showWarnings: 显示编译警告
-            -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.15.0</version>
-                <configuration>
-                    <!-- 源码兼容 Java 21 -->
-                    <source>21</source>
-                    <!-- 目标字节码 Java 21 -->
-                    <target>21</target>
-                    <compilerArgs>
-                        <!-- 显示未检查操作警告（如泛型转换） -->
-                        <arg>-Xlint:unchecked</arg>
-                    </compilerArgs>
-                    <!-- 显示已过时 API 的使用警告 -->
-                    <showDeprecation>true</showDeprecation>
-                    <!-- 显示编译警告 -->
-                    <showWarnings>true</showWarnings>
-                </configuration>
-            </plugin>
-            <!--
-              Maven 强制执行插件
-              功能: 在构建前验证环境条件
-              验证项:
-              - Maven 版本 >= 3.0.0
-              - Java 版本 >= 1.6
-            -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.6.2</version>
-                <executions>
-                    <execution>
-                        <id>enforce-versions</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <!-- 要求 Maven 版本至少为 3.0.0 -->
-                                <requireMavenVersion>
-                                    <version>[3.0.0,)</version>
-                                </requireMavenVersion>
-                                <!-- 要求 Java 版本至少为 1.6 -->
-                                <requireJavaVersion>
-                                    <version>1.6</version>
-                                </requireJavaVersion>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <!--
-              Maven 集成测试插件
-              功能: 运行和验证集成测试
-              用途: 验证整个系统组件的协同工作
-            -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.17</version>
-                <executions>
-                    <!-- 执行集成测试 -->
-                    <execution>
-                        <id>integration-test</id>
-                        <goals>
-                            <goal>integration-test</goal>
-                        </goals>
-                    </execution>
-                    <!-- 验证测试结果 -->
-                    <execution>
-                        <id>verify</id>
-                        <goals>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!--
-              Maven 测试插件
-              配置: 测试执行参数，如 JVM 内存限制
-            -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0</version>
-                <configuration>
-                    <!-- 设置最大堆内存为 1024MB，避免测试时内存不足 -->
-                    <argLine>-Xmx1024m</argLine>
-                </configuration>
-            </plugin>
-        </plugins>
-        <!--
-          插件管理区
-          =============
-          定义插件的默认配置，子模块可以选择性使用
-        -->
-        <pluginManagement>
-            <plugins>
-                <!--
-                  Maven Assembly 插件
-                  用途: 将项目打包成 JAR/ZIP，包含依赖和配置文件
-                  用于: 创建可执行的 JAR 包（如 hadoop-examples.jar）
-                -->
-                <plugin>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <version>2.4</version>
-                </plugin>
-                <!--
-                  Scala Maven 插件
-                  用途: 编译 Scala 源码（Spark、Crunch 项目使用）
-                  配置:
-                  - deprecation: 显示已过时警告
-                  - dependencyfile: 生成 Scala 依赖文件
-                -->
-                <plugin>
-                    <groupId>net.alchim31.maven</groupId>
-                    <artifactId>scala-maven-plugin</artifactId>
-                    <version>3.1.6</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <!-- 编译主源码 -->
-                                <goal>compile</goal>
-                                <!-- 编译测试源码 -->
-                                <goal>testCompile</goal>
-                            </goals>
-                            <configuration>
-                                <args>
-                                    <!-- 显示已过时警告 -->
-                                    <arg>-deprecation</arg>
-                                    <!-- 输出依赖文件路径 -->
-                                    <arg>-dependencyfile</arg>
-                                    <arg>${project.build.directory}/.scala_dependencies</arg>
-                                </args>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-                <!--
-                  Avro Maven 插件
-                  用途: 编译 Avro schema 文件 (.avsc) 生成 Java 类
-                  由 avro-maven-plugin 自动处理 src/main/avro 目录下的 schema
-                -->
-                <plugin>
-                    <groupId>org.apache.avro</groupId>
-                    <artifactId>avro-maven-plugin</artifactId>
-                    <version>${avro.version}</version>
-                </plugin>
-                <!--
-                  ScalaTest Maven 插件
-                  用途: 运行 ScalaTest 测试套件
-                  配置:
-                  - reportsDirectory: 测试报告输出目录
-                  - junitxml: JUnit XML 格式报告的位置
-                  - filereports: ScalaTest 文本报告文件名
-                -->
-                <plugin>
-                    <groupId>org.scalatest</groupId>
-                    <artifactId>scalatest-maven-plugin</artifactId>
-                    <version>1.0</version>
-                    <configuration>
-                        <!-- 测试报告目录 -->
-                        <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
-                        <!-- JUnit XML 报告位置 -->
-                        <junitxml>.</junitxml>
-                        <!-- ScalaTest 文本报告文件名 -->
-                        <filereports>ScalaTestSuite.txt</filereports>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>test</id>
-                            <goals>
-                                <goal>test</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
 </project>

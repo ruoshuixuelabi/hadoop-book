@@ -1,59 +1,21 @@
-<!--
-  Common 模块 POM
-  ==============
-  本模块包含各章节示例共享的工具类。
-
-  主要内容:
-  - NcdcRecordParser: 天气数据记录解析器
-  - 其他可跨模块重用的工具类
-
-  使用方式:
-  其他模块通过添加对 common 的依赖来使用这些工具类:
-  <dependency>
-    <groupId>com.hadoopbook</groupId>
-    <artifactId>common</artifactId>
-    <version>4.0</version>
-  </dependency>
--->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <!-- POM 模型版本 -->
   <modelVersion>4.0.0</modelVersion>
-
-  <!-- 继承父 POM（hadoop-meta 继承 book 的版本管理） -->
   <parent>
     <groupId>com.hadoopbook</groupId>
     <artifactId>hadoop-meta</artifactId>
     <version>4.0</version>
-    <!-- 相对于当前目录的父 POM 路径 -->
     <relativePath>../hadoop-meta/pom.xml</relativePath>
   </parent>
-
-  <!-- 项目坐标 -->
   <groupId>com.hadoopbook</groupId>
   <artifactId>common</artifactId>
-  <!-- 打包类型为 jar，表示这是代码库模块 -->
   <packaging>jar</packaging>
   <version>4.0</version>
   <name>Common Code</name>
-
-  <!--
-    依赖声明
-    ========
-    本模块只需要 JUnit 进行测试
-    其他依赖（如 Hadoop Client）从父 POM 继承
-  -->
   <dependencies>
-    <!--
-      JUnit 测试框架
-      ============
-      用途: 单元测试框架
-      说明: 实际版本从父 POM 的 dependencyManagement 继承
-    -->
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <scope>test</scope>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
     </dependency>
   </dependencies>
 </project>
