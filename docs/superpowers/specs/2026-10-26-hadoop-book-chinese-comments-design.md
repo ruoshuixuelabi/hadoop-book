@@ -13,7 +13,7 @@
 
 本次工作的目标：为全部 Java 源码补充中文教学注释，使读者能脱离书籍正文独立读懂代码。
 
-用户后续进一步裁决：**覆盖范围延伸到全部非 Java 文件**（150 个），
+用户后续进一步裁决：**覆盖范围延伸到全部非 Java 文件**（153 个），
 每种语言的注释语法与风险对策见第十一节。
 
 **为什么是"只加注释"**：上一轮 AI 曾经尝试过大规模改写这个仓库，但同时做了
@@ -24,7 +24,7 @@
 
 ### 目标
 - 全部 Java 源码（`src/main/java` + `src/test/java`）覆盖中文教学注释
-- 全部非 Java 源文件（150 个）覆盖中文教学注释（第二阶段，规则见第十一节）
+- 全部非 Java 源文件（153 个）覆盖中文教学注释（第二阶段，规则见第十一节）
 - 类级 Javadoc、方法级 Javadoc、方法内部行内注释三者格式严格区分
 - 注释解释"为什么"和"业务背景"，而非翻译代码
 - 保留上游已有的英文注释，原样不动
@@ -140,7 +140,7 @@ t.set(/*[*/new Text("pig")/*]*/);
 |---|---|
 | 注释语言 | 中文为主，保留原有英文 |
 | 覆盖范围（第一阶段） | `src/main/java` 全部 + `src/test/java` 全部（含 `oldapi/`） |
-| 覆盖范围（第二阶段） | **全部非 Java 文件**（150 个，见第十一节清单）；`pom.xml` 与 `.gitignore` 排除 |
+| 覆盖范围（第二阶段） | **全部非 Java 文件**（153 个，见第十一节清单）；`pom.xml` 与 `.gitignore` 排除 |
 | 注释密度 | 教学型（类 Javadoc + public 方法完整 Javadoc + 关键步骤行内注释） |
 | 落地方式 | 每个模块一个 commit，直接提交到 master |
 | 推进顺序 | 按书章节顺序 ch02 → ch03 → ch05 → … |
@@ -370,7 +370,7 @@ ch18-crunch（2571 行）、ch09-mr-features（1654 行）、ch05-io（1682 行�
 
 | 事项 | 状态 |
 |---|---|
-| 150 个文件的最终清单 | ✅ `E:/tmp/nonjava_final.txt`（全部为 git 已跟踪文件） |
+| 153 个文件的最终清单 | ✅ `E:/tmp/nonjava_final.txt`（全部为 git 已跟踪文件） |
 | 每种语言的注释语法 | ✅ 见 §11.4–§11.7 |
 | Hive 只能用 `--` 的依据 | ✅ `HiveLexer.g` 486–489 行（无 `#` token）+ `CliDriver.java` 的跳过逻辑 |
 | Avro `.avsc` 用 `//` 的依据 | ✅ 插件层 BUILD SUCCESS + 生成层 `SCHEMA$` 未变 + 12/12 测试通过 + `Schema.java` 的 `ALLOW_COMMENTS` |
@@ -399,14 +399,21 @@ ch18-crunch（2571 行）、ch09-mr-features（1654 行）、ch05-io（1682 行�
 ### 11.1 覆盖范围
 
 用户裁决为「覆盖全部非 Java 文件」。经全仓库清点，符合「值得加教学注释」
-的非 Java 源文件共 **150 个**，清单存于 `E:/tmp/nonjava_final.txt`。
+的非 Java 源文件共 **153 个**，清单存于 `E:/tmp/nonjava_final.txt`。
 
 **排除项**（共 2 个文件 + 一批目录）：
 - `pom.xml`、`*/pom.xml` —— 属构建配置，见第二节「非目标」
 - `.gitignore` —— 不是教学内容
 - `target/`、`snippet/actual/`、`snippet/expected/` 等构建产物与生成结果
 - 纯数据文件（`.txt`、`.avro`、`.parquet` 等二进制/样例输入）
-- 第三方 vendored 文件
+- 第三方 vendored 文件：
+  - `snippet/conf/local/**` 与 `snippet/conf/pseudo/**` —— 从 Apache Hadoop 发行版原样拷贝的
+    集群配置（`hadoop-env.sh`、`core-site.xml`、`*.cmd`、`*.template`、`*.example` 等），
+    头部带 ASF 许可证声明，属于上游文件而非本书原创；
+  - `snippet/bin/phragmite_db.pl` —— 版权属于 Tim Peierls 与 Brian Goetz（2006），
+    是从上游借来的片段抽取工具；
+  - `ch18-crunch/src/test/resources/log4j.properties` 与
+    `ch19-spark/src/test/resources/log4j.properties` —— 同样是 ASF 许可证的 vendored 文件。
 
 **一处需要说明的边界**：`book/src/main/assembly/jar.xml`、
 `ch12-avro/src/main/assembly/job.xml`、`ch13-parquet/src/main/assembly/job.xml`、
@@ -426,7 +433,7 @@ Hadoop job 模板**，形式上属于构建配置。但：
 | 扩展名 | 数量 | 注释语法 | 说明 |
 |---|---|---|---|
 | `.xml` | 22 | `<!-- -->` | Hadoop 配置文件、Oozie workflow、assembly 描述符 |
-| `.sh` | 20 | `#` | 驱动脚本、build 脚本、书稿抽取脚本 |
+| `.sh` | 22 | `#` | 驱动脚本、build 脚本、书稿抽取脚本；含 2 个 `*.java.pre.sh`（书上与 Java 清单并排展示的 shell 命令） |
 | `.grunt` | 18 | `--` / `/* */` | Pig grunt 脚本 |
 | `.avsc` | 18 | `//`（JSON 注释） | Avro schema，见 11.4 |
 | `.py` | 17 | `#` | 见 11.3 的 PEP 263 编码声明规则 |
@@ -437,16 +444,17 @@ Hadoop job 模板**，形式上属于构建配置。但：
 | `.rb` | 2 | `#` | Ruby streaming 示例 |
 | `.cfg` | 2 | `#` | ZooKeeper 配置 |
 | `.r` / `.cpp` / `.c` / `.jr` / `.macro` / `.param` | 各 1 | 见 §11.7 | R 脚本、C++、C、Java-record、Pig 宏、Pig 参数文件 |
+| 无扩展名（`Makefile`） | 1 | `#` | `ch02-mr-intro/src/main/cpp/Makefile`，编译 Hadoop Pipes C++ 例子 |
 
-按模块分布（合计 150）：ch16-pig 31、ch12-avro 17、ch17-hive 16、
+按模块分布（合计 153）：ch16-pig 31、ch12-avro 17、ch17-hive 16、
 ch19-spark 12、conf 11、ch09-mr-features 11、snippet 10、ch14-flume 7、
-ch02-mr-intro 7、ch13-parquet 4、ch10-setup 4、ch06-mr-dev 4、ch03-hdfs 4、
-appc 3、ch04-yarn 2、book 2，其余（ch08/ch18/ch21/ch22 与根目录
+ch02-mr-intro 8、ch13-parquet 4、ch10-setup 4、ch06-mr-dev 4、ch03-hdfs 4、
+appc 3、ch04-yarn 2、book 2、ch05-io 2，其余（ch08/ch18/ch21/ch22 与根目录
 `functional-test.sh`）各 1。
 
 **实施顺序**：沿用第一阶段的「按书章节顺序，每模块一个 commit」，
 新增/涉及非 Java 文件的模块依次为：
-ch02 → ch03 → ch04 → ch06 → ch08 → ch09 → ch10 → ch12 → ch13 → ch14 →
+ch02 → ch03 → ch04 → ch05 → ch06 → ch08 → ch09 → ch10 → ch12 → ch13 → ch14 →
 ch16 → ch17 → ch18 → ch19 → ch21 → ch22 → appc → book → conf → snippet →
 根目录 `functional-test.sh`。
 
