@@ -102,6 +102,9 @@ public class PartitionByStationYearUsingMultipleOutputFormat extends Configured
         String name) {
       // 从记录里解析出站号与年份
       parser.parse(value);
+      // 站号和年份同样是按固定下标从定长记录里切出来的，
+      // 格式恒定且不带路径分隔符，
+      // 所以拼出来的这两级目录一定落在作业的输出目录之内。
       // 用「站号/年份」作为文件名，从而形成两级目录
       return parser.getStationId() + "/" + parser.getYear();
     }

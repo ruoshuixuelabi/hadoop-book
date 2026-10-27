@@ -107,6 +107,9 @@ public class PartitionByStationUsingMultipleOutputFormat extends Configured
         String name) {
       // 从记录里解析出站号
       parser.parse(value);
+      // 站号是按固定下标从定长记录里切出来的，格式恒为「6 位 + 短横线 + 5 位」，
+      // 不可能带进路径分隔符之类的东西，
+      // 所以拼出来的文件名一定直接落在作业的输出目录里。
       // 用站号作为文件名
       return parser.getStationId();
     }

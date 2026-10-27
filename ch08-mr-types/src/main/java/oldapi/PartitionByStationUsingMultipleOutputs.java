@@ -90,6 +90,9 @@ public class PartitionByStationUsingMultipleOutputs extends Configured
         throws IOException {
       
       // 按名字「station」取收集器，第二个参数是文件名
+      // 这个键就是 Mapper 输出的站号，格式恒为「6 位 + 短横线 + 5 位」，
+      // 去掉短横线后仍是纯数字，不会带进路径分隔符，
+      // 因此拼出来的文件名一定直接落在作业的输出目录里。
       OutputCollector collector = multipleOutputs.getCollector("station",
           key.toString().replace("-", ""), reporter);
       // 把本组的每条记录都写出去
