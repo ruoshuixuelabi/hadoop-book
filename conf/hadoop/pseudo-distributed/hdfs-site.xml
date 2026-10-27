@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
+<!-- 伪分布式集群的 HDFS 配置：这一层只管块、副本和存储目录的事 -->
 <!-- hdfs-site.xml -->
 <configuration>
   <property>
+  <!-- 副本数取 1，因为伪分布式只有一台 DataNode；沿用默认的 3 会让每个块永远处于副本不足状态，作业读数据时反复告警，实际也只有一份数据 -->
     <name>dfs.replication</name>
     <value>1</value>
   </property>

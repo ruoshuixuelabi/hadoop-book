@@ -1,17 +1,22 @@
 <?xml version="1.0"?>
+<!-- 集群部署用的 Hadoop 配置模板：namenode、resourcemanager 是角色占位主机名，部署时替换成真实主机名，端口保持不变 -->
+<!-- 与 hadoop-local.xml、hadoop-localhost.xml 并列，三者分别对应本地模式、单机伪分布式和真实集群 -->
 <configuration>
 
   <property>
+  <!-- 默认文件系统决定了不带协议前缀的路径由谁来解析；这里指向 NameNode，写错主机名会让所有读写操作都找不到集群 -->
     <name>fs.defaultFS</name>
     <value>hdfs://namenode/</value>
   </property>
 
   <property>
+  <!-- 指定作业跑在 YARN 上；改成 local 会退化成单机串行执行，读者就看不到资源管理与容器调度的过程 -->
     <name>mapreduce.framework.name</name>
     <value>yarn</value>
   </property>
 
   <property>
+  <!-- 客户端向 ResourceManager 申请容器时使用的地址；8032 是 RM 的 RPC 端口，必须与 RM 所在主机一致 -->
     <name>yarn.resourcemanager.address</name>
     <value>resourcemanager:8032</value>
   </property>

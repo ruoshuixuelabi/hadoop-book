@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
+<!-- 伪分布式集群的 YARN 配置：ResourceManager 与 NodeManager 都落在本机上 -->
 <!-- yarn-site.xml -->
 <configuration>
   <property>
+  <!-- 显式告诉 NodeManager 到哪里找 ResourceManager 注册；不写这一项时 RM 会按机器自身的主机名对外提供地址，在网络解析不干净的环境里注册会失败 -->
     <name>yarn.resourcemanager.hostname</name>
     <value>localhost</value>
   </property>
   <property>
+  <!-- 必须让 NodeManager 加载 shuffle 辅助服务，Map 端写出的中间结果要由它负责搬到 Reduce 那一端；少了这一项作业会卡在 shuffle 阶段反复重试 -->
     <name>yarn.nodemanager.aux-services</name>
     <value>mapreduce_shuffle</value>
   </property>

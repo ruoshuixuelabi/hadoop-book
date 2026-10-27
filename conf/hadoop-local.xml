@@ -1,12 +1,16 @@
 <?xml version="1.0"?>
+<!-- 本地模式配置：不启动任何 Hadoop 守护进程，输入输出都落在本机文件系统上 -->
+<!-- 与 hadoop-localhost.xml 的区别在于那份配置假定本机已经跑起了 HDFS 与 YARN，这份则什么都不依赖 -->
 <configuration>
 
   <property>
+  <!-- 默认文件系统设为 file:///，于是所有路径都按本地路径解析；误填 hdfs:// 时客户端会一直连不上 NameNode -->
     <name>fs.defaultFS</name>
     <value>file:///</value>
   </property>
   
   <property>
+  <!-- 设为 local 表示作业在提交者进程内以本地模式串行跑完，不经过 YARN，因此也不需要任何守护进程在运行 -->
     <name>mapreduce.framework.name</name>
     <value>local</value>
   </property>

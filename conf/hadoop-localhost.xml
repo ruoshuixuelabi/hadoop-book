@@ -1,17 +1,22 @@
 <?xml version="1.0"?>
+<!-- 伪分布式的 localhost 配置：NameNode、DataNode、ResourceManager、NodeManager 全跑在同一台机器上，但走的仍是真实的 HDFS 与 YARN -->
+<!-- 与 hadoop-local.xml 相比，这份配置要求本机已经启动了这套守护进程；conf/hadoop/pseudo-distributed/ 下的四个文件是同一套配置拆成 core、hdfs、mapred、yarn 之后的版本 -->
 <configuration>
 
   <property>
+  <!-- 默认文件系统指向本机的 NameNode；这里必须与实际启动的 NameNode 主机名一致，客户端才不会在解析路径时失败 -->
     <name>fs.defaultFS</name>
     <value>hdfs://localhost/</value>
   </property>
 
   <property>
+  <!-- 设为 yarn 才会走完整的 YARN 提交流程，作业由 ResourceManager 调度、在 NodeManager 起的容器里运行 -->
     <name>mapreduce.framework.name</name>
     <value>yarn</value>
   </property>
 
   <property>
+  <!-- 提交作业时联系 ResourceManager 用的地址，8032 是 RM 的 RPC 端口；它要与 ResourceManager 启动时绑定的地址对上，否则提交会一直超时 -->
     <name>yarn.resourcemanager.address</name>
     <value>localhost:8032</value>
   </property>

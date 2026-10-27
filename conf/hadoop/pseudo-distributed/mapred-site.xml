@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
+<!-- 伪分布式集群的 MapReduce 配置：负责决定作业交给谁来调度 -->
 <!-- mapred-site.xml -->
 <configuration>
   <property>
+  <!-- 设为 yarn 才会提交到 YARN；若写成 local，作业在本机串行执行，ResourceManager 的调度和作业历史都用不上了 -->
     <name>mapreduce.framework.name</name>
     <value>yarn</value>
   </property>

@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
+<!-- 伪分布式集群的公共配置：本机同时充当 NameNode 与 DataNode，因此所有服务都用 localhost 指向自己 -->
 <!-- core-site.xml -->
 <configuration>
   <property>
+  <!-- 默认文件系统属于集群级设置，其余三个文件里的项只影响各自的子系统；这一项决定客户端把路径交给谁去解析 -->
     <name>fs.defaultFS</name>
     <value>hdfs://localhost/</value>
   </property>
