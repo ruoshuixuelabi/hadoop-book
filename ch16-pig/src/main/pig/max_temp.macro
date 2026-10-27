@@ -1,4 +1,7 @@
+-- 这个文件定义了一个宏（macro），把「分组再求最大值」这两步封装起来。
 DEFINE max_by_group(X, group_key, max_field) RETURNS Y {
   A = GROUP $X by $group_key;
+  -- 宏里的 $X 是调用时传进来的关系，$group_key 是分组用的字段。
   $Y = FOREACH A GENERATE group, MAX($X.$max_field);
+  -- 这里的 $max_field 指明在哪个字段上求最大值，$Y 是返回的关系名。
 };

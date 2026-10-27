@@ -1,3 +1,6 @@
+-- 这个脚本是第 16 章的主线示例：读入气温数据，过滤掉坏数据，
+-- 按年份分组，再求出每一年的最高气温。
+-- 每一段窗口对应书里的一小段演示，窗口标记本身不参与 Pig 运算。
 -- == max_temp_load
 -- == max_temp_dump_records
 -- == max_temp_describe_records
@@ -32,4 +35,7 @@ max_temp = FOREACH grouped_records GENERATE group,
 -- vv max_temp_result
 DUMP max_temp;
 -- ^^ max_temp_result
+-- ILLUSTRATE 不会真的跑作业，它只打印出 Pig 为这段查询生成的执行计划，
+-- 用来检查分组、聚合这类多步操作会被拆成几个 MapReduce 作业。
 ILLUSTRATE max_temp;
+-- 小结：整条流水线的顺序是 LOAD、FILTER、GROUP、FOREACH（聚合）、DUMP。

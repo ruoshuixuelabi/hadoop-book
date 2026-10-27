@@ -1,3 +1,6 @@
+-- 这个脚本演示 Pig 里空值（null）的来龙去脉。
+-- 源数据里有一行的温度列写的是字母，转换不成整数，
+-- 这一行的温度就变成了 null，而同一行里的其他列还保留着。
 -- == null_dump
 -- == null_corrupt
 -- == null_count
@@ -9,21 +12,27 @@ records = LOAD 'input/ncdc/micro-tab/sample_corrupt.txt'
   AS (year:chararray, temperature:int, quality:int);
 DUMP records;
 -- ^^ null_dump
+-- 用 is null 就能把温度为空的行挑出来。
 -- vv null_corrupt
 corrupt_records = FILTER records BY temperature is null;
 DUMP corrupt_records;
 -- ^^ null_corrupt
+-- 分组之后用 COUNT 数一数这样的行有多少条。
 -- vv null_count
 grouped = GROUP corrupt_records ALL;
 all_grouped = FOREACH grouped GENERATE group, COUNT(corrupt_records);
 DUMP all_grouped;
 -- ^^ null_count
+-- 用 SPLIT 可以按条件把一个关系拆成两个。
 -- vv null_split
 SPLIT records INTO good_records IF temperature is not null,
   bad_records OTHERWISE;
 DUMP good_records;
 DUMP bad_records;
 -- ^^ null_split
+-- 最后一个例子是危险的做法：不给 temperature 声明类型，
+-- 转换失败时不会产生 null，而是把原始的字母留在字段里，
+-- 后面再用数值比较去过滤就发现不了问题。
 -- vv null_undetected
 records = LOAD 'input/ncdc/micro-tab/sample_corrupt.txt'
   AS (year:chararray, temperature, quality:int);
@@ -35,3 +44,5 @@ max_temp = FOREACH grouped_records GENERATE group,
   MAX(filtered_records.temperature);
 DUMP max_temp;
 -- ^^ null_undetected
+-- 小结：null 会沿着数据流一路传下去，
+-- 只有显式写 is null 或 is not null 才能把它区分出来。

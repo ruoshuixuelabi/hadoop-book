@@ -1,8 +1,11 @@
+-- 这个脚本演示排序相关的三个运算符：ORDER、FOREACH 和 LIMIT。
+-- 这里的 ORDER 会真正启动一个 reduce 阶段做全局排序，代价比普通的映射高不少。
 -- == sort_dump
 -- == sort_order
 -- == sort_no_order
 -- == sort_limit
 A = LOAD 'input/pig/sort/A';
+-- 这张表没有声明 schema，两列都按字符串读进来。
 -- vv sort_dump
 DUMP A;
 -- ^^ sort_dump
@@ -10,11 +13,14 @@ DUMP A;
 B = ORDER A BY $0, $1 DESC;
 DUMP B;
 -- ^^ sort_order
+-- 这一步用 FOREACH 把排好序的关系重新投影一遍。
 -- vv sort_no_order
 C = FOREACH B GENERATE *;
 -- ^^ sort_no_order
 DUMP C;
+-- 这里的 LIMIT 作用在有序的结果上，才能取出真正排在最前面的那几条。
 -- vv sort_limit
 D = LIMIT B 2;
 DUMP D;
 -- ^^ sort_limit
+-- 小结：ORDER 给出全局顺序，LIMIT 只有接在 ORDER 后面才有意义。

@@ -1,4 +1,11 @@
+-- 这个脚本演示 JOIN 之后如何区分同名的字段。
+-- JOIN 把两个关系按连接键配成一张宽表，两边的字段都会保留，
+-- 所以取字段时要写清楚它来自哪一边。
 A = LOAD 'input/pig/join/A' AS (id:int, name:chararray);
+-- 这一行读进来的 A 有 id 和 name 两个字段。
 B = LOAD 'input/pig/join/B' AS (name:chararray, id:int);
+-- 这一行的 B 故意把 name 放在 id 前面：JOIN 按连接键配对，不看字段的位置。
 C = JOIN A by id, B by id;
+-- 用 id 作连接键，把两个关系里 id 相同的行配到一起。
 D = FOREACH C GENERATE A::name;
+-- 结果里两边的 name 同名，所以要用「关系名::字段名」的写法指名取哪一个。

@@ -1,5 +1,11 @@
+-- 这个脚本演示同一个关系被多次使用的情况。
+-- 每个 FILTER 都基于最初读进来的 A，所以两条分支互不影响。
 A = LOAD 'input/pig/multiquery/A';
+-- 这张表有三列，第二列是水果名。
 B = FILTER A BY $1 == 'banana';
+-- 按第二个字段筛出等于 banana 的行。
 C = FILTER A BY $1 != 'banana';
+-- 反过来，把不等于 banana 的行筛出来。
 STORE B INTO 'output/b';
 STORE C INTO 'output/c';
+-- 两次 STORE 的目标目录必须不同，否则后一次会覆盖前一次的结果。

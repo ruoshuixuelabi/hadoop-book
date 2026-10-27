@@ -1,20 +1,27 @@
+-- 这个脚本把 Pig 的各种数据类型挨个演示一遍：
+-- 元组、映射、集合、包，以及各个标量类型和日期类型。
 A = LOAD 'input/pig/tuples/A'
   AS (t0:tuple(f0:int, f2:chararray));
 DUMP A;
 DESCRIBE A;
+-- 这一句 DESCRIBE 打印的是这个关系的 schema，用来确认嵌套结构有没有读对。
 one = LOAD 'input/pig/types/one';
 B = FOREACH one GENERATE (1,'pomegranate')
   AS t0:tuple(f0:int, f2:chararray);
 DUMP B;
 DESCRIBE B;
+-- 这里用字面量直接造出一个元组，而不是从输入读。
 C = FOREACH one GENERATE ['a'#'pomegranate']
   AS t0:map[];
 DUMP C;
 DESCRIBE C;
+-- 映射的字面量用方括号，键和值之间用井号分隔。
 
 C = LOAD 'input/pig/types/C'
   AS (f0:chararray, f1:chararray);
 D = FOREACH C GENERATE TOTUPLE(f0, f1);
+-- 下面几组对照着看：TOTUPLE 和圆括号造出元组，
+-- TOBAG 和大括号造出包，TOMAP 和方括号造出映射。
 DUMP D;
 D = FOREACH C GENERATE (f0, f1);
 DUMP D;
@@ -25,11 +32,17 @@ DUMP E;
 F = FOREACH C GENERATE TOMAP(f0, f1);
 DUMP F;
 F = FOREACH C GENERATE [f0, f1];
+-- 方括号写法与 TOMAP 等价。
 DUMP F;
 
 G = FOREACH one GENERATE true AS f0:boolean, 1 as f1:int, 1L as f2:long,
   1.0F as f3:float, 1.0 as f4:double, '10000000000' as f5:biginteger,
   '0.110001000000000000000001' as f6:bigdecimal, 'a' as f7:chararray,
   ToDate('2012-01-02T03:04:05.678Z') as f8:datetime;
+-- 上面这一组把布尔、整数、长整型、浮点、双精度、大整数、大十进制、
+-- 字符串和日期这几种标量类型各写了一个字段。
 DUMP G;
 DESCRIBE G;
+-- 这一句 DESCRIBE 会把每个字段的类型都列出来。
+-- 小结：Pig 的类型系统里，复合类型（tuple、bag、map）可以任意嵌套，
+-- 标量类型则决定了单个字段能存什么值。

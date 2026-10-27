@@ -1,6 +1,10 @@
+-- 这个脚本演示 STORE 运算符，以及怎么指定输出文件的分隔符。
 -- == store_colon_delimited
 A = LOAD 'input/pig/foreach/A';
 -- vv store_colon_delimited
 STORE A INTO 'out' USING PigStorage(':');
 cat out
 -- ^^ store_colon_delimited
+-- PigStorage(':') 表示各列之间用冒号分隔，写出的是一份普通的文本文件。
+-- 小结：STORE 会立刻启动作业把结果写到目标目录，
+-- 是 grunt 里少数几个马上执行的命令。

@@ -1,4 +1,8 @@
+# 这个参数文件给 max_temp_param.pig 提供变量取值。
+# 在 pig 命令行加上 -param_file 就能把这里的键值对传进脚本。
 # Input file
+# input 是脚本里 LOAD 用的路径。
 input=/user/tom/input/ncdc/micro-tab/sample.txt
 # Output file
+# output 是脚本最后 STORE 用的路径。
 output=/tmp/out

@@ -1,3 +1,4 @@
+-- 这个脚本演示 STREAM 运算符：把数据交给外部的 Unix 命令去处理。
 -- == stream_cut
 A = LOAD 'input/pig/foreach/A'
   AS (f0:chararray, f1:chararray, f2:int);
@@ -5,3 +6,6 @@ A = LOAD 'input/pig/foreach/A'
 C = STREAM A THROUGH `cut -f 2`;
 DUMP C;
 -- ^^ stream_cut
+-- 反引号里的命令交给 shell 执行，它的输出会被重新解析成 Pig 的记录，
+-- 所以输出列数必须和输入对得上。
+-- 小结：STREAM 适合接上现成的命令行工具，但性能不如原生算子。

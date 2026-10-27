@@ -1,7 +1,10 @@
+-- 这个脚本演示 GROUP 的三种用法：按字段分组、按表达式分组、整表分组。
+-- 分组的结果是一个「组」组成的包，每组内部还要靠 FOREACH 才能展开。
 -- == group_dump
 -- == group_expression
 -- == group_all
 A = LOAD 'input/pig/group/A';
+-- 这张表有两列，第一列是名字，第二列是水果。
 -- vv group_dump
 DUMP A;
 -- ^^ group_dump
@@ -15,3 +18,4 @@ DUMP C;
 -- ^^ group_all
 D = FOREACH C GENERATE COUNT(A);
 DUMP D;
+-- 小结：GROUP 只负责把行分堆，真正的统计要靠 FOREACH 里的 COUNT、MAX 这类函数。

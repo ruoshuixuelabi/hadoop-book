@@ -1,3 +1,5 @@
+-- 这个脚本演示数据里字段缺失时会发生什么。
+-- 缺字段的那一行照样会被读进来，只是它的元组比正常行短。
 -- == missing_fields
 
 -- vv missing_fields
@@ -6,3 +8,4 @@ DUMP A;
 B = FILTER A BY SIZE(TOTUPLE(*)) > 1;
 DUMP B;
 -- ^^ missing_fields
+-- 小结：可以用 SIZE(TOTUPLE(*)) 判断一条记录是不是缺了字段。

@@ -1,3 +1,5 @@
+-- 这个脚本演示 LOAD 时声明 schema 的几种写法，
+-- 以及 schema 到底在什么时候起作用。
 -- == schema_names_only
 -- == schema_types
 -- == schema_one_type_only
@@ -27,10 +29,13 @@ projected_records = FOREACH records GENERATE $0, $1, $2;
 DUMP projected_records;
 DESCRIBE projected_records;
 -- ^^ schema_absent_projected
+-- 下面这组例子说明 schema 的类型声明在运行期同样要用到：
+-- 值转换不过去时，那一列会被换成 null。
 
 -- Some casts
 -- schema is used at run time, if the value of the field cannot be cast, then a null is replaced with it
 A = LOAD 'input/pig/schema/A' AS (id:int, item:int);
+-- 这张表声明了两列整数，但文件里第二列写的其实是文字。
 DESCRIBE A;
 
 B = FOREACH A GENERATE $0, $1;
@@ -44,3 +49,5 @@ E = FILTER A BY $0 >= 0;
 DESCRIBE E;
 
 EXPLAIN E;
+-- 这一句 EXPLAIN 打印的是这段过滤在 MapReduce 上会怎么执行。
+-- 小结：schema 里的类型声明既决定读入时怎么解析，也决定后面表达式怎么转换。

@@ -1,7 +1,14 @@
+-- 这个脚本演示 UNION 运算符：把两个关系拼成一张表。
+-- 文件里的窗口标记是书稿标记，用来从控制台输出里摘出片段放进书里；
+-- 标记本身不参与 Pig 运算，中文注释也只写在窗口之外。
 -- == combine_union
 -- == combine_schema
 A = LOAD 'input/pig/combine/A' AS (f0:int, f1:int);
+-- 第一个关系只有两列，类型都是 int。
 B = LOAD 'input/pig/combine/B' AS (f0:chararray, f1:chararray, f2:int);
+-- 第二个关系有三列，前两列是字符串。
+-- 两边列数对不上，UNION 之后结果的 schema 变成未知，
+-- 缺掉的那一列在结果里补成 null。
 -- vv combine_union
 DUMP A;
 DUMP B;
@@ -13,3 +20,5 @@ DESCRIBE A;
 DESCRIBE B;
 DESCRIBE C;
 -- ^^ combine_schema
+-- 小结：UNION 要求两边能合并成一个 schema，列数或类型对不上时
+-- 结果的 schema 会变成未知，这时 DESCRIBE 只能给出 unknown。

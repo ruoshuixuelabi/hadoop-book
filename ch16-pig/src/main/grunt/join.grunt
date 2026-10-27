@@ -1,3 +1,16 @@
+-- 这个脚本演示 JOIN 与 COGROUP 的各种组合。
+-- JOIN 按连接键把两个关系配成一张宽表，COGROUP 则按同一把键把两边分组，
+-- 之后还要用 FOREACH 加 FLATTEN 才能把分组里的内容重新摊平。
+-- 后面每一段窗口演示一种组合：
+-- 内连接只保留两边都匹配上的行；
+-- 加了 USING 'replicated' 之后，连接键较小的那张表会被复制到各个 map 任务上，
+-- 可以省掉一次 reduce 阶段的排序开销；
+-- 左外连接会把左边没有匹配上的行也保留下来；
+-- 这里的 COGROUP 保留所有分组键，包括只在一边出现过的键，
+-- 输出里每组是「键、A 里的行、B 里的行」这样三段；
+-- 两边都写 INNER 之后，只在一边出现过的键就被丢掉了；
+-- 用 FLATTEN 可以把其中一边的组摊平，不过另一边的组还是包，没有展开；
+-- 两边都摊平之后，结果看起来就和内连接一样了。
 -- == join_dump
 -- == join_join
 -- == join_left_outer
@@ -6,7 +19,9 @@
 -- == join_cogroup_flatten
 -- == join_cogroup_join
 A = LOAD 'input/pig/join/A' AS (id:int, name:chararray);
+-- 这一行的 A 用第一列 id 做连接键。
 B = LOAD 'input/pig/join/B' AS (name:chararray, id:int);
+-- 这一行的 B 用第二列 id 做连接键，两边字段的先后顺序不同也不影响配对。
 -- vv join_dump
 DUMP A;
 DUMP B;
@@ -39,5 +54,8 @@ G = COGROUP A BY $0 INNER, B BY $1 INNER;
 H = FOREACH G GENERATE FLATTEN($1), FLATTEN($2);
 DUMP H;
 -- ^^ join_cogroup_join
+-- 最后一个 CROSS 不是连接，而是笛卡尔积：把两个关系里的每一行两两配对。
 I = CROSS A, B;
 DUMP I;
+-- 小结：JOIN 处理的是「按键配对」，COGROUP 处理的是「按键分组」，
+-- 前者得到宽表，后者得到包，再想用组里的行就得配合 FLATTEN。

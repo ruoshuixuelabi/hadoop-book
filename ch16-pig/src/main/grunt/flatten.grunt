@@ -1,15 +1,20 @@
 -- a demonstration of the different effects of FLATTEN
+-- 这个脚本演示 FLATTEN 在不同嵌套层次上的作用。
+-- 下面每一组都是「造一个嵌套结构、用 FLATTEN 摊平、再 DUMP 看结果」，
+-- 通过对比输出可以看出 FLATTEN 到底剥掉了哪一层。
 
 C = LOAD 'input/pig/types/C'
   AS (f0:chararray, f1:chararray);
   
 D = FOREACH C GENERATE TOTUPLE(TOTUPLE(f0), TOTUPLE(f1));
+-- 先造出两层的嵌套：外层元组的每个元素本身又是一个元组。
 -- D is
 -- (((a),(pomegranate)))
 -- (((b),(apple)))
 DUMP D
 
 F = FOREACH D GENERATE FLATTEN($0);
+-- 这一次 FLATTEN 作用在最外层的元组上，于是内层的那层元组被摊平成一个个字段。
 -- F is
 -- ((a),(pomegranate))
 -- ((b),(apple))
@@ -18,12 +23,14 @@ DUMP F
 
 
 B = FOREACH C GENERATE TOBAG(f0, f1);
+-- 这里改用包（bag）把两个字段装起来，包是无序而且允许重复的集合。
 -- B is
 -- ({(a),(pomegranate)})
 -- ({(b),(apple)})
 DUMP B
 
 F = FOREACH B GENERATE FLATTEN($0);
+-- 对包用 FLATTEN，包里的元素被一个个摊平出来（包本身不保证顺序）。
 -- F is
 -- (a)
 -- (pomegranate)
@@ -33,12 +40,15 @@ F = FOREACH B GENERATE FLATTEN($0);
 DUMP F
 
 B = FOREACH C GENERATE f0, TOBAG(f1, f1);
+-- 这一组把 f0 留在顶层，同时把 f1 复制两份放进一个包里。
 -- B is
 -- (a,{(pomegranate),(pomegranate)})
 -- (b,{(apple),(apple)})
 DUMP B
 
 F = FOREACH B GENERATE $0, FLATTEN($1);
+-- 用位置引用取顶层字段、用 FLATTEN 取包里的内容，
+-- 结果里就把包摊平接在了顶层字段后面。
 -- F is
 -- (a,pomegranate)
 -- (a,pomegranate)
@@ -46,3 +56,5 @@ F = FOREACH B GENERATE $0, FLATTEN($1);
 -- (b,apple)
 -- Tuples in bags can be added to elements at the top level
 DUMP F
+-- 小结：FLATTEN 只作用于被它包住的那一层，
+-- 想摊平更深的层次就要一层一层地套 FLATTEN。

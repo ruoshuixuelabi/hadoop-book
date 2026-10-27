@@ -1,14 +1,21 @@
+-- 这个脚本演示 FOREACH 的两种写法：按位置引用字段和按别名引用字段。
+-- 文件里的窗口标记是书稿标记，用来从控制台输出里摘出片段放进书里。
 -- == foreach_generate
 A = LOAD 'input/pig/foreach/A'
   AS (f0:chararray, f1:chararray, f2:int);
+-- 这张表有三列：两个字符串和一个整数。
 -- vv foreach_generate
 DUMP A;
 B = FOREACH A GENERATE $0, $2+1, 'Constant';
 DUMP B;
 -- ^^ foreach_generate
+-- 下面是同一个 FOREACH 的另一种写法：给表达式起别名，
+-- 这样 DESCRIBE 出来的字段名才有意义，而不是 $1、$2 这种位置编号。
 DESCRIBE B;
 C = FOREACH A GENERATE $0, (int) $2 AS f1, 'Constant' AS f2;
 DUMP C;
 DESCRIBE C;
 
 -- C = FOREACH A GENERATE $0, (int) $2 AS f1, 'Constant' AS f2, ($2 > 3 ? 1 : 0);
+-- 最后那行被注释掉的语句演示了三元表达式：
+-- 条件成立时取 1，条件不成立时取 0，可以当作一个布尔列来用。

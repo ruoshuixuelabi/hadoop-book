@@ -1,3 +1,7 @@
+-- 这个脚本演示嵌套元组（tuple）的声明方式。
 A = LOAD 'input/pig/types/A'
   AS (f0, t0:tuple(f1:int, f2:chararray, t1:tuple(f3:int, f4:chararray)));
+-- 第一个字段 f0 没有写类型，Pig 会把它当成字符串；
+-- 第二个字段 t0 是一个元组，里面又嵌了一个元组 t1。
 DUMP A;
+-- 这一句 DUMP 会把嵌套结构一层层打印出来，方便对照字段的嵌套关系。

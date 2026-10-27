@@ -1,8 +1,12 @@
+-- 这个脚本演示 grunt 的两条会话设置命令。
 -- == set_debug_on
 -- vv set_debug_on
 set debug on
 -- ^^ set_debug_on
+-- debug 打开之后，Pig 会打印出更多内部信息，排查问题时有用。
 -- == set_default_parallel
 -- vv set_default_parallel
 set default_parallel 30
 -- ^^ set_default_parallel
+-- default_parallel 决定默认的并行度，它会影响作业被拆成几个 reduce 任务。
+-- 小结：这两条命令只影响当前这一次 grunt 会话。
