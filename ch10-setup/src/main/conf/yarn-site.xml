@@ -1,27 +1,44 @@
 <?xml version="1.0"?>
 <!-- yarn-site.xml -->
+<!-- 这份文件配置 YARN：ResourceManager 与 NodeManager 各自的地址、
+     本地目录、辅助服务以及可供容器使用的资源上限。 -->
 <configuration>
   <property>
+    <!-- 这里配的是 ResourceManager 所在的主机名。
+         NodeManager 要靠它找到 RM 去注册，不显式声明时 RM 会用机器自身的主机名对外服务，
+         在主机名解析不干净的环境里注册会失败。 -->
     <name>yarn.resourcemanager.hostname</name>
     <value>resourcemanager</value>
   </property>
 
   <property>
+    <!-- 这里配的是 NodeManager 放容器本地工作目录的路径，可以配多个以分散磁盘压力。
+         这些目录只放临时数据（解压出来的 jar、日志、任务的中间文件），
+         任务结束后会被清理，不承担持久化存储。 -->
     <name>yarn.nodemanager.local-dirs</name>
     <value>/disk1/nm-local-dir,/disk2/nm-local-dir</value>
   </property>
 
   <property>
+    <!-- 这里配的是 NodeManager 启动时要加载的辅助服务。
+         这里要写 mapreduce_shuffle：Map 端写出的中间结果要由 shuffle 服务搬到 Reduce 那一端，
+         少了它作业会卡在 shuffle 阶段反复重试。
+         注意本文件里的值写成了 mapreduce.shuffle（少一个下划线），
+         与框架认定的辅助服务名对不上，属于书稿遗留的笔误，此处照原文保留。 -->
     <name>yarn.nodemanager.aux-services</name>
     <value>mapreduce.shuffle</value>
   </property>
 
   <property>
+    <!-- 这里配的是每个 NodeManager 能提供的内存总量（MB），YARN 按它给容器分配内存。
+         这里给 16GB，实际能给单个容器用多少还要受 yarn.scheduler.maximum-allocation-mb 限制。 -->
     <name>yarn.nodemanager.resource.memory-mb</name>
     <value>16384</value>
   </property>
 
   <property>
+    <!-- 这里配的是每个 NodeManager 能提供的虚拟 CPU 核数总量，YARN 按它给容器分配 vcore。
+         容器申请超过这个数的部分不会被分配，作业就会一直等资源。 -->
     <name>yarn.nodemanager.resource.cpu-vcores</name>
     <value>16</value>
   </property>

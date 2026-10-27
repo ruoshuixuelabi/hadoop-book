@@ -1,7 +1,11 @@
 <?xml version="1.0"?>
 <!-- core-site.xml -->
+<!-- 这份文件是 Hadoop 集群的公共配置，core-site.xml 里的属性属于整个 Hadoop，
+     不针对某个子系统，因此它决定了客户端把一个不带协议的路径交给谁去解析。 -->
 <configuration>
   <property>
+    <!-- 默认文件系统。客户端看到 "user/xxx/input" 这种没有协议的路径时，
+         会按这一项补全协议和主机名，所以它必须与 NameNode 所在的主机一致。 -->
     <name>fs.defaultFS</name>
     <value>hdfs://namenode/</value>
   </property>

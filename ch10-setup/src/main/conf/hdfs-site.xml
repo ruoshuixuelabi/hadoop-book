@@ -1,17 +1,25 @@
 <?xml version="1.0"?>
 <!-- hdfs-site.xml -->
+<!-- 这份文件配置 HDFS 自身：NameNode 与 DataNode 把数据放在哪些磁盘上。 -->
 <configuration>
   <property>
+    <!-- 这里配的是 NameNode 的元数据目录。逗号分隔表示多份副本，一个坏了另一个还在；
+         元数据丢了整个文件系统就没了，所以这里通常放在两块独立磁盘上。 -->
     <name>dfs.namenode.name.dir</name>
     <value>/disk1/hdfs/name,/remote/hdfs/name</value>
   </property>
 
   <property>
+    <!-- 这里配的是 DataNode 存放数据块（副本）的目录。同样可以配多个，
+         每个数据块会在这些目录里各放一份；把两块盘并起来用能提升可用容量。 -->
     <name>dfs.datanode.data.dir</name>
     <value>/disk1/hdfs/data,/disk2/hdfs/data</value>
   </property>
   
   <property>
+    <!-- 这里配的是 NameNode 检查点（fsimage）的存放目录。
+         NameNode 启动时会加载最近的检查点，再把之后的编辑日志重放一遍恢复状态，
+         所以这里要放在与元数据目录不同的磁盘上，避免同一块盘故障把两者一起带走。 -->
     <name>dfs.namenode.checkpoint.dir</name>
     <value>/disk1/hdfs/namesecondary,/disk2/hdfs/namesecondary</value>
   </property>
