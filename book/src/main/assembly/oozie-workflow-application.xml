@@ -1,17 +1,23 @@
+<!-- 把最高气温示例的 Oozie 工作流打包成一个目录，供 Oozie 服务器上传后运行 -->
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
   <id>oozie-workflow-application</id>
+  <!-- 输出格式选目录而不是压缩包：Oozie 需要的是一棵目录树，工作流定义和它依赖的 jar 必须分开摆放 -->
   <formats>
     <format>dir</format>
   </formats>
+  <!-- 关闭最外层的根目录，产物的根下直接就是 max-temp-workflow 本身 -->
   <includeBaseDirectory>false</includeBaseDirectory>
+  <!-- 工作流定义来自 ch06 的资源目录，里面是 workflow.xml 这一个文件 -->
   <fileSets>
     <fileSet>
+      <!-- 相对路径按执行 assembly 的那个模块的目录解析，所以回退一层就是仓库根目录，ch06 模块就在那里 -->
       <directory>../ch06-mr-dev/src/main/resources/max-temp-workflow</directory>
       <outputDirectory>max-temp-workflow</outputDirectory>
     </fileSet>
   </fileSets>
+  <!-- 示例代码打成 jar 放进 lib 目录，Oozie 提交作业时会把它和流程一起上传给集群 -->
   <files>
     <file>
       <source>../hadoop-examples.jar</source>
