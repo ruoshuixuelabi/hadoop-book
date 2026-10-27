@@ -53,6 +53,15 @@ public class NewHBaseTemperatureQuery extends Configured implements Tool {
     NavigableMap<Long, Integer> resultMap = new TreeMap<Long, Integer>();
     // 从起始行键开始扫
     Scan scan = new Scan(startRow);
+    // 这里只给了起始行键，没有给结束行键，
+    // 也就是说这次扫描的范围并没有被卡在「这个站」里面：
+    // HBase 是按行键的字节序排序的，排在本站之后的其它站的记录同样会被读出来。
+    // 本例里每个站的观测数远多于要取的 10 条，读满就停，所以看不出差别；
+    // 但要是某个站自己的观测不够 10 条，别站的气温就会被混进结果里。
+    // 把范围收在本站的办法是补一个结束行键：
+    // 结束行键取「站号前缀后面再接一个 0xff 字节」，
+    // 它排在本站所有行键之后、又排在下一个站之前，
+    // 而 Scan 的结束行键是开区间（不含它自己），于是刚好停在本站末尾。
     // 只取 data 列族里的 airtemp 限定符
     scan.addColumn(DATA_COLUMNFAMILY, AIRTEMP_QUALIFIER);
     // 打开扫描器
