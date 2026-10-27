@@ -1,21 +1,27 @@
 <?xml version="1.0"?>
+<!-- 公平调度器的配置：队列之间按权重分资源，队列内部再按各自的策略分 -->
 <allocations>
+  <!-- 默认策略：同一个队列里的多个作业按份额平分这个队列的资源 -->
   <defaultQueueSchedulingPolicy>fair</defaultQueueSchedulingPolicy>
 
   <queue name="prod">
+    <!-- 生产队列权重 40，队列内部按先来先服务分配 -->
     <weight>40</weight>
     <schedulingPolicy>fifo</schedulingPolicy>
   </queue>
 
   <queue name="dev">
+    <!-- 开发队列权重 60，下设工程与科学两个子队列 -->
     <weight>60</weight>
     <queue name="eng" />
     <queue name="science" />
   </queue>
 
   <queuePlacementPolicy>
+    <!-- 提交作业时没指定队列，就按下面三条规则依次往下找 -->
     <rule name="specified" create="false" />
     <rule name="primaryGroup" create="false" />
+    <!-- 前两条都没命中，就丢进开发队列下的工程子队列 -->
     <rule name="default" queue="dev.eng" />
   </queuePlacementPolicy>
 </allocations>

@@ -1,30 +1,38 @@
 <?xml version="1.0"?>
+<!-- 容量调度器的配置：把集群按队列分层，每一层队列各占一份固定容量 -->
 <configuration>
   <property>
+    <!-- 根队列下面挂两个子队列：生产与开发 -->
     <name>yarn.scheduler.capacity.root.queues</name>
     <value>prod,dev</value>
   </property>
   <property>
+    <!-- 开发队列再往下分出两个子队列：工程与科学 -->
     <name>yarn.scheduler.capacity.root.dev.queues</name>
     <value>eng,science</value>
   </property>
   <property>
+    <!-- 生产队列拿走根队列 40% 的容量 -->
     <name>yarn.scheduler.capacity.root.prod.capacity</name>
     <value>40</value>
   </property>
   <property>
+    <!-- 开发队列拿走根队列 60% 的容量 -->
     <name>yarn.scheduler.capacity.root.dev.capacity</name>
     <value>60</value>
   </property>
   <property>
+    <!-- 别的队列闲着时允许借用，最多能涨到根队列的 75% -->
     <name>yarn.scheduler.capacity.root.dev.maximum-capacity</name>
     <value>75</value>
   </property>
   <property>
+    <!-- 开发队列内部，工程与科学各占一半 -->
     <name>yarn.scheduler.capacity.root.dev.eng.capacity</name>
     <value>50</value>
   </property>
   <property>
+    <!-- 科学队列同样占开发队列的一半 -->
     <name>yarn.scheduler.capacity.root.dev.science.capacity</name>
     <value>50</value>
   </property>
