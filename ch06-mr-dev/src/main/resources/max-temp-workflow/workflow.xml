@@ -1,3 +1,4 @@
+<!-- 跑最高气温的 MapReduce 作业，成功就结束，失败就终止 -->
 <workflow-app xmlns="uri:oozie:workflow:0.1" name="max-temp-workflow">
   <start to="max-temp-mr"/>
   <action name="max-temp-mr">

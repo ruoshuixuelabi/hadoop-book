@@ -1,18 +1,22 @@
 <?xml version="1.0"?>
+<!-- 第一份配置资源：演示属性的定义、final 锁定与变量引用 -->
 <configuration>
   <property>
+    <!-- 只在这份文件里定义的属性，取值不随别的资源变化 -->
     <name>color</name>
     <value>yellow</value>
     <description>Color</description>
   </property>
   
   <property>
+    <!-- 这个属性第二份文件里也有，会被后加载的那份覆盖 -->
     <name>size</name>
     <value>10</value>
     <description>Size</description>
   </property>
   
   <property>
+    <!-- 标了 final 之后，后来加载的资源就再也覆盖不了它了 -->
     <name>weight</name>
     <value>heavy</value>
     <final>true</final>
@@ -20,6 +24,7 @@
   </property>
   
   <property>
+    <!-- 值里可以引用别的属性，展开时用的是各属性当前生效的值 -->
     <name>size-weight</name>
     <value>${size},${weight}</value>
     <description>Size and weight</description>

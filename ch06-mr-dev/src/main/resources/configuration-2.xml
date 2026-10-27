@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
+<!-- 第二份配置资源：后加载的优先级更高，这里同时演示「成功覆盖」与「被 final 挡住」 -->
 <configuration>
   <property>
+    <!-- 覆盖第一份文件里的 10，最终生效的值是 12 -->
     <name>size</name>
     <value>12</value>
   </property>
   
   <property>
+    <!-- 这个覆盖不生效：第一份文件里的 weight 被标成了 final，最终仍是 heavy -->
     <name>weight</name>
     <value>light</value>
   </property>
