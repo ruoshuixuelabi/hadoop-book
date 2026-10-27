@@ -1,8 +1,15 @@
 {
+  // 这是一个 Avro schema 文件：它描述数据的结构，而不是数据本身。
+  // 这里 Avro 把 schema 同时当作「数据格式说明」和「代码生成依据」，
+  // 所以读写双方只要共享同一个 schema，就能在不共享 Java 类的前提下交换数据。
   "type": "record",
+  // 名字里的点号表示「命名空间.类名」，
+  // 因此生成出来的 Java 类落在 example 包下，测试代码里要 import example.IntWrapper。
   "name": "example.IntWrapper",
   "doc": "A record with a single int value field.",
   "fields": [
+    // 字段列表：这里刻意只留一个 int 字段，让样本保持最小，
+    // 因为这个 schema 只是给 DataSerializationTest 当最小的序列化素材用。
     {"name": "value", "type": "int"}
   ]
 }

@@ -1,4 +1,7 @@
 {
+  // 这份 schema 描述一条气象观测记录，是书中 Avro 章节的基础例子。
+  // 与 IntWrapper.avsc 不同的是它把 namespace 单独写成 specific，
+  // 于是生成的具体类落在 specific 包下，测试代码里用 import specific.WeatherRecord 引用。
   "type": "record",
   "name": "WeatherRecord",
   "namespace": "specific",
@@ -6,6 +9,8 @@
   "fields": [
     {"name": "year", "type": "int"},
     {"name": "temperature", "type": "int"},
+    // 这里的 stationId 用 string 而不是整数：站点编号只是一个标识符，
+    // 不参与数值运算，用字符串可以避免前导零之类的问题。
     {"name": "stationId", "type": "string"}
   ]
 }
