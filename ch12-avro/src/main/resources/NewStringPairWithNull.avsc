@@ -1,10 +1,16 @@
 {
+  // 这是「模式演进」用的另一份新模式：同样多加一个字段，
+  // 但这个字段允许为 null，于是用 union 类型 ["null", "string"] 来表达。
+  // union 表示「这个值可以是若干类型之一」，Avro 靠它在几种类型间做选择。
   "type": "record",
   "name": "StringPair",
   "doc": "A pair of strings with an added (nullable) field.",
   "fields": [
     {"name": "left", "type": "string"},
     {"name": "right", "type": "string"},
+    // 类型写成 ["null", "string"]，意思是这个字段要么是 null，要么是字符串。
+    // default 是 null，正好对应 union 里的第一个分支，
+    // 于是旧数据（没有这个字段）读出来时 description 就是 null 而不是报错。
     {"name": "description", "type": ["null", "string"], "default": null}
   ]
 }

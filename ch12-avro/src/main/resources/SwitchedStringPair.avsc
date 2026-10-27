@@ -1,8 +1,13 @@
 {
+  // 这份模式与 StringPair 的字段完全一样，只是把 right 挪到了 left 前面。
+  // Avro 按「字段名」而不是「字段位置」来匹配数据，
+  // 所以同一份用 StringPair 写出的数据，换这份模式读也能对上。
+  // 这个特性使得「给字段换顺序」成为一次安全的模式演进。
   "type": "record",
   "name": "StringPair",
   "doc": "A pair of strings, sorted by right then left.",
   "fields": [
+    // 靠前的字段排在靠后，因此排序时先按 right 再按 left 比较。
     {"name": "right", "type": "string"},
     {"name": "left", "type": "string"}
   ]

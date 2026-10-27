@@ -1,9 +1,15 @@
 {
+  // 这份模式演示 Avro 的字段排序属性（order）。
+  // order 只影响「按模式排序输出」时的先后次序，不改变数据本身的编码，
+  // 所以它可以加在模式上而不影响已有数据的兼容性。
   "type": "record",
   "name": "StringPair",
   "doc": "A pair of strings, sorted by right field descending.",
   "fields": [
+    // 这个属性有三种取值：ascending（升序）、descending（降序）、ignore（不参与排序）。
+    // ignore 表示这个字段排在其他字段后面，但本身不参与比较。
     {"name": "left", "type": "string", "order": "ignore"},
+    // 降序排序，所以 right 排在 left 前面。
     {"name": "right", "type": "string", "order": "descending"}
   ]
 }

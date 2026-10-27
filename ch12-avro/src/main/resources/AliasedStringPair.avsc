@@ -1,8 +1,14 @@
 {
+  // 这是「用别名做模式演进」用的新模式：
+  // 旧模式里字段叫 left / right，新模式把它们改名成 first / second，
+  // 同时用 aliases 声明「first 的旧名字是 left」。
+  // Avro 按名字映射字段，aliases 让它在做映射时也认得旧名字，
+  // 于是旧数据里的值能正确落到新字段上。
   "type": "record",
   "name": "StringPair",
   "doc": "A pair of strings with aliased field names.",
   "fields": [
+    // 别名写在字段自己的 aliases 属性里，用数组，可以有多个历史名字。
     {"name": "first", "type": "string", "aliases": ["left"]},
     {"name": "second", "type": "string", "aliases": ["right"]}
   ]

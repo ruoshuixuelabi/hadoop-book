@@ -1,8 +1,18 @@
 {
+  // 这是全书最基础的 Avro 模式：一条记录里有两个字符串字段。
+  // Avro 的模式是「自描述」的：数据文件里只放值，结构由模式（或文件头里的模式）说明，
+  // 所以读写双方只要共享同一份模式，就能在不共享 Java 类的前提下交换数据。
   "type": "record",
+  // 这里的 record 是 Avro 的复合类型之一：由若干具名字段拼成一条记录。
   "name": "StringPair",
+  // 名字是这个类型的全名。这里没写 namespace，所以全名就是简单的 StringPair；
+  // 生成 Java 代码时它会变成类名 StringPair。
   "doc": "A pair of strings.",
+  // 这段说明只是给人看的文字，不参与二进制编码，
+  // 但 avro-maven-plugin 会把它抄进生成类的 Javadoc 里。
   "fields": [
+    // 这里列出全部字段。字段的先后顺序决定了二进制里数值的排列次序，
+    // 调整顺序等于改变数据格式，因此不能随意重排。
     {"name": "left", "type": "string"},
     {"name": "right", "type": "string"}
   ]

@@ -1,4 +1,7 @@
 {
+  // 这是一份「映射」模式：Avro 的 map 是键值对的集合，键固定是字符串。
+  // 和数组一样，map 模式也只有 type 与 values 两项。
   "type": "map",
+  // 这里说明值的类型；键的类型永远是 string，不需要也不能声明。
   "values": "string"
 }

@@ -1,8 +1,14 @@
 {
+  // 这是一份「投影模式」：只保留了完整模式里的 right 一个字段。
+  // Parquet 读数据时可以指定一份这样的投影模式，
+  // 它只决定「去文件里读哪几列」，没被投影的列根本不读磁盘，
+  // 所以查询涉及的列越少，读得越快。
   "type": "record",
   "name": "StringPair",
   "doc": "The right field of a pair of strings.",
   "fields": [
+    // 投影是完整模式的子集：字段名和类型必须与原模式对得上，
+    // 但可以少写字段，不能改字段的类型。
     {"name": "right", "type": "string"}
   ]
 }

@@ -1,10 +1,15 @@
 {
+  // 这是「模式演进」用的新模式：在旧模式 StringPair 的基础上多加一个字段。
+  // Avro 的数据文件里只存值、不存模式，所以旧数据永远只有 left 和 right 两个字段；
+  // 用这份新模式去读旧数据时，多出来的 description 只能靠默认值补上。
   "type": "record",
   "name": "StringPair",
   "doc": "A pair of strings with an added field.",
   "fields": [
     {"name": "left", "type": "string"},
     {"name": "right", "type": "string"},
+    // 新增字段必须带 default，否则读旧数据时 Avro 不知道该填什么，会直接失败。
+    // 这里用空字符串作为缺省值，所以老数据读出来 description 就是 ""。
     {"name": "description", "type": "string", "default": ""}
   ]
 }

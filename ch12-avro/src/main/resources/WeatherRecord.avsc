@@ -1,11 +1,18 @@
 {
+  // 这份模式描述一条气象观测记录，是第 12 章 Avro 部分的基础例子。
+  // 与 StringPair 不同的是它写了 namespace：Avro 用「命名空间 + 名字」作为类型的全名，
+  // namespace 单独写和写在名字里（"specific.WeatherRecord"）效果完全一样。
   "type": "record",
   "name": "WeatherRecord",
+  // 命名空间决定生成类的包名：这里会生成 specific.WeatherRecord。
   "namespace": "specific",
   "doc": "A weather reading.",
   "fields": [
+    // 年份用 int：Avro 的 int 是 32 位有符号整数。
     {"name": "year", "type": "int"},
+    // 气温同样用 int。
     {"name": "temperature", "type": "int"},
+    // 站点编号用 string：它只是一个标识符，不参与数值运算。
     {"name": "stationId", "type": "string"}
   ]
 }
