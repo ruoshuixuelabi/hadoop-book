@@ -1,8 +1,12 @@
 {
+  // 这是一份「投影模式」：只保留完整模式里的 right 一个字段。
+  // Parquet 是列式存储，读一列只需读那一列的数据块，
+  // 所以查询不需要的列可以完全不读——这就是投影带来的收益。
   "type": "record",
   "name": "StringPair",
   "doc": "The right field of a pair of strings.",
   "fields": [
+    // 投影模式必须是完整模式的子集：字段名与类型要一致，但可以少写字段。
     {"name": "right", "type": "string"}
   ]
 }

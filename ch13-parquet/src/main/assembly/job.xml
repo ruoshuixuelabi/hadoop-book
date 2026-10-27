@@ -1,31 +1,46 @@
+<!-- 这份描述文件告诉 maven-assembly-plugin 怎么把本章的示例打成一个可提交的 jar 包 -->
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+  <!-- 产物的标识，最后会成为 jar 文件名的一部分 -->
   <id>job</id>
+  <!-- 输出格式选 jar：示例要提交给集群运行，需要一个能被 hadoop jar 直接装载的包 -->
   <formats>
     <format>jar</format>
   </formats>
+  <!-- 不保留最外层的根目录，jar 解开后根下直接就是类与依赖 -->
   <includeBaseDirectory>false</includeBaseDirectory>
+  <!-- 这里描述「依赖集」：把哪些第三方 jar 打进产物里 -->
   <dependencySets>
     <dependencySet>
+      <!-- 允许传递依赖：直接依赖带进来的传递依赖也一并纳入 -->
       <useTransitiveFiltering>true</useTransitiveFiltering>
+      <!-- 解包而不是原样放 jar：Parquet 的运行时依赖彼此引用，摊平后类才能被找到 -->
       <unpack>true</unpack>
       <unpackOptions>
+        <!-- 排除 LICENSE 文件，避免解包后与同名目录冲突 -->
         <excludes>
           <exclude>META-INF/LICENSE</exclude> <!-- Exclude to avoid clash with directory of the same name -->
         </excludes>
       </unpackOptions>
+      <!-- 只收运行期需要的依赖，编译期与测试期的依赖不进产物 -->
       <scope>runtime</scope>
+      <!-- 依赖解包后放到 jar 的根目录 -->
       <outputDirectory>/</outputDirectory>
+      <!-- 不把本模块自己的 jar 也塞进来，它由下面的 fileSets 负责 -->
       <useProjectArtifact>false</useProjectArtifact>
+      <!-- 排除 Hadoop 相关的依赖：它们由集群提供，打进 jar 反而容易和集群版本冲突 -->
       <excludes>
         <exclude>org.apache.hadoop:*</exclude>
       </excludes>
     </dependencySet>
   </dependencySets>
+  <!-- 这里描述「文件集」：把本模块编译出来的类也放进同一个 jar -->
   <fileSets>
     <fileSet>
+      <!-- 编译产物所在目录 -->
       <directory>target/classes</directory>
+      <!-- 同样放到 jar 的根目录，与解包后的依赖混在一起 -->
       <outputDirectory>/</outputDirectory>
     </fileSet>
   </fileSets>

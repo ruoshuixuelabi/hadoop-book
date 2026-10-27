@@ -1,10 +1,14 @@
 {
+  // 这是「模式演进」用的新模式：在 StringPair 的基础上多加一个字段。
+  // Parquet 的文件头里记着写出时的模式，读的时候再给一份读入模式，
+  // 两者不一致时由 Avro 按名字做映射，多出来的字段用默认值补上。
   "type": "record",
   "name": "StringPair",
   "doc": "A pair of strings with an added field.",
   "fields": [
     {"name": "left", "type": "string"},
     {"name": "right", "type": "string"},
+    // 新增字段必须带 default，否则旧文件里没有这个字段，读的时候会失败。
     {"name": "description", "type": "string", "default": ""}
   ]
 }

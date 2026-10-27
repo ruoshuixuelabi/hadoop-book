@@ -1,8 +1,15 @@
 {
+  // 这是第 12 章用过的 StringPair 模式，在第 13 章里被 Parquet 直接复用。
+  // Parquet 支持 Avro 模式：把 Avro 的 schema 转成 Parquet 的列式结构，
+  // 于是 Avro 写出的数据可以直接被 Parquet 读，反之亦然。
   "type": "record",
+  // 这种类型在 Parquet 那边对应一个 group（嵌套结构）。
   "name": "StringPair",
   "doc": "A pair of strings.",
   "fields": [
+    // 每个字段在 Parquet 里对应一列，列名就是这里的字段名。
+    // 注意 Avro 写数据时按顺序把值依次排好，Parquet 则是按列存放，
+    // 两种布局之间的转换由 AvroParquetWriter / AvroParquetReader 完成。
     {"name": "left", "type": "string"},
     {"name": "right", "type": "string"}
   ]
