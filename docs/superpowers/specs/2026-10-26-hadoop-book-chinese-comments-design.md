@@ -324,7 +324,8 @@ ch18-crunch（2571 行）、ch09-mr-features（1654 行）、ch05-io（1682 行�
 ## 九、实施结果
 
 ### 9.1 已完成的提交
-18 个 commit，全部落在 `master`，按书章节顺序：
+
+**第一阶段（Java，234 个文件）**，18 个 commit，全部落在 `master`，按书章节顺序：
 
 | # | Commit | 模块 |
 |---|---|---|
@@ -347,13 +348,60 @@ ch18-crunch（2571 行）、ch09-mr-features（1654 行）、ch05-io（1682 行�
 | 17 | `c3591a4` | common（含 oldapi/） |
 | 18 | `9c7e883` | snippet |
 
+**第二阶段（非 Java，153 个文件）**，22 个 commit，同样按书章节顺序：
+
+| # | Commit | 模块 |
+|---|---|---|
+| 1 | `bfb1217` | ch02-mr-intro |
+| 2 | `60849b4` | ch03-hdfs |
+| 3 | `68c13ab` | ch04-yarn |
+| 4 | `6aed829` | ch05-io |
+| 5 | `d6541b3` | ch06-mr-dev |
+| 6 | `c9c18bf` | ch08-mr-types |
+| 7 | `2d4570f` | ch09-mr-features |
+| 8 | `a2c7059` | ch10-setup |
+| 9 | `70281cf` | ch12-avro |
+| 10 | `4370d22` | ch13-parquet |
+| 11 | `b076746` | ch14-flume |
+| 12 | `a5a5ddf` | ch16-pig |
+| 13 | `3586859` | ch17-hive |
+| 14 | `8de94d4` | ch18-crunch |
+| 15 | `7ed7b7a` | ch19-spark |
+| 16 | `9522b04` | ch21-zk |
+| 17 | `00c14f5` | ch22-case-studies |
+| 18 | `91f11f9` + `ce3e3e1` | appc（后者修正续行注释的位置，见 9.4） |
+| 19 | `d62f292` | book |
+| 20 | `2143a9a` | conf |
+| 21 | `f2cd400` | snippet |
+| 22 | `15e67f4` | root `functional-test.sh` |
+
+另有 4 个纯文档 commit：`d1c07ac`、`5cc23f0`（补全规范）、
+`df5a932`（把第二阶段范围从 150 修正为 153）、`d943079`（明确 `.hive` 注释必须顶格）。
+
 ### 9.2 最终校验结果
+
+**第一阶段（Java）**
+
 - `python E:/tmp/check_indent.py .` → `--- 0 mismatches`
 - `python E:/tmp/verify_comments_only.py .` → `checked 234 java files, 234 with comment changes, 0 problems`
 - `mvn -o -q test-compile`（JDK 8）→ `=== FULL BUILD OK ===`（21 模块全绿）
 - 全仓库 `.java` 文件中 `@author`/`@since`/`@version`/`@date` → 0 命中
 - 全仓库 `.java` 文件中 U+FFFD 乱码 → 0 命中
-- `git status` → 仅剩未跟踪的 `.idea/`、`docs/`
+
+**第二阶段（非 Java）**
+
+- `python E:/tmp/verify_nonjava_comments_only.py .` → `OK: 153 files checked, 153 files modified, code identical after stripping comments`
+  （在 `git archive HEAD` 解出的干净树上重跑，结果一致）
+- `python E:/tmp/check_phase2.py .` → `OK: 153 files checked (all)`
+  （逐语言：`.sh` 过 `bash -n`、py3 过 `py_compile`、Hive 只准 `--` 且必须顶格、
+  每个新增注释块的首行必须是中文、书稿标记 token 一律不得出现）
+- `python E:/tmp/check_markers.py .` → `OK: 没有注释落在书稿标记窗口内部`
+- `python E:/tmp/check_hive_markers.py` → `OK: ch17-hive 的 .hive 文件没有注释落在书稿窗口内部`
+- 12 个 Python 2 文件全部带上 `# -*- coding: utf-8 -*-`（在 shebang 之后的第 2 行）；
+  5 个 Python 3 文件一律不加（Python 3 默认 UTF-8）
+- 所有 `.avsc` 的既有 `"doc"` 字段一字未动，新增说明一律用 JSON 的 `//` 注释
+- 行尾风格、空白行、缺失的末尾换行均与基线保持一致；全仓库新增内容中 U+FFFD → 0 命中
+- `mvn -o -q test-compile`（JDK 8）→ BUILD SUCCESS
 
 ### 9.3 与本设计文档的偏差（须知悉）
 本设计的「brainstorming → 书面设计 → 用户批准 → 再写实施计划」流程中，
@@ -361,26 +409,54 @@ ch18-crunch（2571 行）、ch09-mr-features（1654 行）、ch05-io（1682 行�
 也就是说，实现先行于批准。后续如需继续，顺序应为：
 1. 用户复核并批准本设计文档；
 2. 对第九节列出的待决项作出裁决；
-3. 再用 `superpowers:writing-plans` 写实施计划（用于**补做**未覆盖的部分，
-   例如非 Java 文件的注释、或对已提交内容的返工）。
+3. 再用 `superpowers:writing-plans` 写实施计划（用于**补做**未覆盖的部分）。
 
-### 9.4 第二阶段（非 Java 文件）的准备状态
-第十一节的规范已就绪并**已用实测证据支撑**，但**尚未开始落笔**。
-已完成的准备工作：
+### 9.4 第二阶段（非 Java 文件）的实施结果
+
+第十一节的规范已全部落地，153 个文件**逐字节校验通过**：
 
 | 事项 | 状态 |
 |---|---|
-| 153 个文件的最终清单 | ✅ `E:/tmp/nonjava_final.txt`（全部为 git 已跟踪文件） |
-| 每种语言的注释语法 | ✅ 见 §11.4–§11.7 |
+| 153 个文件的最终清单 | ✅ `E:/tmp/baseline-nonjava/`（全部为 git 已跟踪文件） |
+| 每种语言的注释语法 | ✅ 见 §11.4–§11.7，实际落笔时按方言分别处理 |
 | Hive 只能用 `--` 的依据 | ✅ `HiveLexer.g` 486–489 行（无 `#` token）+ `CliDriver.java` 的跳过逻辑 |
 | Avro `.avsc` 用 `//` 的依据 | ✅ 插件层 BUILD SUCCESS + 生成层 `SCHEMA$` 未变 + 12/12 测试通过 + `Schema.java` 的 `ALLOW_COMMENTS` |
-| Python 2/3 分类与 PEP 263 规则 | ✅ 逐文件 `py_compile` 实测：12 个 py2 / 5 个 py3 |
+| Python 2/3 分类与 PEP 263 规则 | ✅ 逐文件 `py_compile` 实测：12 个 py2 / 5 个 py3；py2 全部加声明，py3 全部不加 |
 | Scala 中文注释可编译 | ✅ `mvn -o -pl ch19-spark clean test-compile` BUILD SUCCESS |
 | shell 语法校验 | ✅ 全部 tracked `.sh` 过 `bash -n`，0 失败 |
 | XML 良构校验 | ✅ 全部 tracked `.xml` 解析通过，0 畸形 |
 | `workflow.xml` 进书稿的实测 | ✅ `perl phragmite_db.pl` 实跑，转义正确，中文透传 |
-| 非 Java 的「只增不改」校验器 | ⬜ 未写（需按语言分别处理注释行剥离） |
-| 各模块注释正文 | ⬜ 未写 |
+| 非 Java 的「只增不改」校验器 | ✅ `E:/tmp/verify_nonjava_comments_only.py`：153/153 文件去注释后与基线逐字节相同 |
+| 各模块注释正文 | ✅ 22 个 commit，见 9.1 第二张表 |
+
+**第二阶段新增的校验工具**
+
+| 工具 | 作用 |
+|---|---|
+| `E:/tmp/verify_nonjava_comments_only.py` | 按语言剥离注释行后与基线逐字节比对，保证「只增不改」 |
+| `E:/tmp/check_phase2.py` | 逐语言语义校验：注释形状、Hive 顶格约束、shell 续行安全、`bash -n`、`py_compile` |
+| `E:/tmp/check_markers.py` | 检查新增注释有没有落进书稿 `vv`/`^^` 窗口（Pig 方言） |
+| `E:/tmp/check_hive_markers.py` | Hive 方言专用的窗口检查（Hive 的标记藏在 `! echo; # vv NAME;` 里，原工具的 Hive 分支是死代码） |
+
+**实施中发现并修正的问题**
+
+1. `appc/src/main/sh/load_ncdc.sh`（commit `91f11f9`）把整行注释写在了
+   `hadoop jar` 命令的续行之间。shell 会把续行后面的内容当注释吃掉，
+   该命令会被截断。已在 `ce3e3e1` 中把注释整体上移到命令之前。
+   `check_phase2.py` 的 `check_shell_continuation` 就是为守住这条红线而写的。
+2. Hive 的书稿标记不是独立的注释行，而是藏在一行 shell 透传命令里
+   （`! echo; # vv NAME;`）。原先的窗口检查工具按 `#` 开头的标记行去找，
+   对 Hive 完全失效，因此补写了 `check_hive_markers.py`。
+3. 若干 Hive 注释块原本以拉丁标识符开头（`-- dfs -cat 是…`），
+   与「注释块首行必须是中文」的规则冲突，已逐条改写。
+
+**已知但刻意不改的问题**（都不是本次引入的，也不在「只加注释」的授权范围内）
+
+| 问题 | 说明 |
+|---|---|
+| `ch14-flume/spool-to-hdfs-tiered-load-balance.properties` 端口冲突 | 第一级 `sink1b.port = 10001`，第二级 `agent2b` 的源却仍写 10000。已在注释中如实指出，配置本身保持原样 |
+| `ch22-case-studies` 的 `.jr` 与生成好的 `.java` 并存 | 本模块 pom 未配 record-compiler，改 `.jr` 不会重新生成 `.java`，两边会漂移。已在注释中写明，未改 pom |
+| `mvn -o -pl ch13-parquet test` 的 6 个 error | 全部是 `Failed to locate the winutils binary in the hadoop binary path`，属于 Windows 上缺 `hadoop.dll` 的环境问题，与注释无关 |
 
 ## 十、已裁决的开放问题
 
