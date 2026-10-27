@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!-- 这份文件配置 HDFS 自身的参数：副本数设为 1，因为本地只跑得起一个 DataNode -->
 <configuration>
   <property>
     <name>dfs.replication</name>

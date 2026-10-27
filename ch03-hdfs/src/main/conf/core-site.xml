@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!-- 默认文件系统：凡是路径里没有写明 scheme 的，都按这里配置的来解释 -->
 <configuration>
   <property>
     <name>fs.defaultFS</name>
