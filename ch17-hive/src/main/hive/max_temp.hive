@@ -1,3 +1,5 @@
+-- 这个脚本是第 17 章的主线示例：在 Hive 里求出每一年的最高气温。
+-- 做法和第 16 章的 Pig 完全一样，只是换成了 SQL 写法。
 ! echo; # == max_temp_select;
 
 DROP TABLE IF EXISTS records;
@@ -5,9 +7,11 @@ DROP TABLE IF EXISTS records;
 CREATE TABLE records (year STRING, temperature INT, quality INT)
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY '\t';
+-- 表结构是年份、温度和质量码三列。
 
 LOAD DATA LOCAL INPATH 'input/ncdc/micro-tab/sample.txt'
 OVERWRITE INTO TABLE records;
+-- 导入样例数据。
 
 ! echo; # vv max_temp_select;
 SELECT year, MAX(temperature)
@@ -15,3 +19,5 @@ FROM records
 WHERE temperature != 9999 AND quality IN (0, 1, 4, 5, 9)
 GROUP BY year;
 ! echo; # ^^ max_temp_select;
+-- 小结：聚合之前要先用 WHERE 过滤掉坏数据，
+-- 否则 MAX 会被缺测值 9999 污染。

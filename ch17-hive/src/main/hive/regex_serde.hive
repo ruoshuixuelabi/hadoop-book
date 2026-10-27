@@ -1,3 +1,5 @@
+-- 这个脚本演示怎么用正则表达式解析定宽文本。
+-- Hive 内置的 RegexSerDe 可以在读入时按正则把一行拆成多个字段。
 ! echo; # == select_stations;
 
 DROP TABLE IF EXISTS stations;
@@ -7,10 +9,13 @@ ROW FORMAT SERDE 'org.apache.hadoop.hive.contrib.serde2.RegexSerDe'
 WITH SERDEPROPERTIES (
   "input.regex" = "(\\d{6}) (\\d{5}) (.{29}) .*"
 );
+-- 这里的 input.regex 用三个捕获组分别对应三个字段：站点编号、测站编号和站点名。
 
 LOAD DATA LOCAL INPATH "input/ncdc/metadata/stations-fixed-width.txt"
 INTO TABLE stations;
+-- 导入的是定宽的站点元数据文件。
 
 ! echo; # vv select_stations;
 SELECT * FROM stations LIMIT 4;
 ! echo; # ^^ select_stations;
+-- 小结：定宽文本用 RegexSerDe，任意分隔符的文本用 DelimitedSerDe。

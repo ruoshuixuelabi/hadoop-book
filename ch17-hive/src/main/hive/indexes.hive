@@ -1,15 +1,23 @@
+-- 这个脚本演示 Hive 的位图索引（bitmap index）。
+-- 索引建在表的一个字段上，能加快按这个字段过滤的查询。
 DROP TABLE IF EXISTS users_extended;
 
 CREATE TABLE users_extended (id INT, name STRING, gender STRING);
+-- 这张表多了一列 gender，索引就建在这一列上。
 
 LOAD DATA LOCAL INPATH 'input/hive/tables/users_extended.txt'
 OVERWRITE INTO TABLE users_extended;
+-- 导入数据。
 
 DROP INDEX IF EXISTS users_index;
+-- 先把可能存在的旧索引删掉，保证脚本可以反复执行。
 
 CREATE INDEX users_index
 ON TABLE users_extended (gender)
 AS 'BITMAP' WITH DEFERRED REBUILD;
+-- 这里的 BITMAP 是索引类型；WITH DEFERRED REBUILD 表示先建索引、稍后再灌数据。
 ALTER INDEX users_index ON users_extended REBUILD;
+-- 这一句才真正把索引建起来。
 
 SELECT * FROM users_extended WHERE gender = 'F';
+-- 小结：索引对按索引列做过滤的查询最有效，数据量大时效果明显。

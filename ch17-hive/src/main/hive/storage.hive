@@ -1,44 +1,61 @@
+-- 这个脚本演示 Hive 表的不同存储格式。
+-- Hive 自带的表格式有好几种，选一种建表之后，
+-- 还可以把别的格式的表转换过来。
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (id INT, name STRING);
+-- 先建一张普通的表作为数据源。
 
 LOAD DATA LOCAL INPATH 'input/hive/tables/users.txt'
 OVERWRITE INTO TABLE users;
+-- 导入样例数据。
 
 DROP TABLE IF EXISTS users_seqfile;
+-- 接下来依次演示四种存储格式。
 
 SET hive.exec.compress.output=true;
 SET mapreduce.output.fileoutputformat.compress.codec=org.apache.hadoop.io.compress.DeflateCodec;
 SET mapreduce.output.fileoutputformat.compress.type=BLOCK;
+-- 这三条设置打开输出压缩，并指定用 DeflateCodec 按块压缩。
 CREATE TABLE users_seqfile STORED AS SEQUENCEFILE
 AS
 SELECT id, name FROM users;
+-- 这里的 STORED AS SEQUENCEFILE 表示新建一张 SequenceFile 格式的表，
+-- 并把查询结果写进去。
 
 SELECT * from users_seqfile;
+-- 读回来的内容和原表一样，只是存成了二进制。
 
 DROP TABLE IF EXISTS users_avro;
 
 SET hive.exec.compress.output=true;
+-- 这张 Avro 表的输出默认用 snappy 压缩，下面那行把它关掉了。
 -- SET avro.output.codec=snappy;
 CREATE TABLE users_avro (id INT, name STRING)
 STORED AS AVRO;
 INSERT OVERWRITE TABLE users_avro
 SELECT * FROM users;
+-- 把原表的数据写进 Avro 表。
 
 SELECT * from users_avro;
+-- 这张 Avro 表读回来还是一样的数据。
 
 DROP TABLE IF EXISTS users_parquet;
 
 CREATE TABLE users_parquet STORED AS PARQUET
 AS
 SELECT * FROM users;
+-- 这张 Parquet 表用 STORED AS PARQUET 创建，写法和前面一样。
 
 SELECT * from users_parquet;
+-- 这种格式属于列式存储，只读少数几列时比行式格式快得多。
 
 DROP TABLE IF EXISTS users_orc;
 
 CREATE TABLE users_orc STORED AS ORCFILE
 AS
 SELECT * FROM users;
+-- 这里用的 ORCFILE 是 Hive 内置的列式格式之一，写法同样是 STORED AS。
 
 SELECT * from users_orc;
+-- 小结：存储格式在 Hive 里是可以自由更换的，转换过程由 Hive 自己完成。

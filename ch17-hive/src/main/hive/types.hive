@@ -1,3 +1,5 @@
+-- 这个脚本演示 Hive 的四种复合类型。
+-- 数组、映射、结构体和联合类型都是可以嵌套的，取值时各有一套写法。
 ! echo; # == complex_types;
 
 DROP TABLE IF EXISTS complex;
@@ -9,9 +11,13 @@ CREATE TABLE complex (
   c4 UNIONTYPE<STRING, INT>
 );
 
+-- 建表语句里同时用了四种复合类型。
 LOAD DATA LOCAL INPATH 'input/hive/types/complex.txt'
 OVERWRITE INTO TABLE complex;
+-- 导入样例数据。
 
 ! echo; # vv complex_types;
 SELECT c1[0], c2['b'], c3.c, c4 FROM complex;
 ! echo; # ^^ complex_types;
+-- 小结：数组用下标取值，映射用键取值，结构体用字段名取值，
+-- 联合类型则按声明的顺序编号。

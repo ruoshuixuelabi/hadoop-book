@@ -1,3 +1,5 @@
+-- 这个脚本演示 Hive 支持的各种连接。
+-- Hive 的连接语法和 SQL 基本一致，具体行为由 Hive 自己的执行引擎决定。
 ! echo; # == select_sales_and_things;
 ! echo; # == inner_join;
 ! echo; # == left_outer_join;
@@ -9,41 +11,49 @@
 DROP TABLE IF EXISTS sales;
 CREATE TABLE sales (name STRING, id INT)
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
+-- 这张 sales 表的数据是制表符分隔的，所以建表时要这样声明分隔符。
 
 DROP TABLE IF EXISTS things;
 CREATE TABLE things (id INT, name STRING)
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
+-- 这张 things 表的结构一样，只是把 id 和 name 的先后顺序换了。
 
 LOAD DATA LOCAL INPATH 'input/hive/joins/sales.txt'
 OVERWRITE INTO TABLE sales;
 
 LOAD DATA LOCAL INPATH 'input/hive/joins/things.txt'
 OVERWRITE INTO TABLE things;
+-- 把两张表的数据都导进来。
 
 ! echo; # vv select_sales_and_things;
 SELECT * FROM sales;
 SELECT * FROM things;
 ! echo; # ^^ select_sales_and_things;
+-- 下面几段分别演示不同的连接方式。
 
 ! echo; # vv inner_join;
 SELECT sales.*, things.*
 FROM sales JOIN things ON (sales.id = things.id);
 ! echo; # ^^ inner_join;
+-- 左外连接保留左表里没匹配上的行，右表对应的列补成 null。
 
 ! echo; # vv left_outer_join;
 SELECT sales.*, things.*
 FROM sales LEFT OUTER JOIN things ON (sales.id = things.id);
 ! echo; # ^^ left_outer_join;
+-- 右外连接反过来，保留右表里没匹配上的行。
 
 ! echo; # vv right_outer_join;
 SELECT sales.*, things.*
 FROM sales RIGHT OUTER JOIN things ON (sales.id = things.id);
 ! echo; # ^^ right_outer_join;
+-- 全外连接把两边的行都保留下来。
 
 ! echo; # vv full_outer_join;
 SELECT sales.*, things.*
 FROM sales FULL OUTER JOIN things ON (sales.id = things.id);
 ! echo; # ^^ full_outer_join;
+-- 半连接只返回左表也就是 things 的列，但只留下能匹配上的行。
 
 ! echo; # vv semi_join;
 SELECT *
@@ -52,3 +62,5 @@ FROM things LEFT SEMI JOIN sales ON (sales.id = things.id);
 
 SELECT /*+ MAPJOIN(things) */ sales.*, things.*
 FROM sales JOIN things ON (sales.id = things.id);
+-- 最后这段用 MAPJOIN 提示，让较小的表被复制到各个 map 任务上，
+-- 免掉 reduce 端的排序开销。

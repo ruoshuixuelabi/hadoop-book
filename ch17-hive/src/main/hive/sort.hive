@@ -1,3 +1,5 @@
+-- 这个脚本演示 Hive 的排序。
+-- DISTRIBUTE BY 决定数据分发到哪个 reducer，SORT BY 决定每个 reducer 内部怎么排。
 ! echo; # == sort_by_year;
 
 DROP TABLE IF EXISTS records2;
@@ -5,9 +7,11 @@ DROP TABLE IF EXISTS records2;
 CREATE TABLE records2 (station STRING, year STRING, temperature INT, quality INT)
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY '\t';
+-- 和上一节一样的表结构。
 
 LOAD DATA LOCAL INPATH 'input/ncdc/micro-tab/sample2.txt'
 OVERWRITE INTO TABLE records2;
+-- 导入样例数据。
 
 ! echo; # vv sort_by_year;
 FROM records2
@@ -15,3 +19,4 @@ SELECT year, temperature
 DISTRIBUTE BY year
 SORT BY year ASC, temperature DESC;
 ! echo; # ^^ sort_by_year;
+-- 小结：SORT BY 只保证分区内有序，需要全局有序时要用 ORDER BY。

@@ -1,19 +1,26 @@
+-- 这个脚本演示 Hive 的多表插入（multi-table insert）。
+-- 一条 FROM 语句后面可以接好几个 INSERT，每个 INSERT 写进不同的表，
+-- 源表只扫描一遍就够。
 
 DROP TABLE IF exists records2;
 CREATE TABLE records2 (station STRING, year STRING, temperature INT, quality INT)
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY '\t';
+-- 建源表，字段和分隔符和上一节一样。
 
 LOAD DATA LOCAL INPATH '/Users/tom/book-workspace/hadoop-book/input/ncdc/micro-tab/sample2.txt'
 OVERWRITE INTO TABLE records2;
+-- 导入样例数据。
 
 DROP TABLE IF exists stations_by_year;
 DROP TABLE IF exists records_by_year;
 DROP TABLE IF exists good_records_by_year;
+-- 三个目标表都要先删掉，这样脚本可以反复执行。
 
 CREATE TABLE stations_by_year (year STRING, num INT);
 CREATE TABLE records_by_year (year STRING, num INT);
 CREATE TABLE good_records_by_year (year STRING, num INT);
+-- 三个目标表的结构完全一样，只是装的统计口径不同。
 
 FROM records2
 INSERT OVERWRITE TABLE stations_by_year
@@ -26,13 +33,16 @@ INSERT OVERWRITE TABLE good_records_by_year
   SELECT year, COUNT(1)
   WHERE temperature != 9999 AND quality IN (0, 1, 4, 5, 9)
   GROUP BY year;  
+-- 上面这一条 FROM 扫了一遍源表，把三种统计分别写进了三张表。
   
 SELECT * FROM stations_by_year;
 SELECT * FROM records_by_year;
 SELECT * FROM good_records_by_year;
+-- 看看三张表里的结果。
 
 SELECT /*+ MAPJOIN(records_by_year,good_records_by_year) */
   stations_by_year.year, stations_by_year.num, records_by_year.num, good_records_by_year.num
 FROM stations_by_year
   JOIN records_by_year ON (stations_by_year.year = records_by_year.year)
   JOIN good_records_by_year ON (stations_by_year.year = good_records_by_year.year);
+-- 小结：多表插入能省掉重复读源表的开销。

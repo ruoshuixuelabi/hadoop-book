@@ -1,17 +1,27 @@
+-- 这个脚本演示 Hive 里的类型转换规则。
+-- Hive 的算术运算要求两个操作数的类型兼容，
+-- 类型对不上的时候必须自己写 CAST 显式转换。
 DROP TABLE IF EXISTS dummy;
 CREATE TABLE dummy (value STRING);
+-- 建一张只有一列的表，用来观察各种转换的结果。
 LOAD DATA LOCAL INPATH 'input/hive/dummy.txt'
 OVERWRITE INTO TABLE dummy;
+-- 导入一行测试数据。
 
 SELECT CAST('X' AS INT) from dummy;
+-- 字符串 'X' 转成整数会得到 null，转换失败不会报错。
  
 SELECT 2 + TRUE FROM dummy;
+-- 布尔值不能直接参与算术运算。
 
 SELECT 2 + CAST(TRUE AS INT) FROM dummy;
+-- 先把布尔转成整数再相加就可以了，true 会被当成 1。
 
 SELECT 2 + '2' FROM dummy;
+-- 字符串 '2' 也不能直接和整数相加。
 
 SELECT concat('Truth: ', TRUE) FROM simple;
+-- 不过 concat 是字符串函数，Hive 会把布尔值转成文字再拼起来。
 
 DROP TABLE IF EXISTS simple;
 CREATE TABLE simple (
@@ -20,13 +30,20 @@ CREATE TABLE simple (
 
 INSERT OVERWRITE TABLE simple
   SELECT '2012-01-02 03:04:05.123456789' FROM dummy;
+-- 这里的时间戳精度到纳秒，比 Java 的毫秒更细。
 
 SELECT 2 + col1 FROM simple;
+-- 时间戳和整数相加会出错。
 
 SELECT 2L + col1 FROM simple;
+-- 换成 long 也一样。
 
 SELECT 2.0 + col1 FROM simple;
+-- 双精度也一样。
 
 SELECT 2 + CAST(col1 AS BIGINT) FROM simple;
+-- 先把时间戳转成整数再相加就没问题了。
 
 SELECT concat('Date: ', col1) FROM simple;
+-- 小结：数值类型之间 Hive 会做隐式的类型提升，
+-- 但和字符串、时间戳之间的转换必须显式写 CAST。

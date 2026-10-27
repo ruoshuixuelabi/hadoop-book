@@ -1,3 +1,5 @@
+-- 这个脚本演示 Hive 怎么调用外部的 MapReduce 脚本。
+-- Hive 把 TRANSFORM 的输出交给 Python 脚本处理，再把结果读回来当成表。
 ! echo; # == mapreduce_is_good_quality;
 
 DROP TABLE IF EXISTS records2;
@@ -5,9 +7,11 @@ DROP TABLE IF EXISTS records2;
 CREATE TABLE records2 (station STRING, year STRING, temperature INT, quality INT)
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY '\t';
+-- 表结构声明完，下面把数据导进来。
 
 LOAD DATA LOCAL INPATH 'input/ncdc/micro-tab/sample2.txt'
 OVERWRITE INTO TABLE records2;
+-- 导入样例数据。
 
 ! echo; # vv mapreduce_is_good_quality;
 ADD FILE /Users/tom/book-workspace/hadoop-book/ch17-hive/src/main/python/is_good_quality.py;
@@ -16,8 +20,10 @@ SELECT TRANSFORM(year, temperature, quality)
 USING 'is_good_quality.py'
 AS year, temperature;
 ! echo; # ^^ mapreduce_is_good_quality;
+-- 这里用 ADD FILE 把脚本分发到各个节点上，脚本才能在集群里被执行。
 
 ADD FILE ch17-hive/src/main/python/max_temperature_reduce.py;
+-- 下面两段演示两种写法：MAP/REDUCE 关键字，以及嵌套 SELECT。
 
 FROM (
   FROM records2
@@ -27,6 +33,7 @@ FROM (
 REDUCE year, temperature
 USING 'max_temperature_reduce.py'
 AS year, temperature;
+-- 这一段是先 MAP 再 REDUCE 的写法，脚本分成两步来跑。
 
 FROM (
   FROM records2
@@ -36,3 +43,4 @@ FROM (
 SELECT TRANSFORM(year, temperature)
 USING 'max_temperature_reduce.py'
 AS year, temperature;
+-- 这一段把同样的两步写成嵌套的 SELECT，Hive 会翻译成一样的作业。

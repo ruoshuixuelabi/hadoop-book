@@ -1,13 +1,18 @@
+-- 这个脚本演示 Hive 的分区（partition）。
+-- 分区列不是普通字段，它决定数据在磁盘上的目录结构，
+-- 查询时带上分区条件就能只读需要的那部分数据。
 ! echo; # == partitions;
 
 DROP TABLE IF EXISTS logs;
 
 CREATE TABLE logs (ts BIGINT, line STRING)
 PARTITIONED BY (dt STRING, country STRING);
+-- 表里的 dt 和 country 是分区列，写数据时要指定它们放在哪个分区里。
 
 LOAD DATA LOCAL INPATH 'input/hive/partitions/file1'
 INTO TABLE logs
 PARTITION (dt='2001-01-01', country='GB');
+-- 每次导入指定一个分区，数据会落到以分区值命名的子目录里。
 
 LOAD DATA LOCAL INPATH 'input/hive/partitions/file2'
 INTO TABLE logs
@@ -25,6 +30,7 @@ LOAD DATA LOCAL INPATH 'input/hive/partitions/file5'
 INTO TABLE logs
 PARTITION (dt='2001-01-02', country='US');
 
+-- 最后一次导入写进的还是同一个分区，同一分区重复导入会覆盖原来的数据。
 LOAD DATA LOCAL INPATH 'input/hive/partitions/file6'
 INTO TABLE logs
 PARTITION (dt='2001-01-02', country='US');
@@ -32,7 +38,10 @@ PARTITION (dt='2001-01-02', country='US');
 ! echo; # vv partitions;
 SHOW PARTITIONS logs;
 ! echo; # ^^ partitions;
+-- 这里用 SHOW PARTITIONS 列出表里已有的分区。
 
 SELECT ts, dt, line
 FROM logs
 WHERE country='GB';
+-- 小结：六次导入只产生了四个分区。
+-- 分区列是等值条件时，Hive 才能做分区裁剪，只扫描对应的目录。

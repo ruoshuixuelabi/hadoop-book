@@ -1,15 +1,21 @@
+-- 这个脚本演示 Hive 的三条会话设置命令。
+-- DESCRIBE FUNCTION 查函数说明，SET 赋值，SET 不带等号就是查当前值。
 ! echo; # == define_function;
 ! echo; # == set_value;
 ! echo; # == set_show_value;
+-- 下面三段分别演示查函数说明、设置参数和查询参数当前值。
 
 ! echo; # vv define_function;
 DESCRIBE FUNCTION length;
 ! echo; # ^^ define_function;
+-- 设置分桶相关的开关。
 
 ! echo; # vv set_value;
 SET hive.enforce.bucketing=true;
 ! echo; # ^^ set_value;
+-- 不写等号就是查询当前值。
 
 ! echo; # vv set_show_value;
 SET hive.enforce.bucketing;
 ! echo; # ^^ set_show_value;
+-- 小结：这些设置只对当前这一次 Hive 会话有效。

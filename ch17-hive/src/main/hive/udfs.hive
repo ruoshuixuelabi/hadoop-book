@@ -1,3 +1,5 @@
+-- 这个脚本演示 Hive 的内置函数和 UDF。
+-- explode 是内置的表生成函数，strip 和 maximum 则是用 Java 写的 UDF。
 ! echo; # == select_arrays;
 ! echo; # == select_explode_arrays;
 ! echo; # == select_strip;
@@ -10,13 +12,16 @@ CREATE TABLE arrays (x ARRAY<STRING>)
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY '\001'
   COLLECTION ITEMS TERMINATED BY '\002';
+-- 数组里的元素用另一个控制字符分隔。
   
 LOAD DATA LOCAL INPATH 'input/hive/udfs/arrays.txt'
 OVERWRITE INTO TABLE arrays;
+-- 导入样例数据。
   
 ! echo; # vv select_arrays;
 SELECT * FROM arrays;
 ! echo; # ^^ select_arrays;
+-- 这里的 explode 把数组展开成多行，一行一个元素。
 
 ! echo; # vv select_explode_arrays;
 SELECT explode(x) AS y FROM arrays;
@@ -26,14 +31,18 @@ DROP TABLE IF EXISTS dummy;
 CREATE TABLE dummy (value STRING);
 LOAD DATA LOCAL INPATH 'input/hive/dummy.txt'
 OVERWRITE INTO TABLE dummy;
+-- 导入一行数据，后面用它来演示字符串函数。
 
 ADD JAR hive-examples.jar;
+-- 先把写 UDF 的 jar 包加进来。
 CREATE TEMPORARY FUNCTION strip AS 'com.hadoopbook.hive.Strip';
+-- 再把 jar 包里的类注册成一个临时函数，会话结束就失效了。
 
 ! echo; # vv select_strip;
 SELECT strip('  bee  ') FROM dummy;
 SELECT strip('banana', 'ab') FROM dummy;
 ! echo; # ^^ select_strip;
+-- 函数名不区分大小写。
 
 ! echo; # vv select_case_insensitive_strip;
 SELECT STRIP('  bee  ') FROM dummy;
@@ -43,10 +52,13 @@ DROP TABLE IF EXISTS records;
 CREATE TABLE records (year STRING, temperature INT, quality INT)
 ROW FORMAT DELIMITED
   FIELDS TERMINATED BY '\t';
+-- 再建一张气温表。
 LOAD DATA LOCAL INPATH 'input/ncdc/micro-tab/sample.txt'
 OVERWRITE INTO TABLE records;
+-- 导入样例数据。
 
 ! echo; # vv select_maximum;
 CREATE TEMPORARY FUNCTION maximum AS 'com.hadoopbook.hive.Maximum';
 SELECT maximum(temperature) FROM records;
 ! echo; # ^^ select_maximum;
+-- 小结：UDF 让 Hive 能用 Java 写自定义的聚合函数。
